@@ -23,7 +23,7 @@
 		</record>
 
 
-    <!--  stock picking sale ref  -->
+
       <record id="stock_picking_view_inherit" model="ir.ui.view">
 			<field name="name">stock.picking.form.view.inherit</field>
 			<field name="model">stock.picking</field>
