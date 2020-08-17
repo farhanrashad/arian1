@@ -44,6 +44,8 @@
 					<field name="sale_ids"/>
 				</xpath>      
             </field>
-		</record>   -->
+		</record>   
+
+-->
   </data>
 </odoo>
