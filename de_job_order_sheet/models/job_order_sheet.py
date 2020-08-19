@@ -137,4 +137,4 @@ class JobOrderSheetLine(models.Model):
     product_quantity = fields.Float(string='Quantity')
     in_house_production = fields.Float(string='InHouse Production')
     outsource_production = fields.Float(string='Outsource Production')
-    vendor_id = fields.Many2one(comodel_name='res.partner', string='Vendor', required=True)
+    vendor_id = fields.Many2one(comodel_name='res.partner', string='Vendor')
