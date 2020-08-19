@@ -24,13 +24,13 @@
 
 
 
-   <!--   <record id="stock_picking_view_inherit" model="ir.ui.view">
+       <record id="stock_picking_form_view" model="ir.ui.view">
 			<field name="name">stock.picking.form.view.inherit</field>
 			<field name="model">stock.picking</field>
 			<field name="inherit_id" ref="stock.view_picking_form"/>
 			<field name="arch" type="xml">
 				<xpath expr="//field[@name='origin']" position="after">
-					<field name="sale_ids" invisible="1"/>
+					<field name="sale_ref" invisible="1"/>
 				</xpath>      
             </field>
 		</record>
@@ -41,7 +41,7 @@
 			<field name="inherit_id" ref="stock.vpicktree"/>
 			<field name="arch" type="xml">
 				<xpath expr="//field[@name='origin']" position="after">
-					<field name="sale_ids"/>
+					<field name="sale_ref"/>
 				</xpath>      
             </field>
 		</record>   
