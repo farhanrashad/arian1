@@ -28,7 +28,7 @@ class JobOrderSheet(models.Model):
             order_data = self.env['mrp.production'].search([('sale_id', '=', rec.sale_order_id.name),
                                                             '|',
                                                             '|',
-                                                            ('product_id.name', '=ilike', 'Un-Finished%'),
+                                                            ('product_id.name', '=ilike', ' %'),
                                                             ('product_id.name', '=ilike', 'Module%'),
                                                             '|',
                                                             ('product_id.name', '=ilike', '[Un-Finished]%'),
@@ -58,7 +58,7 @@ class JobOrderSheet(models.Model):
                 'product_qty': line.in_house_production
             })
             stock_picking = self.env['stock.picking'].search([('origin', '=', line.mo_order_id.name),
-                                                              ('picking_type_id', '=', 33)])
+                                                              ('picking_type_id', '=', 10)])
             print('stock', stock_picking)
             for picking in stock_picking:
                 for pick_line in picking.move_ids_without_package:
