@@ -51,6 +51,11 @@ class MrpProduction(models.Model):
 
     sale_id = fields.Char(string='Ref Sale')
 
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+
+    sale_ref_id = fields.Char(string='Ref Sale')
+
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
