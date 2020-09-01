@@ -8,6 +8,11 @@ class MrpWorkorder(models.Model):
     _inherit = 'mrp.workorder'
     
     qty_production = fields.Float('Original Production Quantity', readonly=True)
+    
+    def open_tablet_view(self):
+        res = super(MrpWorkorder, self).open_tablet_view()
+        self.action_skip()
+        return res	
 
 
 
@@ -48,7 +53,9 @@ class MrpProduction(models.Model):
                 'date_planned_start': self.date_planned_start,
                 'date_planned_finished': self.date_planned_start,                             
                 'product_uom_id': self.product_id.uom_id.id,
-                'is_user_working': True,
+                'company_id': self.company_id.id,
+                'is_user_working': False,
+                'quality_check_todo': True,
                 'operation_id': self.routing_f_id.operation_ids.id,
                 'duration_expected': self.routing_f_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
@@ -65,9 +72,9 @@ class MrpProduction(models.Model):
                     'raw_workorder_id': workorders.id,
                     'product_id': line.product_id.id,
                     'qty_to_consume': self.product_f_qty,
-                    'qty_reserved': self.product_f_qty,
+                    <!-- 'qty_reserved': self.product_f_qty, -->
                     'product_uom_id': line.product_uom.id,
-                    'qty_done': self.product_f_qty,
+                  <!--  'qty_done': self.product_f_qty, -->
                     
                 }
         
@@ -87,7 +94,9 @@ class MrpProduction(models.Model):
                 'date_planned_start': self.date_planned_start,
                 'date_planned_finished': self.date_planned_start,             
                 'product_uom_id': self.product_id.uom_id.id,
-                'is_user_working': True,
+                'company_id': self.company_id.id,
+                'is_user_working': False,
+                'quality_check_todo': True,
                 'operation_id': self.routing_s_id.operation_ids.id,
                 'duration_expected': self.routing_s_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
@@ -104,9 +113,9 @@ class MrpProduction(models.Model):
                     'raw_workorder_id': workorders.id,
                     'product_id': line.product_id.id,
                     'qty_to_consume': self.product_s_qty,
-                    'qty_reserved': self.product_s_qty,
+                    <!--'qty_reserved': self.product_s_qty, -->
                     'product_uom_id': line.product_uom.id,
-                    'qty_done': self.product_s_qty,
+                  <!--  'qty_done': self.product_s_qty,-->
                 }
                 workorder_lines = self.env['mrp.workorder.line'].create(slines)
         else:
@@ -124,7 +133,9 @@ class MrpProduction(models.Model):
                 'date_planned_start': self.date_planned_start,
                 'date_planned_finished': self.date_planned_start,                           
                 'product_uom_id': self.product_id.uom_id.id,
-                 'is_user_working': True,               
+                 'is_user_working': False,
+                'quality_check_todo': True,     
+                'company_id': self.company_id.id,          
                 'operation_id': self.routing_t_id.operation_ids.id,
                 'duration_expected': self.routing_t_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
@@ -140,9 +151,9 @@ class MrpProduction(models.Model):
                     'raw_workorder_id': workorders.id,                    
                     'product_id': line.product_id.id,
                     'qty_to_consume': self.product_t_qty,
-                    'qty_reserved': self.product_t_qty,
+                   <!-- 'qty_reserved': self.product_t_qty, -->
                     'product_uom_id': line.product_uom.id,       
-                    'qty_done': self.product_t_qty,
+                   <!-- 'qty_done': self.product_t_qty, -->
                 }
                 workorder_lines = self.env['mrp.workorder.line'].create(tlines)
         else:
@@ -160,11 +171,12 @@ class MrpProduction(models.Model):
                 'date_planned_start': self.date_planned_start,
                 'date_planned_finished': self.date_planned_start,             
                 'product_uom_id': self.product_id.uom_id.id,
-                 'is_user_working': True,               
+                 'is_user_working': False,
+                'quality_check_todo': True, 
+                'company_id': self.company_id.id,              
                 'operation_id': self.routing_fo_id.operation_ids.id,
                 'duration_expected': self.routing_fo_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
-#                 'qty_production': self.product_fo_qty,
                  'qty_production': self.product_fo_qty, 
                  'qty_remaining': self.product_fo_qty,               
                 'qty_producing': quantity,
@@ -177,9 +189,9 @@ class MrpProduction(models.Model):
                     'raw_workorder_id': workorders.id,                    
                     'product_id': line.product_id.id,
                     'qty_to_consume': self.product_fo_qty,
-                    'qty_reserved': self.product_fo_qty, 
+                   <!-- 'qty_reserved': self.product_fo_qty,  -->
                     'product_uom_id': line.product_uom.id,                  
-                    'qty_done': self.product_fo_qty,                   
+                   <!-- 'qty_done': self.product_fo_qty, -->                  
                 }
                 workorder_lines = self.env['mrp.workorder.line'].create(folines)
         else:
