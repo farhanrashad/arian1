@@ -25,7 +25,16 @@
                 file="de_custom_proforma_invoice.custom_proforma_invoice1"
                 name="de_custom_proforma_invoice.custom_proforma_invoice1"
                 menu = "False"
-                paperformat="de_custom_proforma_invoice.custom_proforma_format"
+        />
+
+        <report
+                id="cycle_gear_commercial_invoice_action"
+                string="Commercial Proforma"
+                model="sale.order"
+                report_type="qweb-pdf"
+                file="de_custom_proforma_invoice.cycle_gear_commercial"
+                name="de_custom_proforma_invoice.cycle_gear_commercial"
+                menu = "False"
         />
     </data>
 </odoo>

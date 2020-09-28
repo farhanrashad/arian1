@@ -23,11 +23,13 @@
         # 'security/ir.model.access.csv',
         'views/custom_files.xml',
         'wizard/custom_proforma_invoice1.xml',
+        'wizard/cycle_gear_commercial.xml',
         'views/sale_order_ext.xml',
         'views/product_ext.xml',
         'views/report_action.xml',
         'views/account_journal_ext.xml',
         'report/custom_proforma_template1.xml',
+        'report/cycle_gear_commercial_template.xml',
         'report/layouts.xml',
     ],
 }

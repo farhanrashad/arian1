@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="cycle_gear_commercial_invoice_wizard" model="ir.ui.view">
+        <field name="name">cycle gear commercial invoice wizard</field>
+        <field name="model">cycle.commercial.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Commercial Invoice">
+                <group string="Commercial Invoice">
+                    <group>
+                        <field name="invoice_id"/>
+                        <field name="sale_order_id"/>
+                        <field name="date"/>
+                        <field name="purchase_order_id"/>
+                        <field name="fca_price_total"/>
+                        <field name="flight_no"/>
+                        <field name="flight_date"/>
+                        <field name="etd"/>
+                        <field name="consigned_to"/>
+                        <field name="credit_no"/>
+                        <field name="issuance_date"/>
+                    </group>
+                    <group>
+                        <field name="eta"/>
+                        <field name="issued_by"/>
+                        <field name="awb_no"/>
+                        <field name="income_term"/>
+                        <field name="payment_term"/>
+                        <field name="shipment_by"/>
+                        <field name="partner_id"/>
+                        <field name="proforma_invoice"/>
+                        <field name="ctn_no"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_print_cycle_gear_commercial" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
