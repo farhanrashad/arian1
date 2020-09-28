@@ -1,0 +1,11 @@
+.page_border{
+    border-left: 5px solid #000;
+    border-right: 5px solid #000;
+    position: fixed;
+    z-index: 9999;
+/* If you don't get full page border, play around with the height */
+    height: 350mm;
+    left: 0px;
+    top:0;
+    width:100%
+}

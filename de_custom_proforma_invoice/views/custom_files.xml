@@ -3,7 +3,7 @@
     <data>
         <template id="assets_backend" name="pos_chatter assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
-                <link rel="stylesheet" href="/de_custom_proforma_invoice/static/src/css/custom_proforma1.css"/>
+                <link rel="stylesheet" href="/de_custom_proforma_invoice/static/src/css/proforma.css"/>
             </xpath>
         </template>
     </data>

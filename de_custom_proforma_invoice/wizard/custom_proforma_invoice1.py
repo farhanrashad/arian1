@@ -14,6 +14,8 @@ class CustomProformaInvoice(models.TransientModel):
             'form': self.read()[0]
         }
         print('k-->', datas)
+        # return self.env.ref(
+        #     'de_custom_proforma_invoice.action_report_fixed_asset_register').report_action(self, data=datas)
         return self.env.ref('de_custom_proforma_invoice.report_custom_proforma1_pdf').report_action([], data=datas)
 
     name = fields.Char(string='Name')
@@ -28,6 +30,6 @@ class CustomProformaInvoice(models.TransientModel):
     shipment_by = fields.Char(string='Shipment By')
     partial_shipment = fields.Char(string='Partial Shipment')
     shipment = fields.Char(string='TranShipment')
-    bank_id = fields.Many2one(comodel_name='account.journal', string='Bank')
+    bank_id = fields.Many2one(comodel_name='account.journal', string='Bank', domain="[('type','=','bank')]")
     lot_no = fields.Char(string='LOT No')
     prs_no = fields.Char(string='PRS')

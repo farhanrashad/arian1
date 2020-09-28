@@ -4,7 +4,7 @@ from odoo import api, fields, models, _
 
 
 class ProductProductExt(models.Model):
-    _inherit = 'product.product'
+    _inherit = 'product.template'
 
     item_style = fields.Char(string='Style')
     item_color = fields.Char(string='Color')

@@ -16,7 +16,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale', 'stock', 'product'],
+    'depends': ['base', 'sale', 'stock', 'product', 'account'],
 
     # always loaded
     'data': [
@@ -26,6 +26,7 @@
         'views/sale_order_ext.xml',
         'views/product_ext.xml',
         'views/report_action.xml',
+        'views/account_journal_ext.xml',
         'report/custom_proforma_template1.xml',
         'report/layouts.xml',
     ],

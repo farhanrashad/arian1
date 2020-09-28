@@ -15,6 +15,7 @@
                         <field name="payment_term"/>
                         <field name="shipment_by"/>
                         <field name="shipment"/>
+                        <field name="bank_id"/>
                     </group>
                     <group>
                         <field name="date"/>
