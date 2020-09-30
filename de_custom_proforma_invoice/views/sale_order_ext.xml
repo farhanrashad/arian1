@@ -18,6 +18,11 @@
                         <button name="custom_commercial_invoice2_button" type="object" string="Commercial Invoice"
                                 class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 43)]}"/>
                     </xpath>
+                    <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+                        <field name="qtn_ctn"/>
+                        <field name="ctn_no"/>
+                        <field name="lot_no"/>
+                    </xpath>
                 </field>
         </record>
 

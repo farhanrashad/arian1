@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_de_custom_proforma_invoice_de_custom_proforma_invoice,de_custom_proforma_invoice.de_custom_proforma_invoice,model_de_custom_proforma_invoice_de_custom_proforma_invoice,base.group_user,1,1,1,1
+access_cycle_commercial_wizard,cycle.commercial.wizard,model_cycle_commercial_wizard,base.group_user,1,1,1,1
+access_cycle_commercial_line,cycle.commercial.line,model_cycle_commercial_line,base.group_user,1,1,1,1

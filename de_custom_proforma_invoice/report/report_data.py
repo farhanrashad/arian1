@@ -52,6 +52,10 @@ class ReportData(models.AbstractModel):
 class CycleGearCommercialInvoiceData(models.AbstractModel):
     _name = 'report.de_custom_proforma_invoice.cycle_gear_commercial'
 
+    def get_product_obj(self, id):
+        obj = self.env['product.template'].search([('id','=',id)])
+        return obj
+
     @api.model
     def _get_report_values(self, docids, data=None):
         if not data.get('form'):
@@ -67,6 +71,7 @@ class CycleGearCommercialInvoiceData(models.AbstractModel):
         print('order_id', order_id)
         order_lines = self.env['sale.order.line'].search([('order_id', '=', order_id)])
         print('order_lines', order_lines)
+        print('comm', data['form']['commercial_ids'])
         for line in order_lines:
             lines.append(line.product_id.product_tmpl_id.id)
             lines = list(dict.fromkeys(lines))
@@ -76,4 +81,5 @@ class CycleGearCommercialInvoiceData(models.AbstractModel):
             'docs': active_sale_order,
             'data': data,
             'values': lines,
+            'get_product_obj': self.get_product_obj,
         }

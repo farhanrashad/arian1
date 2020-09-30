@@ -20,7 +20,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/custom_files.xml',
         'wizard/custom_proforma_invoice1.xml',
         'wizard/cycle_gear_commercial.xml',

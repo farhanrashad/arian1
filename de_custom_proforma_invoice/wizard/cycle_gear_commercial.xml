@@ -31,8 +31,27 @@
                         <field name="partner_id"/>
                         <field name="proforma_invoice"/>
                         <field name="ctn_no"/>
+                        <field name="advance_payment"/>
+                        <field name="bank_id"/>
                     </group>
                 </group>
+                <group>
+                    <group>
+                        <field name="get_product" invisible="True"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Details">
+                        <field name="commercial_ids">
+                            <tree editable="bottom">
+                                <field name="product_id"/>
+                                <field name="qtn_ctn"/>
+                                <field name="ctn_no"/>
+                                <field name="lot_no"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
                 <footer>
                     <button name="action_print_cycle_gear_commercial" string="Print" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
