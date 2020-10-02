@@ -25,10 +25,10 @@
                                     <t t-esc="o.name"/>
                                 </u>
                             </div>
-                            <div style="width: 25%; float:left; margin: 9px;">
+                            <div style="width: 20%; float:left; margin: 9px;">
                                 <strong>Date:</strong>
                                 <u>
-                                    <t t-esc="o.date_order"/>
+                                    <t t-esc="data['form']['date']"/>
                                 </u>
                             </div>
                             <div style="width: 20%; float:left; margin: 9px;">
@@ -37,7 +37,7 @@
                                     <t t-esc="data['form']['order_id']"/>
                                 </u>
                             </div>
-                            <div style="width: 25%; float:left; margin: 9px;">
+                            <div style="width: 30%; float:left; margin: 9px;">
                                 <strong>Total FCA Sialkot Price:</strong>
                                 <u>
                                     <t t-esc="data['form']['fca_price_total']"/>
@@ -59,7 +59,7 @@
                                         <t t-esc="data['form']['income_term']"/>
                                     </u>
                                 </div>
-                                <div style="width: 25%; float:left; margin: 9px;">
+                                <div style="width: 30%; float:left; margin: 9px;">
                                     <strong>Latest Shipment Date:</strong>
                                     <u>
                                         <t t-esc="data['form']['latest_shipment_date']"/>
@@ -74,7 +74,7 @@
                                     </u>
                                 </div>
                                 <br/>
-                                <div style="width: 30%; float:left; margin: 9px;">
+                                <div style="width: 35%; float:left; margin: 9px;">
                                     <strong>Shipment By:</strong>
                                     <u>
                                         <t t-esc="data['form']['shipment_by']"/>
@@ -88,8 +88,9 @@
                                         <t t-esc="data['form']['partial_shipment']"/>
                                     </u>
                                 </div>
-                                <div style="width: 25%; float:left; margin: 9px;">
-                                    <strong>TranShipment:</strong>
+                                <br/>
+                                <div style="width: 35%; float:left; margin: 9px;">
+                                    <strong>TransShipment:</strong>
                                     <u>
                                         <t t-esc="data['form']['shipment']"/>
                                     </u>
@@ -125,7 +126,7 @@
                                         <th style="border-right: 2px solid black;" width="20%">Size</th>
                                         <th style="border-right: 2px solid black;">Quantity</th>
                                         <th style="border-right: 2px solid black;">Unit Price</th>
-                                        <th style="border-right: 2px solid black;">Total US$</th>
+                                        <th style="border-right: 2px solid black;">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -277,7 +278,7 @@
                             </div>
                             <hr/>
                             <div style="width: 50%; float:left; margin: 9px;">
-                                <strong>TOTAL AMOUNT US $:</strong>
+                                <strong>TOTAL AMOUNT:</strong>
                                 <span t-if="o.currency_id" t-esc="o.currency_id.amount_to_text(round(total,3))"/>
                             </div>
                             <div class="clearfix">

@@ -19,16 +19,16 @@
                         <div style="width: 25%; float:left; margin: 9px;">
                             <strong>Date:</strong>
                             <u>
-                                <t t-esc="o.date_order"/>
+                                <t t-esc="data['form']['date']"/>
                             </u>
                         </div>
-                        <div style="width: 20%; float:left; margin: 9px;">
+                        <div style="width: 15%; float:left; margin: 9px;">
                             <strong>PO No:</strong>
                             <u>
                                 <t t-esc="data['form']['sale_order_id'][1]"/>
                             </u>
                         </div>
-                        <div style="width: 25%; float:left; margin: 9px;">
+                        <div style="width: 30%; float:left; margin: 9px;">
                             <strong>Total FCA Sialkot Price:</strong>
                             <u>
                                 <t t-esc="data['form']['fca_price_total']"/>
@@ -180,8 +180,8 @@
                                                 </t>
                                             </t>
                                             <strong>QTN/CTN  :</strong><t t-esc="pairs"/><br/>
-                                            <strong>C/N NO  :</strong><t t-esc="ctn_qty"/><br/>
-                                            <strong>LOT  :</strong>  <br/>
+                                            <strong>C/N NO  :</strong><t t-esc="ctn"/><br/>
+                                            <strong>LOT  :</strong><t t-esc="lot"/>  <br/>
                                             <strong>Order  :</strong>  <t t-esc="data['form']['sale_order_id'][1]"/><br/>
                                             <strong>H.S Code  :</strong>  <t t-esc="tmpl_obj.hs_code"/><br/>
                                             <strong>Composition  :</strong>  <t t-esc="tmpl_obj.composition"/><br/>
@@ -342,15 +342,17 @@
                                 </p>
                             </div>
                         </div>
-                        <br/>
-                        <br/>
-                        <div style="page-break-before: always;">
-                            <div style="page-break-inside: avoid; float:left; width:300px;height:50px;border:2px solid #000; margin-top: 70px;">
-                                <center>
-                                    <strong>Sign and Stamp</strong>
-                                </center>
+<!--                        <br/>-->
+<!--                        <br/>-->
+                        <center>
+                            <div>
+                                <div style="page-break-inside: avoid; float:left; width:300px;height:50px;border:2px solid #000; margin-top: 150px;">
+                                    <center>
+                                        <strong>Sign and Stamp</strong>
+                                    </center>
+                                </div>
                             </div>
-                        </div>
+                        </center>
                     </t>
                 </div>
             </t>

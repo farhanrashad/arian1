@@ -13,15 +13,10 @@
                                 class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 44)]}"/>
                         <button name="cycle_gear_commercial_invoice" type="object" string="Commercial Invoice"
                                 class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 44)]}"/>
-                        <button name="custom_proforma_invoice2_button" type="object" string="Custom Proforma Invoice"
+                        <button name="custom_proforma_cycle_gear" type="object" string="Custom Proforma Invoice"
                                 class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 43)]}"/>
-                        <button name="custom_commercial_invoice2_button" type="object" string="Commercial Invoice"
+                        <button name="commercial_invoice_cycle_gear" type="object" string="Commercial Invoice"
                                 class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 43)]}"/>
-                    </xpath>
-                    <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
-                        <field name="qtn_ctn"/>
-                        <field name="ctn_no"/>
-                        <field name="lot_no"/>
                     </xpath>
                 </field>
         </record>

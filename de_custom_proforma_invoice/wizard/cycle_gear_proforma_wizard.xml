@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="cycle_gear_proforma_invoice_wizard" model="ir.ui.view">
+        <field name="name">cycle gear proforma invoice wizard</field>
+        <field name="model">cycle.proforma.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Proforma Invoice">
+                <group string="Proforma Invoice">
+                    <group>
+                        <field name="proforma_invoice_no"/>
+                        <field name="order_id"/>
+                        <field name="ship_to"/>
+                        <field name="ship_via"/>
+                        <field name="delivery_date"/>
+                    </group>
+                    <group>
+                        <field name="date"/>
+                        <field name="invoice_date"/>
+                        <field name="bill_to"/>
+                        <field name="income_terms"/>
+                        <field name="payment"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_print_cycle_gear_proforma" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

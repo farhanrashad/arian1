@@ -3,8 +3,8 @@
 <odoo>
     <data>
 
-<!--        <record id="custom_proforma_format" model="report.paperformat">-->
-<!--            <field name="name">Jounal Voucher Paper Format</field>-->
+<!--        <record id="cycle_gear_proforma" model="report.paperformat">-->
+<!--            <field name="name">Cycle Gear Proforma</field>-->
 <!--            <field name="format">custom</field>-->
 <!--            <field name="page_height">270</field>-->
 <!--            <field name="page_width">250</field>-->
@@ -13,9 +13,10 @@
 <!--            <field name="margin_bottom">23</field>-->
 <!--            <field name="margin_left">7</field>-->
 <!--            <field name="margin_right">7</field>-->
-<!--            <field name="header_spacing">35</field>-->
+<!--            <field name="header_spacing">-100</field>-->
 <!--            <field name="dpi">90</field>-->
 <!--        </record>-->
+
 
         <report
                 id="report_custom_proforma1_pdf"
@@ -35,6 +36,16 @@
                 file="de_custom_proforma_invoice.cycle_gear_commercial"
                 name="de_custom_proforma_invoice.cycle_gear_commercial"
                 menu = "False"
+        />
+
+        <report
+                id="cycle_gear_proforma_invoice_action"
+                string="Cycle Gear Proforma"
+                model="sale.order"
+                report_type="qweb-pdf"
+                file="de_custom_proforma_invoice.cycle_gear_proforma"
+                name="de_custom_proforma_invoice.cycle_gear_proforma"
+                menu="False"
         />
     </data>
 </odoo>

@@ -76,7 +76,7 @@ class CycleCommercialInvoice(models.Model):
 
     invoice_id = fields.Char(string='Invoice')
     date = fields.Date(string='Date')
-    sale_order_id = fields.Many2one(comodel_name='sale.order', string='Sale Order')
+    sale_order_id = fields.Many2one(comodel_name='sale.order', string='Sale Order', required=True)
     purchase_order_id = fields.Char(string='PO No')
     fca_price_total = fields.Float(string='Total FCA Sialkot Price')
     flight_no = fields.Char(string='Flight No')
@@ -95,7 +95,7 @@ class CycleCommercialInvoice(models.Model):
     proforma_invoice = fields.Char(string='Under Pro Forma invoice no')
     ctn_no = fields.Char(string='Total no. of CTNS')
     advance_payment = fields.Float(string='Advance Payment')
-    bank_id = fields.Many2one(comodel_name='account.journal', string='Bank', domain="[('type','=','bank')]")
+    bank_id = fields.Many2one(comodel_name='account.journal', string='Bank', domain="[('type','=','bank')]", required=True)
     product_tmpl_ids = fields.Many2many(comodel_name='product.template', string='Product')
     get_product = fields.Boolean(string='All Products')
     commercial_ids = fields.One2many(comodel_name='cycle.commercial.line', inverse_name='commercial_id')
@@ -106,7 +106,7 @@ class CycleCommercialInvoiceLine(models.Model):
 
     commercial_id = fields.Many2one(comodel_name='cycle.commercial.wizard')
     product_id = fields.Many2one(comodel_name='product.template', string='Product', required=True)
-    qtn_ctn = fields.Float(string='Qtn/Ctn')
-    ctn_no = fields.Float(string='Ctn No')
+    qtn_ctn = fields.Char(string='Qtn/Ctn')
+    ctn_no = fields.Char(string='Ctn No')
     lot_no = fields.Char(string='Lot No')
 
