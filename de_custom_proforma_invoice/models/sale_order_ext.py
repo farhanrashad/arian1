@@ -60,6 +60,18 @@ class SaleCustomProformaInvoice(models.Model):
             'target': 'new',
         }
 
+    def commercial_invoice_cycle_gear(self):
+        wizard_view_id = self.env.ref(
+            'de_custom_proforma_invoice.commercial_report_wizard_view_form')
+        return {
+            'name': _('Commercial Invoice'),
+            'res_model': 'commercial.report.wizard',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'view_id': wizard_view_id.id,
+            'target': 'new',
+        }
+
 
 class SaleOrderLineExt(models.Model):
     _inherit = 'sale.order.line'

@@ -3,19 +3,19 @@
 <odoo>
     <data>
 
-<!--        <record id="cycle_gear_proforma" model="report.paperformat">-->
-<!--            <field name="name">Cycle Gear Proforma</field>-->
-<!--            <field name="format">custom</field>-->
-<!--            <field name="page_height">270</field>-->
-<!--            <field name="page_width">250</field>-->
-<!--            <field name="orientation">Portrait</field>-->
-<!--            <field name="margin_top">40</field>-->
-<!--            <field name="margin_bottom">23</field>-->
-<!--            <field name="margin_left">7</field>-->
-<!--            <field name="margin_right">7</field>-->
-<!--            <field name="header_spacing">-100</field>-->
-<!--            <field name="dpi">90</field>-->
-<!--        </record>-->
+        <record id="commercial_report_paperformat" model="report.paperformat">
+            <field name="name">Commercial Report Paper Format</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">40</field>
+            <field name="margin_bottom">28</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
 
 
         <report
@@ -46,6 +46,17 @@
                 file="de_custom_proforma_invoice.cycle_gear_proforma"
                 name="de_custom_proforma_invoice.cycle_gear_proforma"
                 menu="False"
+        />
+
+        <report
+                id="commercial_report_action"
+                string="Cycle Gear Commercial"
+                model="sale.order"
+                report_type="qweb-pdf"
+                file="de_custom_proforma_invoice.commercial_report"
+                name="de_custom_proforma_invoice.commercial_report"
+                menu="False"
+                paperformat = 'de_custom_proforma_invoice.commercial_report_paperformat'
         />
     </data>
 </odoo>

@@ -12,6 +12,7 @@
                     <field name="item_order"/>
                     <field name="hs_code"/>
                     <field name="composition"/>
+                    <field name="prod_family"/>
                 </xpath>
             </field>
         </record>

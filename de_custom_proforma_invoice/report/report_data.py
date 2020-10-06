@@ -119,3 +119,39 @@ class CycleGearProformaData(models.AbstractModel):
             'get_product_obj': self.get_product_obj,
             'list_sizes': list_sizes,
         }
+
+
+class CommercialReportData(models.AbstractModel):
+    _name = 'report.de_custom_proforma_invoice.commercial_report'
+
+    def get_product_obj(self, id):
+        obj = self.env['product.template'].search([('id','=',id)])
+        return obj
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        if not data.get('form'):
+            raise UserError(_("Form content is missing, this report cannot be printed."))
+        lines = []
+        active_ids = self.env.context.get('active_ids', [])
+        active_sale_order = self.env['sale.order'].browse(active_ids)
+        order = data['form'].get('order_id')
+        order_id = order[0]
+        order_lines = self.env['sale.order.line'].search([('order_id', '=', order_id)])
+        for line in order_lines:
+            lines.append(line.product_id.product_tmpl_id.id)
+            lines = list(dict.fromkeys(lines))
+        company_id = self.env.company.id
+        print('company', company_id)
+        company = self.env['res.company'].search([('id', '=', company_id)])
+        list_sizes = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL']
+        return {
+            'doc_ids': active_ids,
+            'doc_model': 'sale.order',
+            'docs': active_sale_order,
+            'data': data,
+            'company': company,
+            'values': lines,
+            'get_product_obj': self.get_product_obj,
+            'list_sizes': list_sizes,
+        }

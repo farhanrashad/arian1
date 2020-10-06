@@ -11,3 +11,4 @@ class ProductProductExt(models.Model):
     item_order = fields.Char(string='Order')
     hs_code = fields.Char(string='Hs Code')
     composition = fields.Char(string='Composition')
+    prod_family = fields.Char(string='Family')
