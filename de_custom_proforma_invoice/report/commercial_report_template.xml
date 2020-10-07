@@ -401,8 +401,8 @@
                                             <t t-esc="round(total_price,3)"/>
 <!--                                            <t t-esc="round(xs_qty * total_price, 3)"/>-->
                                         </center>
-<!--                                        <t t-set="custom" t-value="round(xs_qty * total_price, 3)"/>-->
-<!--                                        <t t-set="report_total" t-value="report_total + custom"/>-->
+                                        <t t-set="custom" t-value="round(total_price,3)"/>
+                                        <t t-set="report_total" t-value="report_total + custom"/>
                                     </td>
                                 </tr>
                             </t>
