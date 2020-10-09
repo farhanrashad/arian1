@@ -10,6 +10,7 @@
                 <field name="arch" type="xml">
                     <xpath expr="//header" position="inside">
                         <button name="custom_proforma_invoice1_button" type="object" string="Custom Proforma Invoice"
+<<<<<<< HEAD
                                 class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 43)]}"/>
                         <button name="cycle_gear_commercial_invoice" type="object" string="Commercial Invoice"
                                 class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 43)]}"/>
@@ -17,6 +18,15 @@
                                 class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 44)]}"/>
                         <button name="commercial_invoice_cycle_gear" type="object" string="Commercial Invoice"
                                 class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 44)]}"/>
+=======
+                                class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 1212)]}"/>
+                        <button name="cycle_gear_commercial_invoice" type="object" string="Commercial Invoice"
+                                class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 1212)]}"/>
+                        <button name="custom_proforma_cycle_gear" type="object" string="Custom Proforma Invoice"
+                                class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 1210)]}"/>
+                        <button name="commercial_invoice_cycle_gear" type="object" string="Commercial Invoice"
+                                class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 1210)]}"/>
+>>>>>>> origin/uat-1100
                     </xpath>
                 </field>
         </record>
