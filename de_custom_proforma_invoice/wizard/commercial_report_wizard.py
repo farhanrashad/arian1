@@ -33,7 +33,7 @@ class CycleGearCommercialReport(models.TransientModel):
     trade_term = fields.Char(string='Trade Terms')
     notify = fields.Char(string='Notify')
     notify_party = fields.Char(string='Notify Party')
-    order_id = fields.Many2one(comodel_name='sale.order', string='Customer Order')
+    order_id = fields.Many2one(comodel_name='sale.order', string='Customer Order', required=True)
     bill_to = fields.Char(string='Bill To')
     ship_to = fields.Char(string='Ship To')
     income_terms = fields.Char(string='Income Terms')

@@ -82,7 +82,7 @@ class CycleCommercialInvoice(models.Model):
     flight_no = fields.Char(string='Flight No')
     flight_date = fields.Date(string='Date')
     etd = fields.Char(string='ETD')
-    eta = fields.Char(string='On/About ETA')
+    eta = fields.Date(string='On/About ETA')
     issued_by = fields.Char(string='AWB Issued By')
     awb_no = fields.Char(string='AWB No')
     income_term = fields.Char(string='Income Term')

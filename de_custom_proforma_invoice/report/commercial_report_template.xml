@@ -167,6 +167,7 @@
                         </thead>
                         <tbody>
                             <t t-set="report_total" t-value="0.0"/>
+                            <t t-set="total_pairs_qty" t-value="0.0"/>
                             <t t-set="a" t-value="0.0"/>
                             <t t-set="b" t-value="0.0"/>
                             <t t-foreach="values" t-as="value">
@@ -379,6 +380,7 @@
                                         <center>
                                             <t t-esc="xs_qty"/>
                                             <t t-set="a" t-value="a + xs_qty"/>
+                                            <t t-set="total_pairs_qty" t-value="total_pairs_qty + xs_qty"/>
                                         </center>
                                     </td>
                                     <td style="border-left: 1px solid black; border-top: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;">
@@ -388,8 +390,6 @@
                                             </t>
                                         </t>
                                         <center>
-<!--                                            <t t-esc="round(line_price, 3)"/>-->
-<!--                                            <t t-esc="round(total_price,3)"/><br/>-->
                                             <t t-set="b" t-value="b + round(total_price,3)"/>
                                             <t t-if="b != 0.0">
                                                 <t t-esc="round(b/a, 3)"/>
@@ -401,68 +401,66 @@
                                             <t t-esc="round(total_price,3)"/>
 <!--                                            <t t-esc="round(xs_qty * total_price, 3)"/>-->
                                         </center>
-<!--                                        <t t-set="custom" t-value="round(xs_qty * total_price, 3)"/>-->
-<!--                                        <t t-set="report_total" t-value="report_total + custom"/>-->
+                                        <t t-set="custom" t-value="round(total_price,3)"/>
+                                        <t t-set="report_total" t-value="report_total + custom"/>
                                     </td>
                                 </tr>
                             </t>
                             <tr>
-                                <td>
+                                <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
                                     <strong>TOTAL QTY</strong>
                                 </td>
-                                <td>
+                                <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
                                     <hr style="width:100%; border-top: 1px solid black;"> </hr>
                                 </td>
-                                <td>
+                                <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                    <strong>Total:</strong>
+                                    <t t-esc="round(total_pairs_qty,3)"/>
+                                </td>
+                                <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
 
                                 </td>
-                                <td>
-
-                                </td>
-                                <td>
+                                <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
                                     <strong>Total:</strong>
                                     <t t-esc="round(report_total,3)"/>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div style="width: 100%; float:left; margin: 9px;">
+                    <div style="width: 100%; height: 50px; float:left; border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
                         <strong>TOTAL AMOUNT:</strong>
                         <span t-if="o.currency_id" t-esc="o.currency_id.amount_to_text(round(report_total,3))"/>
                     </div>
-                    <div style="width: 100%; float:left; margin: 9px;">
-                        <strong>MARKS and NO.</strong>
-                        <strong>1UNDER CLAIM FOR REBATE</strong>
+                    <div>
+                        <div style="width: 20%; float:left; margin: 9px;">
+                            <strong>MARKS and NO.</strong>
+                        </div>
+                        <div style="text-decoration:underline; width: 75%; float:right; margin: 9px;">
+                            <strong>1UNDER CLAIM FOR REBATE</strong>
+                        </div>
                     </div>
                     <br/>
-                    <div style="width: 100%; float:left; margin: 9px;">
-                        <strong>CYCLE GEAR_____ TO:</strong>
-                        <t t-esc="data['form']['cycle_gear_to']"/>
-                    </div>
                     <br/>
-                    <div style="width: 100%; float:left; margin: 9px;">
-                        <strong>Dated:</strong>
-                        SRO #<t t-esc="data['form']['sro_no']"/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <div>
+                        <div style="width: 80%; float:right;">
+                            CYCLE GEAR   <t t-esc="data['form']['cycle_gear_to']"/>      To
+                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <div style="width: 70%; float:right;">
+                            SRO #<t t-esc="data['form']['sro_no']"/>
+                        </div>
+                        <div style="width: 70%; float:right;">
+                            Dated:<t t-esc="data['form']['date']"/>
+                        </div>
+                        <div style="float:left; margin: 9px; -webkit-text-stroke: 3px black; color: transparent; font-size: 200px;">&#9650;</div>
                     </div>
-<!--                    <div style="float:left; margin: 9px; width: 0; height: 0; border-left: 45px solid transparent; border-right: 45px solid transparent; border-bottom: 60px solid #555; border-bottom: 100px solid red;">-->
-
-<!--                    </div>-->
-                    <div style="float:left; margin: 9px; -webkit-text-stroke: 3px black; color: transparent; font-size: 200px;">&#9650;</div>
-<!--                    <div style="left:10px; width: 0; height: 0; border-left: 50px solid transparent; border-right: 50px solid transparent; border-bottom: 50px solid #FFF; left: 57px; position: absolute; top: 38px;">-->
-
-<!--                    </div>-->
-<!--                    <br/>-->
-<!--                    <br/>-->
-<!--                    <div style="width: 100%; float:left; margin: 50px;">-->
-<!--                        <strong>Cycle Gear To:</strong>-->
-<!--                        <t t-esc="data['form']['cycle_gear_to']"/>-->
-<!--                        <br/>-->
-<!--                        <strong>Date:</strong>-->
-<!--                    </div>-->
-<!--                    <div style="width: 100%; float:left; margin: 20px;">-->
-<!--                        <strong>Date:</strong>-->
-<!--                        <t t-esc="data['form']['cycle_gear_to']"/>-->
-<!--                    </div>-->
                 </t>
             </div>
         </t>

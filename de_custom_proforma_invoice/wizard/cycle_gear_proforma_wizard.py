@@ -17,9 +17,9 @@ class CycleGearProformaWizard(models.TransientModel):
         return self.env.ref('de_custom_proforma_invoice.cycle_gear_proforma_invoice_action').report_action([], data=datas)
 
     proforma_invoice_no = fields.Char(string='P.Invoice NO')
-    date = fields.Date(string='Date')
+    date = fields.Date(string='Date', required=True)
     invoice_date = fields.Date(string='Invoice Date')
-    order_id = fields.Many2one(comodel_name='sale.order', string='Customer Order')
+    order_id = fields.Many2one(comodel_name='sale.order', string='Customer Order', required=True)
     bill_to = fields.Char(string='Bill To')
     ship_to = fields.Char(string='Ship To')
     income_terms = fields.Char(string='Income Terms')
