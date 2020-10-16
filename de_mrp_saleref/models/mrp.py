@@ -56,17 +56,34 @@ class PurchaseOrder(models.Model):
 
     sale_ref_id = fields.Char(string='Ref Sale')
 
+    #@api.model
+    #def create(self, vals):
+    #    mo_sale_ref = self.env['mrp.production'].search([('name', '=', self.origin)])
+    #    for ref in mo_sale_ref:
+    #        saleref = ref.sale_id
+    #        self.update({
+    #            'sale_ref_id': saleref,
+    #        })
+    #    res = super(PurchaseOrder, self).create(vals)
+    #    return res
+
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     sale_ref = fields.Char(string='Ref Sale')
+    mo_product_id = fields.Many2one('product.product', string="Product")
 
-    # @api.depends('origin')
-    # def _compute_sale_ref(self):
-    #     for list in self:
-    #         test = self.env['sale.order'].search([('name','=', list.origin)], limit=1)
-    #         list.sale_id = test.name
+  #  @api.model
+  #  def create(self, vals):
+   #     mo_sale_ref = self.env['mrp.production'].search([('name', '=', self.origin)])
+   #     for ref in mo_sale_ref:
+    #        saleref = ref.sale_id
+     #       self.update({
+      #       'sale_ref': saleref,
+       #         })
+        #res = super(StockPicking, self).create(vals)
+        #return res
 
 
 class SaleOrder(models.Model):
@@ -77,6 +94,7 @@ class SaleOrder(models.Model):
         #             'sale_id': self.name,
         #         }
         #         test = self.env['mrp.production'].write(vals)
-        res = super(SaleOrder, self).action_confirm()
         config.list12 = []
+        res = super(SaleOrder, self).action_confirm()
+      
         return res
