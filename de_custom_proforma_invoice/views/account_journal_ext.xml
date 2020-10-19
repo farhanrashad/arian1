@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="de_custom_proforma_invoice.account_journal_ext_view_form" model="ir.ui.view">
+            <field name="name">account journal view form</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='bank_account_id']" position="after">
+                    <field name="account_title"/>
+                    <field name="swift_code"/>
+                </xpath>
+            </field>
+        </record>
+
+</odoo>

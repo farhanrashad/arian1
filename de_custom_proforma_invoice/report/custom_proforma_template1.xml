@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="my_own_layout_header">
+        <div class="header">
+            <div class="row">
+               <h1>MY HEADER</h1>
+            </div>
+        </div>
+    </template>
+
+    <template id="custom_proforma_invoice1">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page" style="border: 2px solid black;">
+                        <div class="oe_structure"/>
+                        <h2 class="invoice_address" style="text-decoration:underline;" align="center">Proforma Invoice</h2>
+                        <t t-foreach="docs" t-as='o'>
+                            <t t-set="grand_total" t-value="0.0"/>
+                            <t t-set="total" t-value="0.0"/>
+                            <t t-set="prod_qty" t-value="0.0"/>
+                            <t t-set="prod_price" t-value="0.0"/>
+                            <div style="width: 15%; float:left; margin: 9px;">
+                                <strong>P/N:</strong>
+                                <u>
+                                    <t t-esc="o.name"/>
+                                </u>
+                            </div>
+                            <div style="width: 20%; float:left; margin: 9px;">
+                                <strong>Date:</strong>
+                                <u>
+                                    <t t-esc="data['form']['date']"/>
+                                </u>
+                            </div>
+                            <div style="width: 20%; float:left; margin: 9px;">
+                                <strong>Order No:</strong>
+                                <u>
+                                    <t t-esc="data['form']['order_id']"/>
+                                </u>
+                            </div>
+                            <div style="width: 30%; float:left; margin: 9px;">
+                                <strong>Total FCA Sialkot Price:</strong>
+                                <u>
+                                    <t t-esc="data['form']['fca_price_total']"/>
+                                </u>
+                            </div>
+                            <br/>
+                            <div style="width: 50%; float:left; margin: 9px;">
+                                <strong>Customer/Applicant:</strong>
+                                <u>
+                                    <t t-esc="o.partner_id.name"/>
+                                </u>
+                            </div>
+                            <br/>
+                            <br/>
+                            <div>
+                                <div style="width: 50%; float:left; margin: 9px;">
+                                    <strong>Income Term:</strong>
+                                    <u>
+                                        <t t-esc="data['form']['income_term']"/>
+                                    </u>
+                                </div>
+                                <div style="width: 30%; float:left; margin: 9px;">
+                                    <strong>Latest Shipment Date:</strong>
+                                    <u>
+                                        <t t-esc="data['form']['latest_shipment_date']"/>
+                                    </u>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="width: 50%; float:left; margin: 9px;">
+                                    <strong>Payment Term:</strong>
+                                    <u>
+                                        <t t-esc="data['form']['payment_term']"/>
+                                    </u>
+                                </div>
+                                <br/>
+                                <div style="width: 35%; float:left; margin: 9px;">
+                                    <strong>Shipment By:</strong>
+                                    <u>
+                                        <t t-esc="data['form']['shipment_by']"/>
+                                    </u>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="width: 50%; float:left; margin: 9px;">
+                                    <strong>Partial Shipment:</strong>
+                                    <u>
+                                        <t t-esc="data['form']['partial_shipment']"/>
+                                    </u>
+                                </div>
+                                <br/>
+                                <div style="width: 35%; float:left; margin: 9px;">
+                                    <strong>TransShipment:</strong>
+                                    <u>
+                                        <t t-esc="data['form']['shipment']"/>
+                                    </u>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="width: 50%; float:left; margin: 9px;">
+                                    <h5>Description Of Goods:</h5>
+                                </div>
+                                <div style="width: 50%; float:left; margin: 12px;">
+                                    <strong>LOT No :</strong>
+                                    <u>
+                                        <t t-esc="data['form']['lot_no']"/>
+                                    </u>
+                                </div>
+                                <div style="width: 20%; float:left; margin: 9px;">
+                                    <strong>PRS :</strong>
+                                    <u>
+                                        <t t-esc="data['form']['prs_no']"/>
+                                    </u>
+                                </div>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <table class="table table-sm o_main_table">
+                                <thead>
+                                    <tr class="border-black" style="border-bottom: 2px solid black; border-top: 2px solid black;">
+                                        <th style="border-right: 2px solid black;" width="25%">Items</th>
+                                        <th style="border-right: 2px solid black;">Description Goods</th>
+                                        <th style="border-right: 2px solid black;" width="20%">Size</th>
+                                        <th style="border-right: 2px solid black;">Quantity</th>
+                                        <th style="border-right: 2px solid black;">Unit Price</th>
+                                        <th style="border-right: 2px solid black;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="current_subtotal" t-value="0"/>
+                                    <t t-set="total_unit_qty" t-value="0.0"/>
+                                    <t t-set="total_unit_price" t-value="0.0"/>
+                                    <t t-set="net_total" t-value="0.0"/>
+                                    <t t-set="i" t-value="0"/>
+                                    <t t-foreach="values" t-as="value">
+                                        <t t-set="qty_total" t-value="0.0"/>
+                                        <t t-set="line_qty" t-value="0.0"/>
+                                        <t t-set="custom_total" t-value="0.0"/>
+                                        <t t-set="line_price" t-value="0.0"/>
+                                        <t t-set="total_pair" t-value="0.0"/>
+                                        <t t-set="price_total" t-value="0.0"/>
+                                        <t t-set="tmpl_obj" t-value="get_product_obj(value)"/>
+                                        <tr>
+                                            <td style="border-right: 2px solid black; border-bottom: 2px solid black;">
+                                                <strong>Style:</strong>  <t t-esc="tmpl_obj.item_color"/><br/>
+                                                <strong>Color:</strong>  <t t-esc="tmpl_obj.item_color"/><br/>
+                                                <strong>Order:</strong>  <t t-esc="data['form']['proforma_invoice_no'][1]"/><br/>
+                                                <strong>H.S Code:</strong>  <t t-esc="tmpl_obj.hs_code"/><br/>
+                                                <strong>Composition:</strong>  <t t-esc="tmpl_obj.composition"/><br/>
+                                            </td>
+                                            <td style="border-right: 2px solid black; border-bottom: 2px solid black;">
+                                                <t t-esc="tmpl_obj.name"/><br/>
+                                                <t t-foreach="o.order_line" t-as="line">
+                                                    <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                        <t t-set="total_pair" t-value="total_pair + line.product_uom_qty"/>
+                                                    </t>
+                                                </t><br/><br/>
+                                                <strong>Total:</strong>
+    <!--                                            <t t-esc="round(prod_qty, 3)"/>-->
+                                                <t t-esc="round(total_pair, 3)"/>
+                                            </td>
+                                            <td style="border-right: 2px solid black; border-bottom: 2px solid black;">
+                                                <t t-foreach="o.order_line" t-as="line">
+                                                    <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                        <t t-foreach="line.product_id.product_template_attribute_value_ids" t-as="attrib_value">
+                                                            <t t-esc=" '%s: %s' % (attrib_value.attribute_id.name, attrib_value.name)"/><br/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                            <td style="border-right: 2px solid black; border-bottom: 2px solid black;">
+                                                <t t-foreach="o.order_line" t-as="line">
+                                                    <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                        <t t-esc="line.product_uom_qty"/>
+                                                        <t t-set="qty_total" t-value="qty_total + line.product_uom_qty"/>
+                                                        <br/>
+                                                    </t>
+                                                </t>
+                                                <br/>
+    <!--                                            <strong>Total:</strong>-->
+    <!--                                            <t t-esc="round(qty_total,3)"/>-->
+    <!--                                            <t t-set="prod_qty" t-value="prod_qty + round(qty_total,3)"/>-->
+                                            </td>
+                                            <td style="border-right: 2px solid black; border-bottom: 2px solid black;">
+                                                <t t-foreach="o.order_line" t-as="line">
+                                                    <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                        <t t-esc="line.price_unit"/>
+                                                        <t t-set="price_total" t-value="price_total + line.price_unit"/>
+                                                        <t t-set="line_price" t-value="line_price + round(line.price_unit,3)"/>
+                                                        <br/>
+                                                    </t>
+                                                </t>
+                                                <br/>
+    <!--                                            <strong>Total:</strong>-->
+    <!--                                            <t t-esc="round(line_price,3)"/>-->
+    <!--                                            <t t-set="prod_price" t-value="prod_price + round(line_price,3)"/>-->
+                                            </td>
+                                            <td style="border-right: 2px solid black; border-bottom: 2px solid black;">
+                                                <t t-foreach="o.order_line" t-as="line">
+                                                    <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                        <t t-esc="line.product_uom_qty * line.price_unit"/><br/>
+                                                        <t t-set="line_qty" t-value="line_qty + (line.product_uom_qty * line.price_unit)"/>
+                                                    </t>
+                                                </t><br/>
+                                                <strong>Total:</strong>
+                                                <t t-esc="round(line_qty, 3)"/>
+                                                <t t-set="total" t-value="total + round(line_qty, 3)"/>
+                                            </td>
+                                        </tr>
+    <!--                            <tr>-->
+    <!--                                <td>-->
+    <!--                                    <strong>Total:</strong>-->
+    <!--                                    <t t-esc="round(prod_qty, 3)"/>-->
+    <!--                                </td>-->
+    <!--                            </tr>-->
+    <!--                                    <tr>-->
+    <!--                                        <td>-->
+
+    <!--                                        </td>-->
+    <!--                                        <td>-->
+
+    <!--                                        </td>-->
+    <!--                                        <td>-->
+
+    <!--                                        </td>-->
+    <!--                                        <td>-->
+    <!--                                            <strong>Total:</strong>-->
+    <!--                                            <t t-esc="round(prod_qty, 3)"/>-->
+    <!--                                        </td>-->
+    <!--                                        <td>-->
+    <!--                                            <strong>Total:</strong>-->
+    <!--                                            <t t-esc="round(prod_price, 3)"/>-->
+    <!--                                        </td>-->
+    <!--                                        <td>-->
+    <!--                                            <strong>Total:</strong>-->
+    <!--                                            <t t-esc="round(total, 3)"/>-->
+    <!--                                        </td>-->
+    <!--                                    </tr>-->
+                                        <t t-set="i" t-value="i+1"/>
+                                    </t>
+                                </tbody>
+                            </table>
+    <!--                        <tr>-->
+    <!--                            <td>-->
+
+    <!--                            </td>-->
+    <!--                            <td class="text-right">-->
+    <!--                                <strong>Total:</strong>-->
+    <!--                                <t t-esc="round(prod_qty, 3)"/>-->
+    <!--                            </td>-->
+    <!--                        </tr>-->
+    <!--                        <table>-->
+    <!--                            <tr>-->
+    <!--                                <th>-->
+    <!--                                    <td style="margin-right: 300px;">-->
+    <!--                                        <strong>Total:</strong>-->
+    <!--                                        <t t-esc="round(prod_qty, 3)"/>-->
+    <!--                                    </td>-->
+    <!--                                    <td>-->
+
+    <!--                                    </td>-->
+    <!--                                    <td>-->
+
+    <!--                                    </td>-->
+    <!--                                    <td>-->
+    <!--                                        <strong>Total:</strong>-->
+    <!--                                        <t t-esc="round(prod_qty, 3)"/>-->
+    <!--                                    </td>-->
+    <!--                                </th>-->
+    <!--                            </tr>-->
+    <!--                        </table>-->
+                            <div style="float:right; margin-right: 10px;">
+                                <strong>Total:</strong>
+                                <t t-esc="round(total, 3)"/>
+                            </div>
+                            <hr/>
+                            <div style="width: 50%; float:left; margin: 9px;">
+                                <strong>TOTAL AMOUNT:</strong>
+                                <span t-if="o.currency_id" t-esc="o.currency_id.amount_to_text(round(total,3))"/>
+                            </div>
+                            <div class="clearfix">
+                                <div id="total" class="row" name="total">
+                                    <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                                        <table class="table table-sm">
+                                            <tr class="border-black o_subtotal" style="">
+                                                <td><strong>Total :</strong></td>
+                                                <td class="text-right">
+                                                    <t t-esc="round(total,3)"/>
+                                                </td>
+                                            </tr>
+    <!--                                        <tr>-->
+    <!--                                            <td><strong>TOTAL AMOUNT US $:</strong></td>-->
+    <!--                                            <td class="text-left">-->
+    <!--                                                <span t-if="o.currency_id" t-esc="o.currency_id.amount_to_text(round(total,3))"/>-->
+    <!--                                            </td>-->
+    <!--                                        </tr>-->
+                                            <tr class="border-black o_subtotal" style="">
+                                                <td><strong>30% Advance Payment :</strong></td>
+                                                <td class="text-right">
+                                                    <span t-esc="round(total * 0.3, 3)"/>
+                                                </td>
+                                            </tr>
+                                            <tr class="border-black o_total">
+                                                <td><strong>70% L/C 60 Days After Shipment "</strong></td>
+                                                <td class="text-right">
+                                                    <span t-esc="round(total * 0.7, 3)"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="page-break-inside: avoid;">
+                                <strong>Bank Details :</strong><br/>
+                                <strong>Account Title :</strong>
+                                <t t-set="bank_obj_id" t-value="data['form']['bank_id'][0]"/>
+                                <t t-set="bank_obj"
+                                   t-value="request.env['account.journal'].search([('id', '=', data['form']['bank_id'][0])])"/>
+                                <t t-esc="bank_obj.account_title"/><br/>
+                                <strong>Bank Name :</strong>
+                                <t t-esc="bank_obj.bank_id.name"/><br/>
+                                <strong>Bank Address :</strong>
+                                <t t-esc="bank_obj.bank_id.street"/><br/>
+                                <t t-esc="bank_obj.bank_id.street2"/><br/>
+                                <t t-esc="bank_obj.bank_id.city"/><br/>
+                                <t t-esc="bank_obj.bank_id.country.name"/><br/>
+                                <strong>Swift Code :</strong>
+                                <t t-esc="bank_obj.swift_code"/><br/>
+                            </div>
+                            <div class="split left" style="width:400px;height:200px;border:2px solid #000; margin-left: 20px; padding-top: 20px; page-break-inside: avoid;">
+                                <center>
+                                    <div class="centered" style="width:300px;height:50px;border:2px solid #000; margin-top: 70px;">
+                                        <p>Sign and Stamp</p>
+                                    </div>
+                                </center>
+                            </div>
+                        </t>
+<!--                    </div>-->
+                </div>
+            </t>
+        </t>
+    </template>
+<!--    <report-->
+<!--        id="action_report_fixed_asset_register"-->
+<!--        model="custom.proforma.invoice"-->
+<!--        string="Fixes Assets Register"-->
+<!--        report_type="qweb-pdf"-->
+<!--        name="de_custom_proforma_invoice.custom_proforma_invoice1"-->
+<!--        paperformat="de_custom_proforma_invoice.my_new_paper_format"-->
+<!--        file="de_custom_proforma_invoice.custom_proforma_invoice1"-->
+<!--        menu="False"-->
+<!--    />-->
+<!--    <report-->
+<!--            id="action_report_fixed_asset_register"-->
+<!--            model="fixed.asset.wizard"-->
+<!--            string="Fixes Assets Register"-->
+<!--            report_type="qweb-pdf"-->
+<!--            name="meaksons_fixed_assets_register.report_fixed_asset"-->
+<!--            paperformat="meaksons_fixed_assets_register.paperformat_cny_LS"-->
+<!--            file="meaksons_fixed_assets_register.report_fixed_asset"-->
+<!--            menu="False"-->
+<!--    />-->
+
+<!--    <record id="my_new_paper_format" model="report.paperformat">-->
+<!--            <field name="name">European A4</field>-->
+<!--            <field name="default" eval="True" />-->
+<!--            <field name="format">A4</field>-->
+<!--            <field name="page_height">0</field>-->
+<!--            <field name="page_width">0</field>-->
+<!--            <field name="orientation">Landscape</field>-->
+<!--            <field name="margin_top">40</field>-->
+<!--            <field name="margin_bottom">23</field>-->
+<!--            <field name="margin_left">7</field>-->
+<!--            <field name="margin_right">7</field>-->
+<!--            <field name="header_line" eval="False" />-->
+<!--            <field name="header_spacing">35</field>-->
+<!--            <field name="dpi">90</field>-->
+<!--        </record>-->
+
+
+</odoo>
