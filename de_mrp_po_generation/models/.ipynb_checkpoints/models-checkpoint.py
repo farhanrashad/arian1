@@ -157,6 +157,21 @@ class MoBeforhandWizardLine(models.Model):
             if qty.product_uom_qty_order > qty.product_uom_qty_so:
                 raise Warning("You can't add Quantity to Order Greater than:" + str(qty.product_uom_qty_so) + " "+"For Product"+ " "+ str(qty.product_id.name)) 
     
+    def action_update_vendor(self):
+        for line in self:
+#         order_data = self.env['mrp.production'].search([('sale_id', '=', self.mo_id.sale_id.name),('product_id.name', '=ilike', '[Un-Finished]%')])
+#         for order in order_data:
+#             for line in order.move_raw_ids:
+            line_data = [] 
+    #         if not '[Cut Material]' in line.product_id.name:
+            bom_produt = self.env['mrp.bom'].search([('product_id','=',line.product_id.id)])
+            for product in bom_produt:
+                for subcontractor in product.subcontractor_ids:
+                    line_data.append(subcontractor.id)
+            line.update ({
+                'seller_ids': line_data,
+                })
+    
     
     def action_generate_po(self):
         for line in self:
@@ -209,6 +224,9 @@ class MoBeforhandWizardLine(models.Model):
                    'po_process': False,
                     'po_created': True,
                   	})
+                
+                
+                
                 
 
 
