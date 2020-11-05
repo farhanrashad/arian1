@@ -30,7 +30,8 @@ class account_payment(models.Model):
     state = fields.Selection([('draft', 'Draft'),
                               ('waiting', 'Waiting For Approval'),
                               ('approved', 'Approved'),
-                              ('posted', 'Posted')],
+                              ('posted', 'Posted'),
+                              ('cancel','Cancelled') ],
                              readonly=True, default='draft', copy=False, string="Status", track_visibility='onchange')
 
     def send_approval(self):

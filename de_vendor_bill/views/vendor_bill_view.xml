@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        
 
         <record id="inherit_vendor_bill_form_view" model="ir.ui.view">
             <field name="name">inherit.vendor.bill.form.view</field>
@@ -27,6 +28,11 @@
                     <button name="action_post" class="oe_highlight" states="approved" string="Post" type="object"
                      />
                 </xpath>
+                
+                 <xpath expr="//header/button[@name='button_draft']" position="attributes">
+                     <attribute name="groups">de_vendor_bill.group_show_reset_to_draft_button</attribute>
+                </xpath>
+                
             </field>
         </record>
 
