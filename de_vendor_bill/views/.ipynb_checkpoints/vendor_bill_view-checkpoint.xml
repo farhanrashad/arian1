@@ -10,13 +10,13 @@
             <field name="arch" type="xml">
 
                 <xpath expr="//header" position="inside">
-                    <button name="send_approval" class="oe_highlight"  string="Send For Approval" type="object" attrs="{'invisible': ['|','|',('state', '!=', 'draft'), ('type', '!=', 'in_invoice'),('purchase_id','!=', False)]}"/>
+                    <button name="send_approval" class="oe_highlight"  string="Send For Approval" type="object" attrs="{'invisible': ['|','|',('state', '!=', 'draft'), ('type', '!=', 'in_invoice'),('invoice_origin','!=', False)]}"/>
                     <button name="approve_bill" class="oe_highlight" states="waiting" groups="de_vendor_bill.group_waiting_for_approval" string="Approve" type="object"
                     />
                 </xpath>
                 <xpath expr="//header/button[@name='action_post']" position="replace">
                            
-                                                <button name="action_post" string="Post" class="oe_highlight" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|','|',('state', '!=', 'draft'),('type', 'not in', ['in_invoice','out_invoice']),('purchase_id','=', False)]}"/>
+                                                <button name="action_post" string="Post" class="oe_highlight" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|','|',('state', '!=', 'draft'),('type', 'not in', ['in_invoice','out_invoice']),('invoice_origin','=', False)]}"/>
                      
 
                 </xpath>   
