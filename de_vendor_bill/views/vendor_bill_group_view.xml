@@ -21,6 +21,8 @@
              <field name="name">Allow Approve On Purchase Order</field> 
              <field name="category_id" ref="module_de_vendor_bill"/>
            </record>
+        
+          
 
     </data>
 </odoo>
