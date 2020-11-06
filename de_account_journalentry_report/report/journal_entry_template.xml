@@ -33,15 +33,16 @@
                             <p class="m-0" t-field="o.ref"/>
                         </div>
                     </div>
+<!--                         style="table-layout: fixed" -->
                         <div class="row justify-content-end">
                             <div class="col-12">
-                                <table class="table table-bordered" style="table-layout: fixed">
+                                <table class="table table-bordered" >
                                     <thead>
                                         <tr>
                                             <th>Account</th>
                                             <th>Partner</th>
-                                            <th>Label</th>
-                                            <th>Taxes</th>
+                                            <th style="max-width:400px; word-wrap:break-word;">Label</th>
+<!--                                             <th>Taxes</th> -->
                                             <th>Debit</th>
                                             <th>Credit</th>
                                         </tr>
@@ -58,12 +59,12 @@
                                             <td>
                                                 <span t-field="line.partner_id"/>
                                             </td>
-                                            <td>
-                                                <span t-field="line.name"/>
+                                            <td >
+                                                <span t-field="line.name" style="max-width:400px; word-wrap:break-word;"/>
                                             </td>
-                                            <td>
+<!--                                             <td>
                                                 <span t-field="line.tax_ids.name"/>
-                                            </td>
+                                            </td> -->
                                             <td>
                                                 <span t-field="line.debit"/>
                                             </td>
@@ -78,9 +79,7 @@
                                             <td>
 <!--                                                <span t-field="line.product_id"/>-->
                                             </td>
-                                            <td>
-<!--                                                <span t-field="line.lot_id"/>-->
-                                            </td>
+                                           
                                             <td>
 <!--                                                <span t-field="line.lot_id"/>-->
                                             </td>
