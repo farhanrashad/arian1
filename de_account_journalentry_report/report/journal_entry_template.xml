@@ -60,7 +60,7 @@
                                                 <span t-field="line.partner_id"/>
                                             </td>
                                             <td >
-                                                <span t-field="line.name" style="max-width:400px; word-wrap:break-word;"/>
+                                                <span t-field="line.name" style="max-width:300px; word-wrap:break-word;"/>
                                             </td>
 <!--                                             <td>
                                                 <span t-field="line.tax_ids.name"/>
@@ -95,9 +95,45 @@
                                         </tr>
                                     </tbody>
                                 </table>
-<!--                                <p style="margin: 0px; padding: 0px; font-weight: bold;">-->
-<!--&lt;!&ndash;                                    <span t-field="o.note"/>&ndash;&gt;-->
-<!--                                </p>-->
+                                
+                            
+                                <br/>
+                                <br/>   
+                               <p style="margin: 0px; padding: 0px; font-weight: bold;">
+                                   Remarks <span t-field="o.narration"/>
+                               </p>
+                                <br/>
+                                <br/>   
+                                <br/>   
+                                <br/>   
+                                <br/>  
+                                <br/>   
+                                <br/>   
+                                
+                                
+                                
+                                
+                               <table class="table" style="table-layout: fixed">
+                                    <thead>
+                                        <tr>
+                                            <th style="border-top: 1px solid black;"> Prepared By</th>
+                                            
+                                            <th style="max-width:100px; word-wrap:break-word;"> </th>
+                                            <th style="border-top: 1px solid black;">Checked By</th>
+                                            
+                                            <th style="max-width:100px; word-wrap:break-word;"> </th>
+                                            <th style="border-top: 1px solid black;">Finance Manager</th>
+                                            <th style="max-width:70px; word-wrap:break-word;"> </th>
+                                            <th style="border-top: 1px solid black;">Managing Director</th>
+                                            <th style="max-width:100px; word-wrap:break-word;"> </th>
+                                            <th style="border-top: 1px solid black;">Received By</th>
+                                        </tr>
+                                    </thead>
+                                </table>    
+                                
+                               
+                                
+                                
                             </div>
                         </div>
                     </div>
