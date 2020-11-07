@@ -116,6 +116,19 @@
                                <table class="table" style="table-layout: fixed">
                                     <thead>
                                         <tr>
+                                            <th style="border: 1px solid black; height: 60px">  </th>
+                                            
+                                            <th style="max-width:100px; word-wrap:break-word;"> </th>
+                                            <th style="border: 1px solid black;  height: 60px"> </th>
+                                            
+                                            <th style="max-width:100px; word-wrap:break-word;"> </th>
+                                            <th style="border: 1px solid black;  height: 60px"> </th>
+                                            <th style="max-width:70px; word-wrap:break-word;"> </th>
+                                            <th style="border: 1px solid black;  height: 60px"> </th>
+                                            <th style="max-width:100px; word-wrap:break-word;"> </th>
+                                            <th style="border: 1px solid black;  height: 60px"> </th>
+                                        </tr>
+                                        <tr>
                                             <th style="border-top: 1px solid black;"> Prepared By</th>
                                             
                                             <th style="max-width:100px; word-wrap:break-word;"> </th>
