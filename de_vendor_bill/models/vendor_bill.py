@@ -17,10 +17,10 @@ from datetime import datetime
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-class ResPartner(models.Model):
-    _inherit = 'res.partner'
+#class ResPartner(models.Model):
+ #   _inherit = 'res.partner'
     
-    contract = fields.Char(string="Contact Person")
+  #  contract = fields.Char(string="Contact Person")
 
 
 class PurchaseOrder(models.Model):
