@@ -9,6 +9,8 @@ from odoo.exceptions import Warning
 
 
 
+
+
 class MoBeforhand(models.Model):
     _name = 'mrp.mo.beforehand'
     _description = 'Create PO from MO'
