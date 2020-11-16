@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
-
+from datetime import date, timedelta
+from dateutil.relativedelta import relativedelta
+from datetime import datetime
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -21,6 +23,33 @@ class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
     
     receipt_date = fields.Date(string='Receipt Date')
+    payment_term_date =  fields.Date(string='Expected Payment Days')
+    
+    
+    @api.onchange('receipt_date')
+    def _check_change(self):
+        if self.receipt_date:
+            date_1= (datetime.strptime(str(self.receipt_date), '%Y-%m-%d')+relativedelta(days =+ self.payment_term_id.line_ids.days))
+            self.payment_term_date =date_1
+#             else:
+#                 self.pay_date =False
+#         current_date = datetime.today()
+#         receipts_date = self.receipt_date
+#         delta = current_date - receipts_date
+#         self.payment_term_date = delta.days
+        
+
+#         self.payment_term_date = self.receipt_date
+        
+#         if self.receipt_date:
+#             date_1= (datetime.strptime(self.receipt_date,'%Y-%m-%d')+relativedelta(self.payment_term_id))
+
+#             self.payment_term_date =date_1
+
+#         else:
+
+#             self.payment_term_date =False
+
     
     @api.onchange('receipt_date')
     def onchange_receipt_date(self):
