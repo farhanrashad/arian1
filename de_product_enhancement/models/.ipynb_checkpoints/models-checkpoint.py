@@ -2,6 +2,7 @@
 
 from odoo import models, fields, api, _
 from datetime import date, timedelta
+from odoo.exceptions import UserError
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 
@@ -51,4 +52,27 @@ class SaleOrder(models.Model):
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
     
-    allow_location = fields.Boolean(string="Change Location")    
+    @api.model
+    def create(self,vals):
+        vendor_num = 0
+        for vendor in vals['seller_ids']:
+            vendor_num = vendor_num + 1
+        if vendor_num == 0:
+            raise UserError(_('Please Define Vendor On Purchase Tab'))
+            
+#         if self.nbr_reordering_rules == 0:
+#             raise UserError(_('Please Define Reordring Rule'))
+#         else:
+#             pass
+            
+            
+        res = super(ProductTemplate,self).create(vals)
+        return res
+    
+    
+    allow_location = fields.Boolean(string="Change Location") 
+    
+    @api.onchange('allow_location')
+    def onchange_location(self):
+        if self.property_stock_production.id == 15:
+            self.property_stock_production = 22
