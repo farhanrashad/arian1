@@ -23,33 +23,18 @@ class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
     
     receipt_date = fields.Date(string='Receipt Date')
-    payment_term_date =  fields.Date(string='Expected Payment Days')
+    payment_term_date =  fields.Date(string='Expected Payment Date')
     
     
-    @api.onchange('receipt_date')
+    @api.onchange('receipt_date','payment_term_id')
     def _check_change(self):
+        current_date = date.today()
         if self.receipt_date:
             date_1= (datetime.strptime(str(self.receipt_date), '%Y-%m-%d')+relativedelta(days =+ self.payment_term_id.line_ids.days))
             self.payment_term_date =date_1
-#             else:
-#                 self.pay_date =False
-#         current_date = datetime.today()
-#         receipts_date = self.receipt_date
-#         delta = current_date - receipts_date
-#         self.payment_term_date = delta.days
-        
-
-#         self.payment_term_date = self.receipt_date
-        
-#         if self.receipt_date:
-#             date_1= (datetime.strptime(self.receipt_date,'%Y-%m-%d')+relativedelta(self.payment_term_id))
-
-#             self.payment_term_date =date_1
-
-#         else:
-
-#             self.payment_term_date =False
-
+        else:    
+            date_2= (datetime.strptime(str(current_date), '%Y-%m-%d')+relativedelta(days =+ self.payment_term_id.line_ids.days))
+            self.payment_term_date =date_2
     
     @api.onchange('receipt_date')
     def onchange_receipt_date(self):
