@@ -4,4 +4,4 @@
 from odoo import api, models, modules,fields, _
 
 class UsersExt(models.Model):
-    _inherit = 'stock.picking'
+    _inherit = 'mrp.production'
