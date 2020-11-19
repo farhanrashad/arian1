@@ -6,7 +6,11 @@ from odoo import api, models, modules,fields, _
 class UsersExt(models.Model):
     _inherit = 'res.partner'
 
-    region = fields.Char(string="Region",required=True)
+    # region = fields.Char(string="Region")
+    region = fields.Selection([
+        ('local' , 'Local'),
+        ('foriegn','Foriegn')
+    ], default='local', string="Region" ,required=True)
 
     mobile = fields.Char(required=True)
     category_id = fields.Many2many(required=True)
