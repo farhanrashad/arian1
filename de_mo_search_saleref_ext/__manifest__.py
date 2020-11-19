@@ -8,9 +8,10 @@
     'description': """
 This module is about extend your search.
 """,
-    'depends': ['purchase'],
+    'depends': ['purchase','de_mrp_saleref','stock','mrp'],
     'data': [
-        'views/search_saleref_view.xml',
+        'views/search_saleref.xml',
+        'views/search_saleid.xml',
     ],
 
     'installable': True,
