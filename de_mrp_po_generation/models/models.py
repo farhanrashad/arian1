@@ -55,6 +55,13 @@ class MoBeforhand(models.Model):
             data = []
             for order in order_data:
                 for line in order.move_raw_ids:
+                    vendor_data = [] 
+                    if not '[Cut Material]' in line.product_id.name:
+                        product_vendor = self.env['product.product'].search([('name','=',line.product_id.name)])
+                        for product in product_vendor:
+                            for vendor in product.seller_ids:
+                                vendor_data.append(vendor.name.id)
+
                     line_data = [] 
                     if not '[Cut Material]' in line.product_id.name:
                         bom_produt = self.env['mrp.bom'].search([('product_id','=',line.product_id.id)])
@@ -70,7 +77,7 @@ class MoBeforhand(models.Model):
                                     'product_uom_qty_order': line.product_uom_qty,
                                     'on_hand_qty':line.product_id.qty_available,
                                     'forcast_qty': line.product_id.virtual_available,
-                                    'partner_id': line_data[0],
+                                    'partner_id': vendor_data[0],
                              }))
                         bom_produt = self.env['mrp.bom'].search([('product_id','=',line.product_id.id)])
                         
