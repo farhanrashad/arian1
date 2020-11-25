@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Work order",
+    'name': "Stock Picking Accounting",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+        Stock Picking Accounting""",
 
     'description': """
-        Long description of module's purpose
-    """,
+             Stock Picking Accounting
+             """,
 
     'author': "Dynexcel",
     'website': "http://www.dynexcel.co",
@@ -16,16 +15,17 @@
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
-    'category': 'Manufacturing',
+    'category': 'Accounting',
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mrp','sale','product','purchase','stock','mrp_workorder'],
+    'depends': ['base','stock','account','product'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        'views/views.xml',
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'views/stock_picking_views.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode
