@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <template id="commercial_report">
+        <t t-call="web.html_container">
+<!--            <t t-call="web.external_layout">-->
+            <div class="page" style="page-break-inside: avoid;">
+                <t t-foreach="docs" t-as='o'>
+                    <div style="float:left; width:100;height:100px;border:1px solid #000;">
+                        <div style="width:100%;">
+                            <t t-if="company.logo">
+                                <img t-att-src="image_data_uri(company.logo)" style="max-height: 100px;"/>
+                            </t>
+                            <t t-else="">
+                                (Company Logo)
+                            </t>
+                        </div>
+                    </div>
+                    <div style="float:left; width:270;height:100px;border:1px solid #000;">
+                        <center>
+                            <t t-esc="company.name"/><br/>
+                            <t t-esc="company.street"/><br/>
+                            <t t-esc="company.city"/>, <t t-esc="company.country_id.name"/>
+                        </center>
+                    </div>
+                    <div style="float:left; width:475;height:100px;border:1px solid #000;">
+                        <div style="margin-left: 20px;">
+                            <strong>Notify:</strong>
+                            <t t-esc="data['form']['notify']"/>
+                        </div>
+                    </div>
+                    <br/>
+                    <br/><br/><br/><br/><br/>
+                    <div style="float:left; width:370;height:200px;border:1px solid #000;">
+                        <div style="margin-left: 20px;">
+                            <strong>Notify Party:</strong>
+                            <t t-esc="data['form']['notify_party']"/>
+                        </div>
+                    </div>
+                    <div style="float:left; width:475;height:200px;border:1px solid #000;">
+                        <div style="margin-left: 20px;">
+                            <strong>Ship to:</strong>
+                            <t t-esc="data['form']['ship_to']"/>
+                        </div>
+                    </div>
+                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                    <div class="text-left" style="flex: 0 0 65%; width: 265px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>Invoice NO:</strong>
+                            <t t-esc="data['form']['proforma_invoice_no']"/>
+                        </div>
+                    </div>
+                    <div class="text-left" style="flex: 0 0 65%; width: 250px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>Date:</strong>
+                            <t t-esc="data['form']['date']"/>
+                        </div>
+                    </div>
+                    <div class="text-left" style="flex: 0 0 65%; width: 327px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>P.O.No.:</strong>
+                            <t t-esc="data['form']['po_no']"/>
+                        </div>
+                    </div>
+                    <br/><br/><br/>
+                    <div class="text-left" style="flex: 0 0 65%; width: 265px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>Form-E Date:</strong>
+                            <t t-esc="data['form']['form_date']"/>
+                        </div>
+                    </div>
+                    <div class="text-left" style="flex: 0 0 65%; width: 250px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>Form-E:</strong>
+                            <t t-esc="data['form']['e_form']"/>
+                        </div>
+                    </div>
+                    <div class="text-left" style="flex: 0 0 65%; width: 327px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>Payment Terms:</strong>
+                            <t t-esc="data['form']['payment_terms']"/>
+                        </div>
+                    </div>
+                    <br/><br/><br/>
+                    <div class="text-left" style="flex: 0 0 65%; width: 205px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>Trade Term:</strong>
+                            <t t-esc="data['form']['trade_term']"/>
+                        </div>
+                    </div>
+                    <div class="text-left" style="flex: 0 0 65%; width: 205px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>Ship via:</strong>
+                            <t t-esc="data['form']['ship_via']"/>
+                        </div>
+                    </div>
+                    <div class="text-left" style="flex: 0 0 65%; width: 230px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>FCR NO:</strong>
+                            <t t-esc="data['form']['fcr_no']"/>
+                        </div>
+                    </div>
+                    <div class="text-left" style="flex: 0 0 65%; width: 202px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>Date:</strong>
+                            <t t-esc="data['form']['invoice_date']"/>
+                        </div>
+                    </div>
+                    <br/><br/><br/>
+                    <div class="text-left" style="flex: 0 0 65%; width: 205px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>Port of Loading:</strong>
+                            <t t-esc="data['form']['loading_port']"/>
+                        </div>
+                    </div>
+                    <div class="text-left" style="flex: 0 0 65%; width: 205px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>Port of Discharge:</strong>
+                            <t t-esc="data['form']['discharge_port']"/>
+                        </div>
+                    </div>
+                    <div class="text-left" style="flex: 0 0 65%; width: 230px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>BL No:</strong>
+                            <t t-esc="data['form']['bl_no']"/>
+                        </div>
+                    </div>
+                    <div class="text-left" style="flex: 0 0 65%; width: 202px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>BL Date:</strong>
+                            <t t-esc="data['form']['bl_date']"/>
+                        </div>
+                    </div>
+                    <br/><br/><br/>
+                    <div class="text-left" style="flex: 0 0 65%; width: 220px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>Shipment of:</strong>
+                            <t t-esc="data['form']['shipment_of']"/>
+                        </div>
+                    </div>
+                    <div class="text-left" style="flex: 0 0 65%; width: 380px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>No of Cartons:</strong>
+                            <t t-esc="data['form']['ctn_no']"/>
+                        </div>
+                    </div>
+                    <div class="text-left" style="flex: 0 0 65%; width: 240px; float: left; height: 40px; border:1px solid #000;">
+                        <div style="margin-left: 5px;">
+                            <strong>Country of Origin:</strong>
+                            <t t-esc="data['form']['origin_country']"/>
+                        </div>
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <table class="table table-sm o_main_table">
+                        <thead>
+                            <tr class="border-black" style="border-bottom: 2px solid black; border-top: 1px solid black;">
+                                <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;" width="15%">ARTICLE NAME/NO.</th>
+<!--                                <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;">QTY UNIT</th>-->
+                                <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;" width="44%">DESCRIPTION OF GOODS</th>
+                                <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;">QTY UNIT</th>
+                                <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;">Price</th>
+                                <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;">TOTAL AMOUNT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="report_total" t-value="0.0"/>
+                            <t t-set="total_pairs_qty" t-value="0.0"/>
+                            <t t-set="a" t-value="0.0"/>
+                            <t t-set="b" t-value="0.0"/>
+                            <t t-foreach="values" t-as="value">
+                                <t t-set="size_qty" t-value="0.0"/>
+                                <t t-set="price_unit" t-value="0.0"/>
+                                <t t-set="xs_qty" t-value="0.0"/>
+                                <t t-set="line_price" t-value="0.0"/>
+                                <t t-set="xs_price" t-value="0.0"/>
+                                <t t-set="s_price" t-value="0.0"/>
+                                <t t-set="m_price" t-value="0.0"/>
+                                <t t-set="l_price" t-value="0.0"/>
+                                <t t-set="xl_price" t-value="0.0"/>
+                                <t t-set="two_xl_price" t-value="0.0"/>
+                                <t t-set="three_xl_price" t-value="0.0"/>
+                                <t t-set="four_xl_price" t-value="0.0"/>
+                                <t t-set="five_xl_price" t-value="0.0"/>
+                                <t t-set="s_price_unit" t-value="0.0"/>
+                                <t t-set="m_price_unit" t-value="0.0"/>
+                                <t t-set="l_price_unit" t-value="0.0"/>
+                                <t t-set="xl_price_unit" t-value="0.0"/>
+                                <t t-set="two_xl_price_unit" t-value="0.0"/>
+                                <t t-set="three_xl_price_unit" t-value="0.0"/>
+                                <t t-set="four_xl_price_unit" t-value="0.0"/>
+                                <t t-set="five_xl_price_unit" t-value="0.0"/>
+                                <t t-set="tmpl_obj" t-value="get_product_obj(value)"/>
+                                <t t-set="total_price" t-value="0.0"/>
+                                <tr style="page-break-inside: avoid;">
+                                    <td style="border-right: 1px solid black; border-top: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black;">
+                                        <center>
+                                            <t t-esc="tmpl_obj.prod_family"/><br/>
+                                            <t t-esc="tmpl_obj.item_color"/>
+                                        </center>
+                                    </td>
+<!--                                    <td style="border-left: 1px solid black; border-top: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;">-->
+<!--                                        <t t-esc="xs_qty"/>-->
+<!--                                    </td>-->
+                                    <td style="border-left: 1px solid black; border-top: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;">
+                                        <center>
+                                            <t t-esc="tmpl_obj.name"/><br/>
+                                        </center>
+                                        <hr style="width:100%; border-top: 1px solid black;"> </hr>
+                                        <table class="table table-sm o_main_table" style="width=35%">
+                                            <tr>
+                                                <thead>
+                                                    <th>SIZE:</th>
+                                                    <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;" width="29">XS</th>
+                                                    <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;" width="29">S</th>
+                                                    <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;" width="29">M</th>
+                                                    <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;" width="29">L</th>
+                                                    <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;" width="29">XL</th>
+                                                    <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;" width="29">2XL</th>
+                                                    <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;" width="29">3XL</th>
+                                                    <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;" width="29">4XL</th>
+                                                    <th style="border-right: 1px solid black; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;" width="29">5XL</th>
+                                                </thead>
+                                            </tr>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <strong>QTY:</strong>
+                                                    </td>
+                                                    <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                                        <t t-set="name" t-value="XS"/>
+                                                        <t t-foreach="o.order_line" t-as="line">
+                                                            <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                                <t t-if="line.product_id.product_template_attribute_value_ids.name == 'XS'">
+                                                                    <t t-set="size_qty" t-value="size_qty + line.product_uom_qty"/>
+                                                                    <t t-set="price_unit" t-value="line.price_unit"/>
+                                                                </t>
+                                                            </t>
+                                                        </t>
+                                                        <t t-esc="size_qty"/>
+                                                        <t t-set="xs_price" t-value="xs_price + (size_qty * price_unit)"/>
+                                                        <t t-set="total_price" t-value="total_price + xs_price"/>
+                                                        <t t-set="xs_qty" t-value="xs_qty + size_qty"/>
+                                                    </td>
+                                                    <td style="border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                                        <t t-set="size_qty" t-value="0.0"/>
+                                                        <t t-set="name" t-value="XS"/>
+                                                        <t t-foreach="o.order_line" t-as="line">
+                                                            <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                                <t t-if="line.product_id.product_template_attribute_value_ids.name == 'S'">
+                                                                    <t t-set="size_qty" t-value="size_qty + line.product_uom_qty"/>
+                                                                    <t t-set="s_price_unit" t-value="line.price_unit"/>
+                                                                </t>
+                                                            </t>
+                                                        </t>
+                                                        <t t-esc="size_qty"/>
+                                                        <t t-set="s_price" t-value="s_price + (size_qty * s_price_unit)"/>
+                                                        <t t-set="total_price" t-value="total_price + s_price"/>
+                                                        <t t-set="xs_qty" t-value="xs_qty + size_qty"/>
+                                                    </td>
+                                                    <td style="border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                                        <t t-set="size_qty" t-value="0.0"/>
+                                                        <t t-set="name" t-value="XS"/>
+                                                        <t t-foreach="o.order_line" t-as="line">
+                                                            <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                                <t t-if="line.product_id.product_template_attribute_value_ids.name == 'M'">
+                                                                    <t t-set="size_qty" t-value="size_qty + line.product_uom_qty"/>
+                                                                    <t t-set="m_price_unit" t-value="line.price_unit"/>
+                                                                </t>
+                                                            </t>
+                                                        </t>
+                                                        <t t-esc="size_qty"/>
+                                                        <t t-set="m_price" t-value="m_price + (size_qty * m_price_unit)"/>
+                                                        <t t-set="total_price" t-value="total_price + m_price"/>
+                                                        <t t-set="xs_qty" t-value="xs_qty + size_qty"/>
+                                                    </td>
+                                                    <td style="border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                                        <t t-set="size_qty" t-value="0.0"/>
+                                                        <t t-set="name" t-value="XS"/>
+                                                        <t t-foreach="o.order_line" t-as="line">
+                                                            <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                                <t t-if="line.product_id.product_template_attribute_value_ids.name == 'L'">
+                                                                    <t t-set="size_qty" t-value="size_qty + line.product_uom_qty"/>
+                                                                    <t t-set="l_price_unit" t-value="line.price_unit"/>
+                                                                </t>
+                                                            </t>
+                                                        </t>
+                                                        <t t-esc="size_qty"/>
+                                                        <t t-set="l_price" t-value="l_price + (size_qty * l_price_unit)"/>
+                                                        <t t-set="total_price" t-value="total_price + l_price"/>
+                                                        <t t-set="xs_qty" t-value="xs_qty + size_qty"/>
+                                                    </td>
+                                                    <td style="border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                                        <t t-set="size_qty" t-value="0.0"/>
+                                                        <t t-set="name" t-value="XS"/>
+                                                        <t t-foreach="o.order_line" t-as="line">
+                                                            <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                                <t t-if="line.product_id.product_template_attribute_value_ids.name == 'XL'">
+                                                                    <t t-set="size_qty" t-value="size_qty + line.product_uom_qty"/>
+                                                                    <t t-set="xl_price_unit" t-value="line.price_unit"/>
+                                                                </t>
+                                                            </t>
+                                                        </t>
+                                                        <t t-esc="size_qty"/>
+                                                        <t t-set="xl_price" t-value="xl_price + (size_qty * xl_price_unit)"/>
+                                                        <t t-set="total_price" t-value="total_price + xl_price"/>
+                                                        <t t-set="xs_qty" t-value="xs_qty + size_qty"/>
+                                                    </td>
+                                                    <td style="border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                                        <t t-set="size_qty" t-value="0.0"/>
+                                                        <t t-set="name" t-value="XS"/>
+                                                        <t t-foreach="o.order_line" t-as="line">
+                                                            <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                                <t t-if="line.product_id.product_template_attribute_value_ids.name == '2XL'">
+                                                                    <t t-set="size_qty" t-value="size_qty + line.product_uom_qty"/>
+                                                                    <t t-set="two_xl_price_unit" t-value="line.price_unit"/>
+                                                                </t>
+                                                            </t>
+                                                        </t>
+                                                        <t t-esc="size_qty"/>
+                                                        <t t-set="two_xl_price" t-value="two_xl_price + (size_qty * two_xl_price_unit)"/>
+                                                        <t t-set="total_price" t-value="total_price + two_xl_price"/>
+                                                        <t t-set="xs_qty" t-value="xs_qty + size_qty"/>
+                                                    </td>
+                                                    <td style="border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                                        <t t-set="size_qty" t-value="0.0"/>
+                                                        <t t-set="name" t-value="XS"/>
+                                                        <t t-foreach="o.order_line" t-as="line">
+                                                            <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                                <t t-if="line.product_id.product_template_attribute_value_ids.name == '3XL'">
+                                                                    <t t-set="size_qty" t-value="size_qty + line.product_uom_qty"/>
+                                                                    <t t-set="three_xl_price_unit" t-value="line.price_unit"/>
+                                                                </t>
+                                                            </t>
+                                                        </t>
+                                                        <t t-esc="size_qty"/>
+                                                        <t t-set="three_xl_price" t-value="three_xl_price + (size_qty * three_xl_price_unit)"/>
+                                                        <t t-set="total_price" t-value="total_price + three_xl_price"/>
+                                                        <t t-set="xs_qty" t-value="xs_qty + size_qty"/>
+                                                    </td>
+                                                    <td style="border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                                        <t t-set="size_qty" t-value="0.0"/>
+                                                        <t t-set="name" t-value="XS"/>
+                                                        <t t-foreach="o.order_line" t-as="line">
+                                                            <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                                <t t-if="line.product_id.product_template_attribute_value_ids.name == '4XL'">
+                                                                    <t t-set="size_qty" t-value="size_qty + line.product_uom_qty"/>
+                                                                    <t t-set="four_xl_price_unit" t-value="line.price_unit"/>
+                                                                </t>
+                                                            </t>
+                                                        </t>
+                                                        <t t-esc="size_qty"/>
+                                                        <t t-set="four_xl_price" t-value="four_xl_price + (size_qty * four_xl_price_unit)"/>
+                                                        <t t-set="total_price" t-value="total_price + four_xl_price"/>
+                                                        <t t-set="xs_qty" t-value="xs_qty + size_qty"/>
+                                                    </td>
+                                                    <td style="border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                                        <t t-set="size_qty" t-value="0.0"/>
+                                                        <t t-set="name" t-value="XS"/>
+                                                        <t t-foreach="o.order_line" t-as="line">
+                                                            <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                                <t t-if="line.product_id.product_template_attribute_value_ids.name == '5XL'">
+                                                                    <t t-set="size_qty" t-value="size_qty + line.product_uom_qty"/>
+                                                                    <t t-set="five_xl_price_unit" t-value="line.price_unit"/>
+                                                                </t>
+                                                            </t>
+                                                        </t>
+                                                        <t t-esc="size_qty"/>
+                                                        <t t-set="five_xl_price" t-value="five_xl_price + (size_qty * five_xl_price_unit)"/>
+                                                       <t t-set="total_price" t-value="total_price + five_xl_price"/>
+                                                        <t t-set="xs_qty" t-value="xs_qty + size_qty"/>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td style="border-left: 1px solid black; border-top: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;">
+                                        <center>
+                                            <t t-esc="xs_qty"/>
+                                            <t t-set="a" t-value="a + xs_qty"/>
+                                            <t t-set="total_pairs_qty" t-value="total_pairs_qty + xs_qty"/>
+                                        </center>
+                                    </td>
+                                    <td style="border-left: 1px solid black; border-top: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;">
+                                        <t t-foreach="o.order_line" t-as="line">
+                                            <t t-if="line.product_id.product_tmpl_id.id == value">
+                                                <t t-set="line_price" t-value="line_price + line.price_unit"/>
+                                            </t>
+                                        </t>
+                                        <center>
+                                            <t t-set="b" t-value="b + round(total_price,3)"/>
+                                            <t t-if="b != 0.0">
+                                                <t t-esc="round(b/a, 3)"/>
+                                            </t>
+                                        </center>
+                                    </td>
+                                    <td style="border-left: 1px solid black; border-top: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black;">
+                                        <center>
+                                            <t t-esc="round(total_price,3)"/>
+<!--                                            <t t-esc="round(xs_qty * total_price, 3)"/>-->
+                                        </center>
+                                        <t t-set="custom" t-value="round(total_price,3)"/>
+                                        <t t-set="report_total" t-value="report_total + custom"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr>
+                                <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                    <strong>TOTAL QTY</strong>
+                                </td>
+                                <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                    <hr style="width:100%; border-top: 1px solid black;"> </hr>
+                                </td>
+                                <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                    <strong>Total:</strong>
+                                    <t t-esc="round(total_pairs_qty,3)"/>
+                                </td>
+                                <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+
+                                </td>
+                                <td style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                                    <strong>Total:</strong>
+                                    <t t-esc="round(report_total,3)"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="width: 100%; height: 50px; float:left; border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black;">
+                        <strong>TOTAL AMOUNT:</strong>
+                        <span t-if="o.currency_id" t-esc="o.currency_id.amount_to_text(round(report_total,3))"/>
+                    </div>
+                    <div>
+                        <div style="width: 20%; float:left; margin: 9px;">
+                            <strong>MARKS and NO.</strong>
+                        </div>
+                        <div style="text-decoration:underline; width: 75%; float:right; margin: 9px;">
+                            <strong>1UNDER CLAIM FOR REBATE</strong>
+                        </div>
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <div>
+                        <div style="width: 80%; float:right;">
+                            CYCLE GEAR   <t t-esc="data['form']['cycle_gear_to']"/>      To
+                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <div style="width: 70%; float:right;">
+                            SRO #<t t-esc="data['form']['sro_no']"/>
+                        </div>
+                        <div style="width: 70%; float:right;">
+                            Dated:<t t-esc="data['form']['date']"/>
+                        </div>
+                        <div style="float:left; margin: 9px; -webkit-text-stroke: 3px black; color: transparent; font-size: 200px;">&#9650;</div>
+                    </div>
+                </t>
+            </div>
+        </t>
+<!--        </t>-->
+    </template>
+
+</odoo>

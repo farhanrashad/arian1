@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="commercial_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">commercial report wizard</field>
+        <field name="model">commercial.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Commercial Invoice">
+                <group string="Commercial Invoice">
+                    <group>
+                        <field name="proforma_invoice_no"/>
+                        <field name="order_id"/>
+                        <field name="po_no"/>
+                        <field name="e_form"/>
+                        <field name="loading_port"/>
+                        <field name="bl_no"/>
+                        <field name="shipment_of"/>
+                        <field name="origin_country"/>
+                        <field name="notify"/>
+                        <field name="ship_to"/>
+                        <field name="fcr_no"/>
+                        <field name="sign_date"/>
+                        <field name="sro_no"/>
+                    </group>
+                    <group>
+                        <field name="date"/>
+                        <field name="form_date"/>
+                        <field name="invoice_date"/>
+                        <field name="discharge_port"/>
+                        <field name="bl_date"/>
+                        <field name="ctn_no"/>
+                        <field name="trade_term"/>
+                        <field name="notify_party"/>
+                        <field name="payment_terms"/>
+                        <field name="ship_via"/>
+                        <field name="cycle_gear_to"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_print_cycle_gear_commercial_report" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

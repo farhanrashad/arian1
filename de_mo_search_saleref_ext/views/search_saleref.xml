@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_stck_srch_ext_inhrt" model="ir.ui.view">
+        <field name="name">stock.picking.search</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name = 'picking_type_id']" position="after">
+                <field name="mo_product_id" string="Source Product"/>
+                <field name="sale_ref"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
