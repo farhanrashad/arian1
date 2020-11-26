@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record model="res.groups" id="group_waiting_for_approval">
+            <field name="name">Allow To Add Vendor As Subcontractor</field>
+        </record>
+    </data>
+</odoo>
+
+
