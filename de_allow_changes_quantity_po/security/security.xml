@@ -3,7 +3,7 @@
 <odoo>
     <data>
         <record model="res.groups" id="group_make_changes_in_quantity">
-            <field name="name">Allow Changes in Quanity on PO</field>
+            <field name="name">Allow Changes in Quantity on PO</field>
         </record>
     </data>
 </odoo>

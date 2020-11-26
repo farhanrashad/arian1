@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
 from odoo import models
 
-class ItClusterExt(models.Model):
+class AllowChangeQuantity(models.Model):
     _inherit = 'purchase.order'
