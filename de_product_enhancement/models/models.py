@@ -35,7 +35,7 @@ class PurchaseOrder(models.Model):
     
     receipt_date = fields.Date(string='Receipt Date')
     payment_term_date =  fields.Date(string='Expected Payment Date')
-    
+    is_received = fields.Boolean(string="Is Received")
     
     @api.onchange('receipt_date','payment_term_id')
     def _check_change(self):
