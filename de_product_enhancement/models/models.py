@@ -21,6 +21,17 @@ class StockPicking(models.Model):
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
+
+    def button_done(self):
+        res = super(PurchaseOrder, self).button_done()
+        picking = self.env['stock.picking'].search([('origin','=',self.name)])
+        for pick in picking:
+            if pick.state != 'done':
+                pick.update({
+                    'state': 'cancel'
+                })
+      
+        return res     
     
     receipt_date = fields.Date(string='Receipt Date')
     payment_term_date =  fields.Date(string='Expected Payment Date')

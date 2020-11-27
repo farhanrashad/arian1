@@ -5,6 +5,14 @@
 			<field name="model">purchase.order</field>
 			<field name="inherit_id" ref="purchase.purchase_order_form"/>
 			<field name="arch" type="xml">
+                            <xpath expr="//header//button[@name='button_done']" position="attributes">
+                    <attribute name="groups">de_product_enhancement.group_lock_order_access</attribute>
+				</xpath>
+                <xpath expr="//header//button[@name='button_unlock']" position="attributes">
+                    <attribute name="groups">de_product_enhancement.group_unlock_order_access</attribute>
+				</xpath>
+
+
 				<xpath expr="//field[@name='date_approve']" position="after">
                         <field name="receipt_date" widget="date"/>
                         <field name="payment_term_date" widget="date"/>
