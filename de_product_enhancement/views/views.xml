@@ -16,6 +16,7 @@
 				<xpath expr="//field[@name='date_approve']" position="after">
                         <field name="receipt_date" widget="date"/>
                         <field name="payment_term_date" widget="date"/>
+                        <field name="is_received" invisible="1"/>
 				</xpath>
                 <xpath expr="//page[@name='purchase_delivery_invoice']//group//group[@name='planning']" position="replace">
                   <group name="planning">
