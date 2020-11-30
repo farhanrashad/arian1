@@ -10,6 +10,13 @@ class MrpWorkorder(models.Model):
     _inherit = 'mrp.workorder'
     
     qty_production = fields.Float('Original Production Quantity', readonly=True)
+    is_ready = fields.Boolean(string="Is Ready")
+    
+    def record_ready(self):
+        self.update({
+            'is_ready': True
+        })
+    
     
     
     def record_production(self):
