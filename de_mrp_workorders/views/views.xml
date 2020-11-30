@@ -19,7 +19,7 @@
 			<field name="model">mrp.workorder</field>
 			<field name="inherit_id" ref="mrp.mrp_production_workorder_tree_view_inherit"/>
 			<field name="arch" type="xml">
-				<xpath expr="//field[@name='product_uom_id']" position="before">
+				<xpath expr="//field[@name='qty_production']" position="replace">
                         <field name="qty_production"/>
             
 				</xpath>
@@ -75,7 +75,7 @@
 			<field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
 			<field name="arch" type="xml">
 
-				<xpath expr="//field[@name='product_uom_id']" position="before">
+				<xpath expr="//field[@name='qty_production']" position="replace">
                         
                         <field name="qty_production"/>
 				</xpath>
@@ -102,8 +102,11 @@
 			<field name="model">mrp.production</field>
 			<field name="inherit_id" ref="mrp.mrp_production_form_view"/>
 			<field name="arch" type="xml">
+                <xpath expr="//button[@name='post_inventory']" position="attributes">
+                    <attribute name="groups">de_mrp_workorders.group_allow_post_inventory</attribute>
+				</xpath>
                 <xpath expr="//button[@name='action_assign']" position="after">
-                    <button name="button_plans" attrs="{'invisible': ['|', ('state', '!=', 'confirmed'), ('routing_id', '=', False)]}" type="object" string="Plan Production" class="oe_highlight"/>
+                    <button name="button_plans" attrs="{'invisible': ['|', ('state', 'in', ['draft','to_close','done','cancel']), ('routing_id', '=', False)]}" type="object" string="Plan Production" class="oe_highlight"/>
 				</xpath>
                 
                	<xpath expr="//notebook" position="inside">

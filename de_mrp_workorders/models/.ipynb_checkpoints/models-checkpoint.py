@@ -13,6 +13,7 @@ class MrpWorkorder(models.Model):
     is_ready = fields.Boolean(string="Is Ready")
     is_close = fields.Boolean(string="Is Close")
     
+    
     def record_ready(self):
         self.update({
             'is_ready': True
@@ -314,7 +315,7 @@ class MrpProduction(models.Model):
             
             
         if total_quantity > self.product_qty:
-            raise exceptions.ValidationError('Routing Quantity must be equal to MO Quantity To Consume')            
+            raise exceptions.ValidationError('Total Planned Quantity should be equal to actual Demand Quantity.')            
         else:        
             if self.routing_f_id != '' and self.product_f_qty != 0.0:
 
@@ -355,8 +356,10 @@ class MrpProduction(models.Model):
                             flines = {
                                 'raw_workorder_id': workorders.id,
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': (line.product_uom_qty / self.product_qty) * self.product_f_qty ,
-                                'qty_reserved': (line.reserved_availability / self.product_qty) * self.product_f_qty,
+                                'qty_to_consume': (line.product_uom_qty_ratio) * self.product_f_qty ,
+                                'qty_reserved': (line.product_uom_qty_ratio) * self.product_f_qty,
+
+#                                 'qty_reserved': (line.reserved_availability / self.product_qty) * self.product_f_qty,
                                 'product_uom_id': line.product_uom.id,
             #                     'qty_done': self.product_f_qty,
 
@@ -404,8 +407,8 @@ class MrpProduction(models.Model):
                             slines = {
                                 'raw_workorder_id': workorders.id,
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': (line.product_uom_qty / self.product_qty) * self.product_s_qty,
-                                'qty_reserved': (line.reserved_availability / self.product_qty) * self.product_s_qty,
+                                'qty_to_consume': (line.product_uom_qty_ratio) * self.product_s_qty,
+                                'qty_reserved': (line.product_uom_qty_ratio) * self.product_s_qty,
                                 'product_uom_id': line.product_uom.id,
             #                     'qty_done': self.product_s_qty,
                             }
@@ -450,8 +453,8 @@ class MrpProduction(models.Model):
                             tlines = {
                                 'raw_workorder_id': workorders.id,                    
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': (line.product_uom_qty / self.product_qty) * self.product_t_qty,
-                                'qty_reserved': (line.reserved_availability / self.product_qty) * self.product_t_qty,
+                                'qty_to_consume': (line.product_uom_qty_ratio) * self.product_t_qty,
+                                'qty_reserved': (line.product_uom_qty_ratio) * self.product_t_qty,
                                 'product_uom_id': line.product_uom.id,       
             #                     'qty_done': self.product_t_qty,
                             }
@@ -497,8 +500,8 @@ class MrpProduction(models.Model):
                             folines = {
                                 'raw_workorder_id': workorders.id,                    
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': (line.product_uom_qty / self.product_qty) * self.product_fo_qty ,
-                                'qty_reserved':  (line.reserved_availability / self.product_qty) * self.product_fo_qty , 
+                                'qty_to_consume': (line.product_uom_qty_ratio) * self.product_fo_qty ,
+                                'qty_reserved':  (line.product_uom_qty_ratio) * self.product_fo_qty , 
                                 'product_uom_id': line.product_uom.id,                  
             #                     'qty_done': self.product_fo_qty,                   
                             }
