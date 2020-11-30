@@ -48,9 +48,22 @@
 			<field name="arch" type="xml">
             <xpath expr="//field[@name='is_first_step']" position="after">
                         <field name="is_ready"  invisible="1"/>
-				</xpath>    
+                        <field name="is_close"  invisible="1"/>
+				</xpath>  
+             <xpath expr="//button[@name='record_production']" position="replace">
+                   <button name="record_production" type="object" string="Record production" attrs="{'invisible': ['|', '|', '|', '|','|',('is_ready', '=', False), ('is_user_working', '=', False), ('is_last_step', '!=', True), ('skipped_check_ids', '!=', []), ('is_last_lot', '=', True)]}" barcode_trigger="record" class="btn-primary"/>
+			 </xpath> 
+             <xpath expr="//button[@name='do_finish']" position="replace">
+                 <button name="do_finish" type="object" string="Mark as Done" icon="fa-check" attrs="{'invisible': ['|', '|', '|', '|','|',('is_ready', '!=', True), ('is_user_working', '=', False), ('is_last_step', '!=', True), ('skipped_check_ids', '!=', []), ('is_last_lot', '=', False)]}" class="btn-primary" barcode_trigger="cloWO"/>
+
+			 </xpath>    
+                
+              <xpath expr="//button[@name='action_open_manufacturing_order']" position="attributes">
+                 <attribute name="invisible">[('is_close', '!=', True)]</attribute>
+			 </xpath>    
+                
             <xpath expr="//button[@name='record_production']" position="after">
-                <button name="record_ready" type="object" string="Ready" class="btn-success" attrs="{'invisible': ['|', '|', '|', ('is_produced', '=', True), ('working_state', '=', 'blocked'), ('state', '!=', 'progress'), ('is_user_working', '=', False)]}"/>
+                <button name="record_ready" type="object" string="Ready" class="btn-success" attrs="{'invisible': ['|', '|', '|','|',('is_ready', '=', True), ('is_produced', '=', True), ('working_state', '=', 'blocked'), ('state', '!=', 'progress'), ('is_user_working', '=', False)]}"/>
 				</xpath>
 				
 			</field>

@@ -11,6 +11,7 @@ class MrpWorkorder(models.Model):
     
     qty_production = fields.Float('Original Production Quantity', readonly=True)
     is_ready = fields.Boolean(string="Is Ready")
+    is_close = fields.Boolean(string="Is Close")
     
     def record_ready(self):
         self.update({
@@ -52,7 +53,10 @@ class MrpWorkorder(models.Model):
 #         else:
 #             self.write({
 #                    'state': 'done',
-#                 })     
+#                 })  
+        self.update({
+            'is_ready': False
+        })         
         return res
     
     
@@ -89,7 +93,11 @@ class MrpWorkorder(models.Model):
         else:
             self.write({
                    'state': 'done',
-                })     
+                })
+#         self.update({
+#             'is_ready': False
+#         })    
+            
         return res
     
     def action_open_manufacturing_order(self):
