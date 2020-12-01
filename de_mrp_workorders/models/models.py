@@ -341,7 +341,7 @@ class MrpProduction(models.Model):
             
         for line in self.move_raw_ids:
             minimum_planned = line.product_uom_qty_planned_ratio
-            if line.line.product_uom_qty_planned_ratio > minimum_planned:
+            if line.product_uom_qty_planned_ratio > minimum_planned:
                 pass
             else:
                 minimum_planned = line.product_uom_qty_planned_ratio
@@ -354,7 +354,7 @@ class MrpProduction(models.Model):
             
             
             
-        if total_quantity > self.product_qty:
+        if total_quantity > minimum_planned:
             raise exceptions.ValidationError('Total Planned Quantity should be equal to actual Demand Quantity.')            
         else:        
             if self.routing_f_id != '' and self.product_f_qty != 0.0:
