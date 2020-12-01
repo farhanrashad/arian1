@@ -7,7 +7,26 @@ from odoo.exceptions import Warning
 
 
 
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+    
+    
+    
+    def action_confirm(self):
 
+        res = super(SaleOrder, self).action_confirm()
+        vals = {
+            'date': fields.Date.today(),
+            'sale_id': self.id,
+        }
+        document = self.env['mrp.mo.beforehand'].create(vals)
+        document.get_sheet_lines()
+        document.action_generate_po()
+        document.action_done()
+        return res
+    
+    
+    
 
 
 
@@ -88,6 +107,59 @@ class MoBeforhand(models.Model):
             self.write ({
                 'state': 'process'
             })
+            
+    def action_generate_po(self):
+        for line in self.mo_line_ids:
+            if line.partner_id:
+                pass
+            else:
+                raise UserError(_('Please Select Vendor for all selected lines.'))
+        vendor_list = []
+        for line in self.mo_line_ids:
+            if line.partner_id and line.po_created == False:
+                vendor_list.append(line.partner_id)
+            else:
+                pass
+        list = set(vendor_list)
+        for te in list:
+            product = []
+            for re in self.mo_line_ids:
+                if te == re.partner_id:
+                    if re.po_created == False:
+                        valss = {
+                            'product_id': re.product_id.id,
+                            'name': re.product_id.name,
+                            'product_uom_qty': re.product_uom_qty_order,
+                            'price_unit': re.product_id.standard_price,
+                            'date_planned': fields.Date.today(),
+                            'product_uom': re.product_id.uom_po_id.id,
+                        }
+                        product.append(valss)
+            vals = {
+                  'partner_id': te.id,
+                  'date_order': fields.Date.today(),
+                  'sale_ref_id': self.sale_id.name,
+                  'origin': self.name,
+                    }
+            order = self.env['purchase.order'].create(vals)
+            for test in product:
+                order_line = {
+                       'order_id': order.id,
+                       'product_id': test['product_id'],
+                       'name': test['name'],
+                       'product_qty': test['product_uom_qty'],
+                       'price_unit': test['price_unit'],
+                       'date_planned': fields.Date.today(),
+                       'product_uom': test['product_uom'],
+                        }
+                orders_lines = self.env['purchase.order.line'].create(order_line)
+        for line in self.mo_line_ids:
+            if line.po_process == True and not line.partner_id==' ':
+                line.update ({
+                   'po_process': False,
+                    'po_created': True,
+                  	})
+                        
             
             
             
