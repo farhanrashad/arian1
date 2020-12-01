@@ -6,7 +6,9 @@
 			<field name="inherit_id" ref="mrp.view_stock_move_raw_tree"/>
 			<field name="arch" type="xml">
 				<xpath expr="//field[@name='is_done']" position="after">
-                        <field name="product_uom_qty_ratio" invisible="1"/>
+                        <field name="products_qty" />
+                        <field name="product_uom_qty_ratio" />
+                        <field name="product_uom_qty_planned_ratio" />
                         <field name="is_ratio" invisible="1"/>
 
 				</xpath>

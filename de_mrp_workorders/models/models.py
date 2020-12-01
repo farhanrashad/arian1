@@ -131,10 +131,29 @@ class MrpWorkorder(models.Model):
 class StockMove(models.Model):
     _inherit = 'stock.move'
     
-    product_uom_qty_ratio = fields.Float(string="Ratio")
+    product_uom_qty_ratio = fields.Float(string="Ratio",)
+    products_qty = fields.Float(string="Order Quantity")
+    product_uom_qty_planned_ratio = fields.Float(string="Planned Ratio")
     is_ratio = fields.Boolean(string="Is Ratio")
-
-
+    
+#     @api.depends('product_uom_qty','products_qty')
+#     def _compute_qty_ratio(self):
+#         for move_line in self:
+#             if move_line.is_ratio == False:                
+#                 move_line.update({
+#                     'product_uom_qty_ratio': move_line.product_uom_qty/move_line.products_qty,
+# #                     'product_uom_qty_planned_ratio': move_line.reserved_availability/move_line.product_uom_qty_ratio,
+#                     'is_ratio': True,
+#                 })
+                
+                
+#     @api.depends('reserved_availability')
+#     def _compute_qty_planned_ratio(self):
+#         for move_line in self:
+#             move_line.update({
+#                     'product_uom_qty_planned_ratio': move_line.reserved_availability/move_line.products_qty,
+#                 })            
+    
 
 
 
@@ -156,6 +175,11 @@ class MrpProduction(models.Model):
     
     def action_assign(self):
         res = super(MrpProduction, self).action_assign()
+        for move_line in self.move_raw_ids:
+            if move_line.is_ratio == False:
+                move_line.update({
+                    'product_uom_qty_planned_ratio': move_line.reserved_availability/move_line.product_uom_qty_ratio,
+                })
         workorders =self.env['mrp.workorder'].search([('production_id','=',self.name)])
         for workorder in workorders:
             for move_raw in self.move_raw_ids:
@@ -284,17 +308,24 @@ class MrpProduction(models.Model):
             })
         else:
             pass
-                        
-    
+        
+#     @api.onchange('routing_f_id')
+#     def onchange_qty(self):
+#         for move_line in self.move_raw_ids:
+#             if move_line.is_ratio == False:
+#                 move_line.update({
+#                     'product_uom_qty_ratio': move_line.product_uom_qty/self.product_qty,
+#                     'is_ratio': True,
+#                 })
     
                 
     def button_plans(self):
-        for move_line in self.move_raw_ids:
-            if move_line.is_ratio == False:
-                move_line.update({
-                    'product_uom_qty_ratio': move_line.product_uom_qty/self.product_qty,
-                    'is_ratio': True,
-                })
+#         for move_line in self.move_raw_ids:
+#             if move_line.is_ratio == False:
+#                 move_line.update({
+#                     'product_uom_qty_ratio': move_line.product_uom_qty/self.product_qty,
+#                     'is_ratio': True,
+#                 })
 
         total_quantity = 0.0
         finish_qty = 0.0
