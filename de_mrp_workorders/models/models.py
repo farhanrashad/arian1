@@ -329,6 +329,7 @@ class MrpProduction(models.Model):
 
         total_quantity = 0.0
         finish_qty = 0.0
+        minimum_planned = 0.0
         if self.product_f_qty:
             total_quantity = total_quantity + self.product_f_qty
         if self.product_s_qty:
@@ -338,10 +339,18 @@ class MrpProduction(models.Model):
         if self.product_fo_qty:
             total_quantity = total_quantity + self.product_fo_qty
             
+        for line in self.move_raw_ids:
+            minimum_planned = line.product_uom_qty_planned_ratio
+            if line.line.product_uom_qty_planned_ratio > minimum_planned:
+                pass
+            else:
+                minimum_planned = line.product_uom_qty_planned_ratio
+ 
+            
         for finish_line in self.finished_move_line_ids:
             finish_qty = finish_qty + finish_line.qty_done
             
-        total_quantity = total_quantity + finish_qty
+        total_quantity = total_quantity + minimum_planned
             
             
             
