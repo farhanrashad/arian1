@@ -72,10 +72,17 @@ class ProductTemplate(models.Model):
     @api.model
     def create(self,vals):
         vendor_num = 0
-        for vendor in vals['seller_ids']:
-            vendor_num = vendor_num + 1
-        if vendor_num == 0:
+#         for vendor in vals['seller_ids']:
+#         if len(vals['seller_ids']) == 0:
+#             vendor_num = vendor_num + 1
+#             if vendor == 0:
+        try:
+            if len(vals['seller_ids']) > 0:
+                pass
+        except:
             raise UserError(_('Please Define Vendor On Purchase Tab'))
+
+
             
 #         if self.nbr_reordering_rules == 0:
 #             raise UserError(_('Please Define Reordring Rule'))
@@ -86,10 +93,36 @@ class ProductTemplate(models.Model):
         res = super(ProductTemplate,self).create(vals)
         return res
     
+    def write(self, vals):
+        try:
+            if len(vals['seller_ids']) > 0:
+                pass
+        except:
+            raise UserError(_('Please Define Vendor On Purchase Tab'))
+      
+
+
+            
+#         if self.nbr_reordering_rules == 0:
+#             raise UserError(_('Please Define Reordring Rule'))
+#         else:
+#             pass
+        res = super(ProductTemplate,self).write(vals)
+        return res
+
+              
     
-    allow_location = fields.Boolean(string="Change Location") 
+    
+    
+    allow_location = fields.Boolean(string="Is Finished or Un-Finished Product") 
     
     @api.onchange('allow_location')
     def onchange_location(self):
-        if self.property_stock_production.id == 15:
-            self.property_stock_production = 22
+        if  self.allow_location == True:
+            if self.property_stock_production.id == 15:
+                self.property_stock_production = 22
+        if  self.allow_location == False:
+            if self.property_stock_production.id == 22:
+                self.property_stock_production = 15    
+            
+            
