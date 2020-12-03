@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_de_product_enhancement_de_product_enhancement,de_product_enhancement.de_product_enhancement,model_de_product_enhancement_de_product_enhancement,base.group_user,1,1,1,1
+access_stock_quant,access.stock.quant,model_stock_quant,de_mrp_workorders.group_stock_quant_restrict,1,0,0,0
