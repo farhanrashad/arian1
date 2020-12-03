@@ -5,6 +5,28 @@ from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 
+
+class StockQuant(models.Model):
+    _inherit = 'stock.quant'
+    
+    @api.model
+    def create(self, values):
+        t_uid = self.env.uid
+        if self.user_has_groups('de_mrp_workorders.group_stock_quant_restrict'):
+            raise exceptions.ValidationError('You are not allowed to create Stock')    
+        res = super(StockQuant, self).create(values)
+        return res
+    
+    
+#     @api.multi
+    def write(self, values):
+        t_uid = self.env.uid
+        if self.user_has_groups('de_mrp_workorders.group_stock_quant_restrict'):
+            raise exceptions.ValidationError('You are not allowed to update Stock')
+           
+        res = super(StockQuant, self).write(values)
+        return res
+
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
     
