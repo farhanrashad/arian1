@@ -14,7 +14,7 @@ class StockQuant(models.Model):
     @api.model
     def create(self, values):
         t_uid = self.env.uid
-        if self.user_has_groups('de_mrp_workorders.group_stock_quant_restrict'):
+        if self.user_has_groups('de_product_enhancement.group_stock_quant_restrict'):
             raise exceptions.ValidationError('You are not allowed to create Stock')    
         res = super(StockQuant, self).create(values)
         return res
@@ -23,7 +23,7 @@ class StockQuant(models.Model):
 #     @api.multi
     def write(self, values):
         t_uid = self.env.uid
-        if self.user_has_groups('de_mrp_workorders.group_stock_quant_restrict'):
+        if self.user_has_groups('de_product_enhancement.group_stock_quant_restrict'):
             raise exceptions.ValidationError('You are not allowed to update Stock')
            
         res = super(StockQuant, self).write(values)
