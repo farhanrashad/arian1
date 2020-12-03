@@ -131,28 +131,31 @@ class MrpWorkorder(models.Model):
 class StockMove(models.Model):
     _inherit = 'stock.move'
     
-    product_uom_qty_ratio = fields.Float(string="Ratio",)
+    product_uom_qty_ratio = fields.Float(string="Ratio", )
     products_qty = fields.Float(string="Order Quantity")
     product_uom_qty_planned_ratio = fields.Float(string="Planned Ratio")
     is_ratio = fields.Boolean(string="Is Ratio")
     
-#     @api.depends('product_uom_qty','products_qty')
+#     @api.depends('product_uom_qty','product_uom_qty_ratio', 'is_ratio', 'products_qty')
 #     def _compute_qty_ratio(self):
 #         for move_line in self:
-#             if move_line.is_ratio == False:                
-#                 move_line.update({
-#                     'product_uom_qty_ratio': move_line.product_uom_qty/move_line.products_qty,
-# #                     'product_uom_qty_planned_ratio': move_line.reserved_availability/move_line.product_uom_qty_ratio,
-#                     'is_ratio': True,
-#                 })
+#             if move_line.is_ratio == False:
+#                 if move_line.products_qty > 0:
+#                     move_line.product_uom_qty_ratio = move_line.product_uom_qty/move_line.products_qty
+#                     move_line.is_ratio = True
+#                     move_line.update({
+#                         'product_uom_qty_ratio': move_line.product_uom_qty/move_line.products_qty,
+#                         'is_ratio': True,
+#                     })
                 
                 
-#     @api.depends('reserved_availability')
+#     @api.depends('reserved_availability','product_uom_qty_ratio')
 #     def _compute_qty_planned_ratio(self):
 #         for move_line in self:
-#             move_line.update({
-#                     'product_uom_qty_planned_ratio': move_line.reserved_availability/move_line.products_qty,
-#                 })            
+#             if move_line.product_uom_qty_ratio > 0:
+#                 move_line.update({
+#                      'product_uom_qty_planned_ratio': move_line.reserved_availability/move_line.product_uom_qty_ratio,
+#                     })            
     
 
 
@@ -328,6 +331,7 @@ class MrpProduction(models.Model):
 #                 })
 
         total_quantity = 0.0
+        total_processes_qty = 0.0
         finish_qty = 0.0
         minimum_planned = 0.0
         if self.product_f_qty:
@@ -350,12 +354,12 @@ class MrpProduction(models.Model):
         for finish_line in self.finished_move_line_ids:
             finish_qty = finish_qty + finish_line.qty_done
             
-        total_quantity = total_quantity + minimum_planned
-            
+        total_processes_qty = total_processes_qty + minimum_planned
+        total_quantity = total_quantity + finish_qty
             
             
         if total_quantity > minimum_planned:
-            raise exceptions.ValidationError('Total Planned Quantity should be equal to actual Demand Quantity.')            
+            raise exceptions.ValidationError('Failed to Plan. Please Check  if the components are reserved properly and the requested quantity to plan is not greater than total demand. You can only plan Quantity:' + str(minimum_planned) )            
         else:        
             if self.routing_f_id != '' and self.product_f_qty != 0.0:
 
