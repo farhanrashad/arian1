@@ -6,6 +6,74 @@ from odoo import exceptions
 from odoo.exceptions import UserError, ValidationError
 
 
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+    
+    def action_update_operation(self):
+        for record in self:
+            line_data = []
+
+            record.do_unreserve()
+            for line in record.move_ids_without_package:
+                line.update({
+                  'state' : 'draft'
+
+                  })
+            for line in record.move_ids_without_package:
+                line.unlink()  
+
+            production_order = self.env['mrp.production'].search([('name','=',record.origin)])
+            bom_id = self.env['mrp.bom'].search([('product_tmpl_id.name','=',production_order.bom_id.product_tmpl_id.name)])
+            for bom_line in bom_id[0].bom_line_ids:
+                line_data.append((0,0,{
+                        'product_id': bom_line.product_id.id,
+                        'name': bom_line.product_id.name,
+                        'company_id': record.company_id.id,
+    #                     'state': 'assigned',
+                        'date': record.scheduled_date ,
+                        'date_expected': record.scheduled_date ,
+                        'location_dest_id': record.location_dest_id.id ,
+                        'location_id': record.location_id.id,
+                        'product_uom': bom_line.product_uom_id.id,
+                        'product_uom_qty':  bom_line.product_qty * production_order.product_qty,
+                    }))
+            record.move_ids_without_package = line_data 
+            record.update({
+                  'state' : 'assigned'
+
+                  })
+            for line in record.move_ids_without_package:
+                line.update({
+                  'state' : 'confirmed'
+
+                  })
+
+
+
+class StockQuant(models.Model):
+    _inherit = 'stock.quant'
+    
+    @api.model
+    def create(self, values):
+        t_uid = self.env.uid
+        if self.user_has_groups('de_mrp_workorders.group_stock_quant_restrict'):
+            raise exceptions.ValidationError('You are not allowed to create Stock')    
+        res = super(StockQuant, self).create(values)
+        return res
+    
+    
+#     @api.multi
+    def write(self, values):
+        t_uid = self.env.uid
+        if self.user_has_groups('de_mrp_workorders.group_stock_quant_restrict'):
+            raise exceptions.ValidationError('You are not allowed to update Stock')
+           
+        res = super(StockQuant, self).write(values)
+        return res
+
+
+
+
 class MrpWorkorder(models.Model):
     _inherit = 'mrp.workorder'
     

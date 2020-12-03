@@ -3,11 +3,10 @@
     'name': "Work order",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+        Multiple Work order from single Production Order""",
 
     'description': """
-        Long description of module's purpose
+        Multiple Work order from single Production Order
     """,
 
     'author': "Dynexcel",
@@ -24,6 +23,7 @@
 
     # always loaded
     'data': [
+        'data/stock_picking_action.xml',
         'security/security.xml',
         # 'security/ir.model.access.csv',
         'views/views.xml',
