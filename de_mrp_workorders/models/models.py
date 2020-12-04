@@ -23,8 +23,8 @@ class StockPicking(models.Model):
                 line.unlink()  
 
             production_order = self.env['mrp.production'].search([('name','=',record.origin)])
-            bom_id = self.env['mrp.bom'].search([('product_tmpl_id.name','=',production_order.bom_id.product_tmpl_id.name)])
-            for bom_line in bom_id[0].bom_line_ids:
+            bom_id = self.env['mrp.bom'].search([('product_id','=',record.mo_product_id.id)])
+            for bom_line in bom_id.bom_line_ids:
                 line_data.append((0,0,{
                         'product_id': bom_line.product_id.id,
                         'name': bom_line.product_id.name,
