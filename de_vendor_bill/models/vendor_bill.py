@@ -47,6 +47,10 @@ class account_payment(models.Model):
         self.write({'state': 'waiting'})
         self.message_post(body=_('Dear %s, bill is sent for approval.') % (self.env.user.name,),
                           partner_ids=[self.env.user.partner_id.id])
+    def action_reset_draft(self):
+        self.write({'state': 'draft'})
+        self.message_post(body=_('Dear %s, bill is Rejected from Approval.') % (self.env.user.name,),
+                          partner_ids=[self.env.user.partner_id.id])
 
     def approve_bill(self):
         self.write({'state': 'approved'})
