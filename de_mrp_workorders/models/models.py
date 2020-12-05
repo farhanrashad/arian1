@@ -83,10 +83,13 @@ class MrpWorkorder(models.Model):
     
     
     def record_ready(self):
-        self.update({
-            'is_ready': True
-        })
-    
+        if self.qty_producing == 0.0:
+            raise exceptions.ValidationError('Please Input Quantity other than zero')
+        elif  self.qty_producing > 0.0 :   
+            self.update({
+                'is_ready': True
+            })
+
     
     
     def record_production(self):
@@ -204,26 +207,7 @@ class StockMove(models.Model):
     product_uom_qty_planned_ratio = fields.Float(string="Planned Ratio")
     is_ratio = fields.Boolean(string="Is Ratio")
     
-#     @api.depends('product_uom_qty','product_uom_qty_ratio', 'is_ratio', 'products_qty')
-#     def _compute_qty_ratio(self):
-#         for move_line in self:
-#             if move_line.is_ratio == False:
-#                 if move_line.products_qty > 0:
-#                     move_line.product_uom_qty_ratio = move_line.product_uom_qty/move_line.products_qty
-#                     move_line.is_ratio = True
-#                     move_line.update({
-#                         'product_uom_qty_ratio': move_line.product_uom_qty/move_line.products_qty,
-#                         'is_ratio': True,
-#                     })
-                
-                
-#     @api.depends('reserved_availability','product_uom_qty_ratio')
-#     def _compute_qty_planned_ratio(self):
-#         for move_line in self:
-#             if move_line.product_uom_qty_ratio > 0:
-#                 move_line.update({
-#                      'product_uom_qty_planned_ratio': move_line.reserved_availability/move_line.product_uom_qty_ratio,
-#                     })            
+           
     
 
 
@@ -236,14 +220,7 @@ class MrpProduction(models.Model):
     
     
     
-#     def action_assign_test(self):
-#         for move_line in self.move_raw_ids:
-#             if move_line.product_uom_qty: 
-#                 move_line.update({
-#                     'quantity_done' : move_line.product_uom_qty,
-#                 })
-    
-    
+
     def action_assign(self):
         res = super(MrpProduction, self).action_assign()
         for move_line in self.move_raw_ids:
@@ -295,108 +272,70 @@ class MrpProduction(models.Model):
     
     @api.onchange('routing_f_id')
     def onchange_routing(self):
-        if self.routing_f_id.id == 13:
+        if self.routing_f_id.id == 5:
             self.update({
-                'routing_s_id': 14,
-                'routing_t_id': 15,
-                'routing_fo_id': 16,
+                'routing_s_id': 6,
+                'routing_t_id': 7,
+                'routing_fo_id': 8,
             })
             
-        elif self.routing_f_id.id == 14:
+        elif self.routing_f_id.id == 6:
             self.update({
-                'routing_s_id': 13,
-                'routing_t_id': 15,
-                'routing_fo_id': 16
+                'routing_s_id': 5,
+                'routing_t_id': 7,
+                'routing_fo_id': 8
             })
             
-        elif self.routing_f_id.id == 15:
+        elif self.routing_f_id.id == 7:
             self.update({
-                'routing_s_id': 14,
-                'routing_t_id': 13,
-                'routing_fo_id': 16
+                'routing_s_id': 8,
+                'routing_t_id': 5,
+                'routing_fo_id': 6
             })
             
-        elif self.routing_f_id.id == 16:
+        elif self.routing_f_id.id == 8:
             self.update({
-                'routing_s_id': 14,
-                'routing_t_id': 15,
-                'routing_fo_id': 13
+                'routing_s_id': 7,
+                'routing_t_id': 5,
+                'routing_fo_id': 6
             })
 
-        elif self.routing_f_id.id == 17:
+        elif self.routing_f_id.id == 9:
             self.update({
-                'routing_s_id': 20,
-                'routing_t_id': 19,
-                'routing_fo_id': 18
+                'routing_s_id': 10,
+                'routing_t_id': 11,
+                'routing_fo_id': 12
             })
 
-        elif self.routing_f_id.id == 18:
+        elif self.routing_f_id.id == 10:
             self.update({
-                'routing_s_id': 20,
-                'routing_t_id': 19,
-                'routing_fo_id': 17
+                'routing_s_id': 9,
+                'routing_t_id': 11,
+                'routing_fo_id': 12
             })
            
-        elif self.routing_f_id.id == 19:
+        elif self.routing_f_id.id == 11:
             self.update({
-                'routing_s_id': 20,
-                'routing_t_id': 18,
-                'routing_fo_id': 17
+                'routing_s_id': 9,
+                'routing_t_id': 10,
+                'routing_fo_id': 12
             })
 
-        elif self.routing_f_id.id == 20:
+        elif self.routing_f_id.id == 12:
             self.update({
-                'routing_s_id': 19,
-                'routing_t_id': 18,
-                'routing_fo_id': 17
+                'routing_s_id': 9,
+                'routing_t_id': 10,
+                'routing_fo_id': 11
             })
-        elif self.routing_f_id.id == 21:
-            self.update({
-                'routing_s_id': 22,
-                'routing_t_id': 23,
-                'routing_fo_id': 24
-            })
-
-        elif self.routing_f_id.id == 22:
-            self.update({
-                'routing_s_id': 24,
-                'routing_t_id': 23,
-                'routing_fo_id': 21
-            })
-
-        elif self.routing_f_id.id == 23:
-            self.update({
-                'routing_s_id': 22,
-                'routing_t_id': 23,
-                'routing_fo_id': 24
-            })
-
-        elif self.routing_f_id.id == 24:
-            self.update({
-                'routing_s_id': 23,
-                'routing_t_id': 22,
-                'routing_fo_id': 21
-            })
+        
         else:
             pass
         
-#     @api.onchange('routing_f_id')
-#     def onchange_qty(self):
-#         for move_line in self.move_raw_ids:
-#             if move_line.is_ratio == False:
-#                 move_line.update({
-#                     'product_uom_qty_ratio': move_line.product_uom_qty/self.product_qty,
-#                     'is_ratio': True,
-#                 })
+
     
                 
     def button_plans(self):
-#         for move_line in self.move_raw_ids:
-#             if move_line.is_ratio == False:
-#                 move_line.update({
-#                     'product_uom_qty_ratio': move_line.product_uom_qty/self.product_qty,
-#                     'is_ratio': True,
-#                 })
+
 
         total_quantity = 0.0
         total_processes_qty = 0.0
@@ -423,7 +362,7 @@ class MrpProduction(models.Model):
             finish_qty = finish_qty + finish_line.qty_done
             
         total_processes_qty = total_processes_qty + minimum_planned
-        total_quantity = total_quantity + finish_qty
+#         total_quantity = total_quantity + finish_qty
             
             
         if total_quantity > minimum_planned:
