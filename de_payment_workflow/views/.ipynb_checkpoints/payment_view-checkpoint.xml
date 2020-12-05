@@ -23,9 +23,7 @@
                 <xpath expr="/form/header/field[@name='state']" position="replace">
 
                         <field name="state" widget="statusbar" statusbar_visible="draft,submit,approved,posted,reconciled,cancelled"
-                              />
-
-                    <!--  attrs="{'invisible':[('payment_type','!=','outbound')]}"   -->
+                               attrs="{'invisible':[('payment_type','!=','outbound')]}"/>
 
                 </xpath>
                 <form string="Register Payment">
