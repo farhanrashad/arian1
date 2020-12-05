@@ -17,12 +17,6 @@ from datetime import datetime
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-class ResPartner(models.Model):
-    _inherit = 'res.partner'
-    
-    contract = fields.Char(string="Contact Person")
-
-
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
     
@@ -52,6 +46,10 @@ class account_payment(models.Model):
     def send_approval(self):
         self.write({'state': 'waiting'})
         self.message_post(body=_('Dear %s, bill is sent for approval.') % (self.env.user.name,),
+                          partner_ids=[self.env.user.partner_id.id])
+    def action_reset_draft(self):
+        self.write({'state': 'draft'})
+        self.message_post(body=_('Dear %s, bill is Rejected from Approval.') % (self.env.user.name,),
                           partner_ids=[self.env.user.partner_id.id])
 
     def approve_bill(self):

@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-      <record id="inherit_res_partner_form_view" model="ir.ui.view">
-            <field name="name">inherit.res.partner.form.view</field>
-            <field name="model">res.partner</field>
-            <field name="inherit_id" ref="base.view_partner_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='vat']" position="after">
-                     <field name="contract" />
-                </xpath>     
-                
-             </field>
-          </record>  
-
-
-
          <record id="inherit_purchase_order_form_view" model="ir.ui.view">
             <field name="name">inherit.purchase.order.form.view</field>
             <field name="model">purchase.order</field>
@@ -22,6 +8,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//header/button[@name='action_rfq_send']" position="after">
                     <button name="send_approval_button" type="object" states="draft" string="Send For Approval" class="oe_highlight" id="bid_confirm"/>
+                  
 
                 </xpath> 
                 <xpath expr="//header//button[@name='button_confirm']" position="attributes">
@@ -47,6 +34,8 @@
                     <button name="send_approval" class="oe_highlight"  string="Send For Approval" type="object" attrs="{'invisible': ['|','|',('state', '!=', 'draft'), ('type', '!=', 'in_invoice'),('invoice_origin','!=', False)]}"/>
                     <button name="approve_bill" class="oe_highlight" states="waiting" groups="de_vendor_bill.group_waiting_for_approval" string="Approve" type="object"
                     />
+                    <button name="action_reset_draft" type="object" states="waiting" string="Not Approved" class="oe_highlight" id="bid_confirm" groups="de_vendor_bill.group_show_purchase_approve_button"/>
+                    
                 </xpath>
                 <xpath expr="//header/button[@name='action_post']" position="replace">
                            

@@ -16,7 +16,7 @@
   "name"                 :  "Vendor Bill Approval",
   "summary"              :  "This Module add the approval of vendor bill functionality in vendor bills",
   "category"             :  "Accounting",
-  "version"              :  "1.2",
+  "version"              :  "1.1",
   "sequence"             :  1,
   "author"               :  "Dynexcel",
   "license"              :  "AGPL-3",
@@ -26,7 +26,7 @@
 """,
   "live_test_url"        :  "",
   "depends"              :  [
-                             'base','account','purchase'
+                             'account','purchase'
                             ],
   "data"                 :  [
                             'security/ir.model.access.csv',
