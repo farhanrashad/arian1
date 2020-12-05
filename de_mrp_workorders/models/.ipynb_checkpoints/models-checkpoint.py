@@ -50,26 +50,7 @@ class StockPicking(models.Model):
 
 
 
-class StockQuant(models.Model):
-    _inherit = 'stock.quant'
-    
-    @api.model
-    def create(self, values):
-        t_uid = self.env.uid
-        if self.user_has_groups('de_mrp_workorders.group_stock_quant_restrict'):
-            raise exceptions.ValidationError('You are not allowed to create Stock')    
-        res = super(StockQuant, self).create(values)
-        return res
-    
-    
-#     @api.multi
-    def write(self, values):
-        t_uid = self.env.uid
-        if self.user_has_groups('de_mrp_workorders.group_stock_quant_restrict'):
-            raise exceptions.ValidationError('You are not allowed to update Stock')
-           
-        res = super(StockQuant, self).write(values)
-        return res
+
 
 
 
@@ -225,9 +206,10 @@ class MrpProduction(models.Model):
         res = super(MrpProduction, self).action_assign()
         for move_line in self.move_raw_ids:
             if move_line.is_ratio == False:
-                move_line.update({
-                    'product_uom_qty_planned_ratio': move_line.reserved_availability/move_line.product_uom_qty_ratio,
-                })
+                if move_line.product_uom_qty_ratio > 0:
+                    move_line.update({
+                        'product_uom_qty_planned_ratio': move_line.reserved_availability/move_line.product_uom_qty_ratio,
+                    })
         workorders =self.env['mrp.workorder'].search([('production_id','=',self.name)])
         for workorder in workorders:
             for move_raw in self.move_raw_ids:
