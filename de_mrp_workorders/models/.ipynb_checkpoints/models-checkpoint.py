@@ -6,10 +6,111 @@ from odoo import exceptions
 from odoo.exceptions import UserError, ValidationError
 
 
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+    
+    def action_update_operation(self):
+        for record in self:
+            line_data = []
+
+            record.do_unreserve()
+            for line in record.move_ids_without_package:
+                line.update({
+                  'state' : 'draft'
+
+                  })
+            for line in record.move_ids_without_package:
+                line.unlink()  
+
+            production_order = self.env['mrp.production'].search([('name','=',record.origin)])
+            bom_id = self.env['mrp.bom'].search([('product_id','=',record.mo_product_id.id)])
+            for bom_line in bom_id.bom_line_ids:
+                line_data.append((0,0,{
+                        'product_id': bom_line.product_id.id,
+                        'name': bom_line.product_id.name,
+                        'company_id': record.company_id.id,
+    #                     'state': 'assigned',
+                        'date': record.scheduled_date ,
+                        'date_expected': record.scheduled_date ,
+                        'location_dest_id': record.location_dest_id.id ,
+                        'location_id': record.location_id.id,
+                        'product_uom': bom_line.product_uom_id.id,
+                        'product_uom_qty':  bom_line.product_qty * production_order.product_qty,
+                    }))
+            record.move_ids_without_package = line_data 
+            record.update({
+                  'state' : 'assigned'
+
+                  })
+            for line in record.move_ids_without_package:
+                line.update({
+                  'state' : 'confirmed'
+
+                  })
+
+
+
+
+
+
+
+
 class MrpWorkorder(models.Model):
     _inherit = 'mrp.workorder'
     
     qty_production = fields.Float('Original Production Quantity', readonly=True)
+    is_ready = fields.Boolean(string="Is Ready")
+    is_close = fields.Boolean(string="Is Close")
+    
+    
+    def record_ready(self):
+        if self.qty_producing == 0.0:
+            raise exceptions.ValidationError('Please Input Quantity other than zero')
+        elif  self.qty_producing > 0.0 :   
+            self.update({
+                'is_ready': True
+            })
+
+    
+    
+    def record_production(self):
+        res = super(MrpWorkorder, self).record_production()
+#         self.time_ids.date_end = datetime.today()
+#         if self.is_last_unfinished_wo == True:
+        qty_produced = 0.0
+        finish_qty = 0.0
+        raw_material =self.env['mrp.production'].search([('name','=',self.production_id.name)])
+        for finish_line in raw_material.finished_move_line_ids:
+            if finish_line.done_move == False:
+                finish_qty = finish_qty + finish_line.qty_done
+#         workorders = self.env['mrp.workorder'].search([('production_id.name','=',raw_material.name)])            
+#         for workorder in workorders:
+#             if self.env.context['active_id'] == self.env.context['active_id']:
+#                 qty_produced = qty_produced + workorder.qty_produced
+        for move_line in raw_material.move_raw_ids:
+#                 if move_line.reserved_availability: 
+#                     move_line.update({
+#                         'quantity_done' : (move_line.reserved_availability/raw_material.product_qty)*qty_produced,
+#                     })  
+                
+            if move_line.product_uom_qty:
+                if move_line.is_done == False:
+                    move_line.update({
+                                'quantity_done' : (move_line.product_uom_qty_ratio)*finish_qty,
+                            })
+            else:
+                 pass
+#         if self.is_last_unfinished_wo == True:        
+#         if self.state == 'done':
+#             pass
+#         else:
+#             self.write({
+#                    'state': 'done',
+#                 })  
+        self.update({
+            'is_ready': False
+        })         
+        return res
     
     
 
@@ -17,46 +118,78 @@ class MrpWorkorder(models.Model):
     def do_finish(self):
         res = super(MrpWorkorder, self).do_finish()
         self.time_ids.date_end = datetime.today()
-        if self.is_last_unfinished_wo == True:
-            raw_material =self.env['mrp.production'].search([('name','=',self.production_id.name)])
-            for move_line in raw_material.move_raw_ids:
-                if move_line.reserved_availability: 
+#         if self.is_last_unfinished_wo == True:
+        qty_produced = 0.0
+        finish_qty = 0.0
+        raw_material =self.env['mrp.production'].search([('name','=',self.production_id.name)])
+        for finish_line in raw_material.finished_move_line_ids:
+            if finish_line.done_move == False:
+                finish_qty = finish_qty + finish_line.qty_done
+#         workorders = self.env['mrp.workorder'].search([('production_id.name','=',raw_material.name)])            
+#         for workorder in workorders:
+#             qty_produced = qty_produced + workorder.qty_produced
+        for move_line in raw_material.move_raw_ids:
+#                 if move_line.reserved_availability: 
+#                     move_line.update({
+#                         'quantity_done' : (move_line.reserved_availability/raw_material.product_qty)*qty_produced,
+#                     })  
+            if move_line.product_uom_qty: 
+                if move_line.is_done == False:
                     move_line.update({
-                        'quantity_done' : move_line.reserved_availability,
-                    })  
-                elif move_line.product_uom_qty: 
-                    move_line.update({
-                        'quantity_done' : move_line.product_uom_qty,
-                    })
+                            'quantity_done' : (move_line.product_uom_qty_ratio)*finish_qty,
+                        })
                 else:
                     pass
+#         if self.is_last_unfinished_wo == True:        
         if self.state == 'done':
             pass
         else:
             self.write({
-               'state': 'done',
-            })     
+                   'state': 'done',
+                })
+#         self.update({
+#             'is_ready': False
+#         })    
+            
         return res
     
     def action_open_manufacturing_order(self):
-        raw_material =self.env['mrp.production'].search([('name','=',self.production_id.name)])
-        for move_line in raw_material.move_raw_ids:
-            if move_line.reserved_availability: 
-                    move_line.update({
-                        'quantity_done' : move_line.reserved_availability,
-                    })  
-            elif move_line.product_uom_qty: 
-                move_line.update({
-                    'quantity_done' : move_line.product_uom_qty,
-                    })
-            else:
-                pass
         res = super(MrpWorkorder, self).action_open_manufacturing_order()  
+        finish_qty = 0.0
+        raw_material =self.env['mrp.production'].search([('name','=',self.production_id.name)])
+        for finish_line in raw_material.finished_move_line_ids:
+            if finish_line.done_move == False:
+                finish_qty = finish_qty + finish_line.qty_done
+#         workorders = self.env['mrp.workorder'].search([('production_id.name','=',raw_material.name)]) 
+#         qty_produced = 0.0
+#         for workorder in workorders:
+#             qty_produced = qty_produced + workorder.qty_produced
+        for move_line in raw_material.move_raw_ids:
+#             if move_line.reserved_availability: 
+#                     move_line.update({
+#                         'quantity_done' : (move_line.reserved_availability/raw_material.product_qty)*qty_produced,
+#                     })  
+            if move_line.product_uom_qty:
+                if move_line.is_done == False:
+                    move_line.update({
+                        'quantity_done' : (move_line.product_uom_qty_ratio)*finish_qty,
+                        })
+                else:
+                    pass
         return res
 
 
-
-
+    
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+    
+    product_uom_qty_ratio = fields.Float(string="Ratio", )
+    products_qty = fields.Float(string="Order Quantity")
+    product_uom_qty_planned_ratio = fields.Float(string="Planned Ratio")
+    is_ratio = fields.Boolean(string="Is Ratio")
+    
+           
+    
 
 
 
@@ -64,16 +197,19 @@ class MrpWorkorder(models.Model):
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
     
-#     def action_assign_test(self):
-#         for move_line in self.move_raw_ids:
-#             if move_line.product_uom_qty: 
-#                 move_line.update({
-#                     'quantity_done' : move_line.product_uom_qty,
-#                 })
     
     
+    
+    
+
     def action_assign(self):
         res = super(MrpProduction, self).action_assign()
+        for move_line in self.move_raw_ids:
+            if move_line.is_ratio == False:
+                if move_line.product_uom_qty_ratio > 0:
+                    move_line.update({
+                        'product_uom_qty_planned_ratio': move_line.reserved_availability/move_line.product_uom_qty_ratio,
+                    })
         workorders =self.env['mrp.workorder'].search([('production_id','=',self.name)])
         for workorder in workorders:
             for move_raw in self.move_raw_ids:
@@ -91,7 +227,7 @@ class MrpProduction(models.Model):
         for move_line in self.move_raw_ids:
             if move_line.product_uom_qty: 
                 move_line.update({
-                    'quantity_done' : move_line.product_uom_qty,
+#                     'quantity_done' : move_line.product_uom_qty,
                 })
         ress = super(MrpProduction, self).button_mark_done()
        
@@ -118,96 +254,75 @@ class MrpProduction(models.Model):
     
     @api.onchange('routing_f_id')
     def onchange_routing(self):
-        if self.routing_f_id.id == 13:
+        if self.routing_f_id.id == 5:
             self.update({
-                'routing_s_id': 14,
-                'routing_t_id': 15,
-                'routing_fo_id': 16,
+                'routing_s_id': 6,
+                'routing_t_id': 7,
+                'routing_fo_id': 8,
             })
             
-        elif self.routing_f_id.id == 14:
+        elif self.routing_f_id.id == 6:
             self.update({
-                'routing_s_id': 13,
-                'routing_t_id': 15,
-                'routing_fo_id': 16
+                'routing_s_id': 5,
+                'routing_t_id': 7,
+                'routing_fo_id': 8
             })
             
-        elif self.routing_f_id.id == 15:
+        elif self.routing_f_id.id == 7:
             self.update({
-                'routing_s_id': 14,
-                'routing_t_id': 13,
-                'routing_fo_id': 16
+                'routing_s_id': 8,
+                'routing_t_id': 5,
+                'routing_fo_id': 6
             })
             
-        elif self.routing_f_id.id == 16:
+        elif self.routing_f_id.id == 8:
             self.update({
-                'routing_s_id': 14,
-                'routing_t_id': 15,
-                'routing_fo_id': 13
+                'routing_s_id': 7,
+                'routing_t_id': 5,
+                'routing_fo_id': 6
             })
 
-        elif self.routing_f_id.id == 17:
+        elif self.routing_f_id.id == 9:
             self.update({
-                'routing_s_id': 20,
-                'routing_t_id': 19,
-                'routing_fo_id': 18
+                'routing_s_id': 10,
+                'routing_t_id': 11,
+                'routing_fo_id': 12
             })
 
-        elif self.routing_f_id.id == 18:
+        elif self.routing_f_id.id == 10:
             self.update({
-                'routing_s_id': 20,
-                'routing_t_id': 19,
-                'routing_fo_id': 17
+                'routing_s_id': 9,
+                'routing_t_id': 11,
+                'routing_fo_id': 12
             })
            
-        elif self.routing_f_id.id == 19:
+        elif self.routing_f_id.id == 11:
             self.update({
-                'routing_s_id': 20,
-                'routing_t_id': 18,
-                'routing_fo_id': 17
+                'routing_s_id': 9,
+                'routing_t_id': 10,
+                'routing_fo_id': 12
             })
 
-        elif self.routing_f_id.id == 20:
+        elif self.routing_f_id.id == 12:
             self.update({
-                'routing_s_id': 19,
-                'routing_t_id': 18,
-                'routing_fo_id': 17
+                'routing_s_id': 9,
+                'routing_t_id': 10,
+                'routing_fo_id': 11
             })
-        elif self.routing_f_id.id == 21:
-            self.update({
-                'routing_s_id': 22,
-                'routing_t_id': 23,
-                'routing_fo_id': 24
-            })
-
-        elif self.routing_f_id.id == 22:
-            self.update({
-                'routing_s_id': 24,
-                'routing_t_id': 23,
-                'routing_fo_id': 21
-            })
-
-        elif self.routing_f_id.id == 23:
-            self.update({
-                'routing_s_id': 22,
-                'routing_t_id': 23,
-                'routing_fo_id': 24
-            })
-
-        elif self.routing_f_id.id == 24:
-            self.update({
-                'routing_s_id': 23,
-                'routing_t_id': 22,
-                'routing_fo_id': 21
-            })
+        
         else:
             pass
-                        
-    
+        
+
     
                 
     def button_plans(self):
+
+
         total_quantity = 0.0
+        total_processes_qty = 0.0
+        finish_qty = 0.0
+        minimum_planned = 0.0
         if self.product_f_qty:
             total_quantity = total_quantity + self.product_f_qty
         if self.product_s_qty:
@@ -215,9 +330,25 @@ class MrpProduction(models.Model):
         if self.product_t_qty:
             total_quantity = total_quantity + self.product_t_qty
         if self.product_fo_qty:
-            total_quantity = total_quantity + self.product_fo_qty 
-        if total_quantity > self.product_qty:
-            raise exceptions.ValidationError('Routing Quantity must be equal to MO Quantity To Consume')            
+            total_quantity = total_quantity + self.product_fo_qty
+            
+        for line in self.move_raw_ids:
+            minimum_planned = line.product_uom_qty_planned_ratio
+            if line.product_uom_qty_planned_ratio > minimum_planned:
+                pass
+            else:
+                minimum_planned = line.product_uom_qty_planned_ratio
+ 
+            
+        for finish_line in self.finished_move_line_ids:
+            finish_qty = finish_qty + finish_line.qty_done
+            
+        total_processes_qty = total_processes_qty + minimum_planned
+#         total_quantity = total_quantity + finish_qty
+            
+            
+        if total_quantity > minimum_planned:
+            raise exceptions.ValidationError('Failed to Plan. Please Check  if the components are reserved properly and the requested quantity to plan is not greater than total demand. You can only plan Quantity:' + str(minimum_planned) )            
         else:        
             if self.routing_f_id != '' and self.product_f_qty != 0.0:
 
@@ -258,8 +389,10 @@ class MrpProduction(models.Model):
                             flines = {
                                 'raw_workorder_id': workorders.id,
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': (line.product_uom_qty / self.product_qty) * self.product_f_qty ,
-                                'qty_reserved': (line.reserved_availability / self.product_qty) * self.product_f_qty,
+                                'qty_to_consume': (line.product_uom_qty_ratio) * self.product_f_qty ,
+                                'qty_reserved': (line.product_uom_qty_ratio) * self.product_f_qty,
+
+#                                 'qty_reserved': (line.reserved_availability / self.product_qty) * self.product_f_qty,
                                 'product_uom_id': line.product_uom.id,
             #                     'qty_done': self.product_f_qty,
 
@@ -307,8 +440,8 @@ class MrpProduction(models.Model):
                             slines = {
                                 'raw_workorder_id': workorders.id,
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': (line.product_uom_qty / self.product_qty) * self.product_s_qty,
-                                'qty_reserved': (line.reserved_availability / self.product_qty) * self.product_s_qty,
+                                'qty_to_consume': (line.product_uom_qty_ratio) * self.product_s_qty,
+                                'qty_reserved': (line.product_uom_qty_ratio) * self.product_s_qty,
                                 'product_uom_id': line.product_uom.id,
             #                     'qty_done': self.product_s_qty,
                             }
@@ -353,8 +486,8 @@ class MrpProduction(models.Model):
                             tlines = {
                                 'raw_workorder_id': workorders.id,                    
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': (line.product_uom_qty / self.product_qty) * self.product_t_qty,
-                                'qty_reserved': (line.reserved_availability / self.product_qty) * self.product_t_qty,
+                                'qty_to_consume': (line.product_uom_qty_ratio) * self.product_t_qty,
+                                'qty_reserved': (line.product_uom_qty_ratio) * self.product_t_qty,
                                 'product_uom_id': line.product_uom.id,       
             #                     'qty_done': self.product_t_qty,
                             }
@@ -400,8 +533,8 @@ class MrpProduction(models.Model):
                             folines = {
                                 'raw_workorder_id': workorders.id,                    
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': (line.product_uom_qty / self.product_qty) * self.product_fo_qty ,
-                                'qty_reserved':  (line.reserved_availability / self.product_qty) * self.product_fo_qty , 
+                                'qty_to_consume': (line.product_uom_qty_ratio) * self.product_fo_qty ,
+                                'qty_reserved':  (line.product_uom_qty_ratio) * self.product_fo_qty , 
                                 'product_uom_id': line.product_uom.id,                  
             #                     'qty_done': self.product_fo_qty,                   
                             }

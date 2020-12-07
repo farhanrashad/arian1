@@ -1,11 +1,27 @@
 <odoo>
   <data>
+       <record id="mrp_stock_move_tree_view_inherit" model="ir.ui.view">
+			<field name="name">stock.move.tree.view.inherit</field>
+			<field name="model">stock.move</field>
+			<field name="inherit_id" ref="mrp.view_stock_move_raw_tree"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='is_done']" position="after">
+                        <field name="products_qty" invisible="1" />
+                        <field name="product_uom_qty_ratio" invisible="1" />
+                        <field name="product_uom_qty_planned_ratio" invisible="1" />
+                        <field name="is_ratio" invisible="1"/>
+
+				</xpath>
+			</field>
+	  </record>
+      
+      
        <record id="work_order_tree_view_inherit" model="ir.ui.view">
 			<field name="name">mrp.workorder.tree.view.inherit</field>
 			<field name="model">mrp.workorder</field>
 			<field name="inherit_id" ref="mrp.mrp_production_workorder_tree_view_inherit"/>
 			<field name="arch" type="xml">
-				<xpath expr="//field[@name='product_uom_id']" position="before">
+				<xpath expr="//field[@name='qty_production']" position="replace">
                         <field name="qty_production"/>
             
 				</xpath>
@@ -27,19 +43,48 @@
 			</field>
 	  </record>
       
+      <record id="mrp_tablet_work_order_form_view_inherit" model="ir.ui.view">
+			<field name="name">mrp.workorder.tablet.view.inherit</field>
+			<field name="model">mrp.workorder</field>
+			<field name="inherit_id" ref="mrp_workorder.mrp_workorder_view_form_tablet"/>
+			<field name="arch" type="xml">
+            <xpath expr="//field[@name='is_first_step']" position="after">
+                        <field name="is_ready"  invisible="1"/>
+                        <field name="is_close"  invisible="1"/>
+				</xpath>  
+             <xpath expr="//button[@name='record_production']" position="replace">
+                   <button name="record_production" type="object" string="Record production" attrs="{'invisible': ['|', '|', '|', '|','|',('is_ready', '=', False), ('is_user_working', '=', False), ('is_last_step', '!=', True), ('skipped_check_ids', '!=', []), ('is_last_lot', '=', True)]}" barcode_trigger="record" class="btn-primary"/>
+			 </xpath> 
+             <xpath expr="//button[@name='do_finish']" position="replace">
+                 <button name="do_finish" type="object" string="Mark as Done" icon="fa-check" attrs="{'invisible': ['|', '|', '|', '|','|',('is_ready', '!=', True), ('is_user_working', '=', False), ('is_last_step', '!=', True), ('skipped_check_ids', '!=', []), ('is_last_lot', '=', False)]}" class="btn-primary" barcode_trigger="cloWO"/>
+
+			 </xpath>    
+                
+              <xpath expr="//button[@name='action_open_manufacturing_order']" position="attributes">
+                 <attribute name="invisible">[('is_close', '!=', True)]</attribute>
+			 </xpath>    
+                
+            <xpath expr="//button[@name='record_production']" position="after">
+                <button name="record_ready" type="object" string="Ready" class="btn-success" attrs="{'invisible': ['|', '|', '|','|',('is_ready', '=', True), ('is_produced', '=', True), ('working_state', '=', 'blocked'), ('state', '!=', 'progress'), ('is_user_working', '=', False)]}"/>
+				</xpath>
+				
+			</field>
+	  </record>
+      
        <record id="work_order_form_view_inherit" model="ir.ui.view">
 			<field name="name">mrp.workorder.form.view.inherit</field>
 			<field name="model">mrp.workorder</field>
 			<field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
 			<field name="arch" type="xml">
-				<xpath expr="//field[@name='product_uom_id']" position="before">
+
+				<xpath expr="//field[@name='qty_production']" position="replace">
                         
                         <field name="qty_production"/>
 				</xpath>
 			</field>
 	  </record>
       
-      <record id="product_form_sale_tab_view_inherit" model="ir.ui.view">
+<!--       <record id="product_form_sale_tab_view_inherit" model="ir.ui.view">
 			<field name="name">product.template.form.view</field>
 			<field name="model">product.template</field>
 			<field name="inherit_id" ref="product.product_template_only_form_view"/>
@@ -51,7 +96,7 @@
                         <field name="composition"/>
 				</xpath>
 			</field>
-	  </record>
+	  </record> -->
       
       
       <record id="mrp_work_orders_wizard_view_inherit" model="ir.ui.view">
@@ -59,8 +104,11 @@
 			<field name="model">mrp.production</field>
 			<field name="inherit_id" ref="mrp.mrp_production_form_view"/>
 			<field name="arch" type="xml">
+                <xpath expr="//button[@name='post_inventory']" position="attributes">
+                    <attribute name="groups">de_mrp_workorders.group_allow_post_inventory</attribute>
+				</xpath>
                 <xpath expr="//button[@name='action_assign']" position="after">
-                    <button name="button_plans" attrs="{'invisible': ['|', ('state', '!=', 'confirmed'), ('routing_id', '=', False)]}" type="object" string="Plan Production" class="oe_highlight"/>
+                    <button name="button_plans" attrs="{'invisible': ['|', ('state', 'in', ['draft','to_close','done','cancel']), ('routing_id', '=', False)]}" type="object" string="Plan Production" class="oe_highlight"/>
 				</xpath>
                 
                	<xpath expr="//notebook" position="inside">
