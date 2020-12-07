@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+	<record id="view_bank_statement_form_inhrt" model="ir.ui.view">
+		<field name="name">account.bank.statement.form</field>
+		<field name="model">account.bank.statement</field>
+		<field name="inherit_id" ref="account.view_bank_statement_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="after">
+					<button string='Send for validation' name="action_Send_validation" type="object"
+						class="btn-primary" state="new" />
+			</xpath>
+			<xpath expr="//header/field[@name='state']" position="replace">
+					 <field name="state" widget="statusbar" statusbar_visible="open,sent_for_validation,confirm"/>
+			</xpath>
+
+		</field>
+	</record>
+
+</odoo>
+
+
+
