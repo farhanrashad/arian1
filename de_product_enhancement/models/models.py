@@ -2,9 +2,32 @@
 
 from odoo import models, fields, api, _
 from datetime import date, timedelta
-from odoo.exceptions import UserError
 from dateutil.relativedelta import relativedelta
+from odoo import exceptions
+from odoo.exceptions import UserError, ValidationError
 from datetime import datetime
+
+
+class StockQuant(models.Model):
+    _inherit = 'stock.quant'
+    
+    @api.model
+    def create(self, values):
+        t_uid = self.env.uid
+        if self.user_has_groups('de_product_enhancement.group_stock_quant_restrict'):
+            raise exceptions.ValidationError('You are not allowed to create Stock')    
+        res = super(StockQuant, self).create(values)
+        return res
+    
+    
+#     @api.multi
+    def write(self, values):
+        t_uid = self.env.uid
+        if self.user_has_groups('de_product_enhancement.group_stock_quant_restrict'):
+            raise exceptions.ValidationError('You are not allowed to update Stock')
+           
+        res = super(StockQuant, self).write(values)
+        return res
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -22,7 +45,7 @@ class StockPicking(models.Model):
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
-    
+
     def button_done(self):
         res = super(PurchaseOrder, self).button_done()
         picking = self.env['stock.picking'].search([('origin','=',self.name)])
@@ -32,14 +55,11 @@ class PurchaseOrder(models.Model):
                     'state': 'cancel'
                 })
       
-        return res
-    
+        return res     
     
     receipt_date = fields.Date(string='Receipt Date')
     payment_term_date =  fields.Date(string='Expected Payment Date')
     is_received = fields.Boolean(string="Is Received")
-    
-       
     
     @api.onchange('receipt_date','payment_term_id')
     def _check_change(self):
@@ -55,9 +75,6 @@ class PurchaseOrder(models.Model):
     def onchange_receipt_date(self):
         if self.receipt_date:
             self.date_planned = self.receipt_date
-            
-
-    
 
 
 class SaleOrder(models.Model):
@@ -69,60 +86,4 @@ class SaleOrder(models.Model):
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
     
-    @api.model
-    def create(self,vals):
-        vendor_num = 0
-#         for vendor in vals['seller_ids']:
-#         if len(vals['seller_ids']) == 0:
-#             vendor_num = vendor_num + 1
-#             if vendor == 0:
-        try:
-            if len(vals['seller_ids']) > 0:
-                pass
-        except:
-            raise UserError(_('Please Define Vendor On Purchase Tab'))
-
-
-            
-#         if self.nbr_reordering_rules == 0:
-#             raise UserError(_('Please Define Reordring Rule'))
-#         else:
-#             pass
-            
-            
-        res = super(ProductTemplate,self).create(vals)
-        return res
-    
-    def write(self, vals):
-        try:
-            if len(vals['seller_ids']) > 0:
-                pass
-        except:
-            raise UserError(_('Please Define Vendor On Purchase Tab'))
-      
-
-
-            
-#         if self.nbr_reordering_rules == 0:
-#             raise UserError(_('Please Define Reordring Rule'))
-#         else:
-#             pass
-        res = super(ProductTemplate,self).write(vals)
-        return res
-
-              
-    
-    
-    
-    allow_location = fields.Boolean(string="Is Finished or Un-Finished Product") 
-    
-    @api.onchange('allow_location')
-    def onchange_location(self):
-        if  self.allow_location == True:
-            if self.property_stock_production.id == 15:
-                self.property_stock_production = 22
-        if  self.allow_location == False:
-            if self.property_stock_production.id == 22:
-                self.property_stock_production = 15    
-            
-            
+    allow_location = fields.Boolean(string="Change Location")    
