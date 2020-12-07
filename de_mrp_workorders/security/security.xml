@@ -1,6 +1,6 @@
 <odoo>
   <data>
-      <record id="post_inventory_order_button" model="ir.module.category">
+   <!--   <record id="post_inventory_order_button" model="ir.module.category">
          <field name="name">Post Inventory</field>
          <field name="description">Allow user to post Inventory</field>
          <field name="sequence">49</field>
@@ -18,7 +18,7 @@
       <record id="group_stock_quant_restrict" model="res.groups">
         <field name="name">Restrict user to Stock Quant</field>
        <field name="category_id" ref="post_inventory_order_button"/>
-     </record>
+     </record>  -->
         
   </data>
 </odoo>

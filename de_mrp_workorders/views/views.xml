@@ -84,29 +84,14 @@
 			</field>
 	  </record>
       
-<!--       <record id="product_form_sale_tab_view_inherit" model="ir.ui.view">
-			<field name="name">product.template.form.view</field>
-			<field name="model">product.template</field>
-			<field name="inherit_id" ref="product.product_template_only_form_view"/>
-			<field name="arch" type="xml">
-				<xpath expr="//field[@name='invoice_policy']" position="after">
-                        <field name="style"/>
-                        <field name="color"/>
-                        <field name="hs_code"/>
-                        <field name="composition"/>
-				</xpath>
-			</field>
-	  </record> -->
-      
+
       
       <record id="mrp_work_orders_wizard_view_inherit" model="ir.ui.view">
 			<field name="name">mrp.production.form.view</field>
 			<field name="model">mrp.production</field>
 			<field name="inherit_id" ref="mrp.mrp_production_form_view"/>
 			<field name="arch" type="xml">
-                <xpath expr="//button[@name='post_inventory']" position="attributes">
-                    <attribute name="groups">de_mrp_workorders.group_allow_post_inventory</attribute>
-				</xpath>
+                
                 <xpath expr="//button[@name='action_assign']" position="after">
                     <button name="button_plans" attrs="{'invisible': ['|', ('state', 'in', ['draft','to_close','done','cancel']), ('routing_id', '=', False)]}" type="object" string="Plan Production" class="oe_highlight"/>
 				</xpath>
