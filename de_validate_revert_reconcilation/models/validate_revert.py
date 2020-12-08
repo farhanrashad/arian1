@@ -5,6 +5,18 @@ from odoo import models,fields,  _
 
 class AccountBandkStatementInherit(models.Model):
     _inherit = 'account.bank.statement'
+    
+    
+    #     @api.multi
+#     def write(self, values):
+#         t_uid = self.env.uid
+#         if self.user_has_groups('de_validate_revert_reconcilation.revert_reconciliation_users'):
+            
+# #             raise exceptions.ValidationError('You are not allowed to update Stock')
+           
+#         res = super(AccountBandkStatementInherit, self).write(values)
+#         return res
+    
 
     is_access_revert = fields.Boolean('Access Reverst')
     state = fields.Selection(selection_add=[
@@ -15,32 +27,10 @@ class AccountBandkStatementInherit(models.Model):
     def action_Send_validation(self):
         self.write({
             'state': 'sent_for_validation',
-#             'confirm_by': self.env.user,
-#             'confirm_date': datetime.today(),
         })
         
     def check_confirm_bank(self):
         self.write({
             'state': 'confirm',
-#             'confirm_by': self.env.user,
-#             'confirm_date': datetime.today(),
         })
         
-        
-        
-        
-        
-        
-        
-    # , track_visibility = 'onchange'
-
-    # def name_get(self):
-    #     my_list = []
-    #     for r in self:
-    #         dataa = r.my_name
-    #         if r.my_name:
-    #             # dataa += " ({})".format(r.age)+" ({})".format(r.dob)
-    #             my_list.append((r.id, dataa))
-    #             # print(my_list,"\n")
-    #     return my_list
-

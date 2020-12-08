@@ -1,37 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
-<!-- <odoo>
-
-	<record id="view_bank_statement_form_inhrt" model="ir.ui.view">
-		<field name="name">account.bank.statement.form</field>
-		<field name="model">account.bank.statement</field>
-		<field name="inherit_id" ref="account.view_bank_statement_form"/>
-		<field name="arch" type="xml">
-            
-			<xpath expr="//header/field[@name='state']" position="replace">
-					 <field name="state" widget="statusbar" statusbar_visible="open,sent_for_validation,confirm"/>
-			</xpath>
-            
-            <xpath expr="//header/button[@name='check_confirm_bank']" position="replace">
-				<button name="check_confirm_bank" string="Validate" type="object" class="oe_highlight" states="sent_for_validation" />	 
-			</xpath>
-            
-            <xpath expr="//header/button[@name='316']" position="before">
-              <button string='Send for validation' name="action_Send_validation" states="open" type="object" class="btn-primary" />
-            </xpath> 
-            
-            <xpath expr="//group" position="after">
-                <group>
-                    <field name="is_access_revert" />
-                </group>
-            </xpath> 
-            
-		</field>
-	</record>
-
-</odoo>
- -->
-
 <odoo>
 
 	<record id="view_bank_statement_form_inhrt" model="ir.ui.view">
@@ -39,41 +6,71 @@
 		<field name="model">account.bank.statement</field>
 		<field name="inherit_id" ref="account.view_bank_statement_form"/>
 		<field name="arch" type="xml">
-<!-- 			<xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="after">
-					<button string='Send for validation' name="action_Send_validation" type="object"
-						class="btn-primary" state="new" />
-			</xpath> -->
+
             <xpath expr="//header/field[@name='state']" position="replace">
 					 <field name="state" widget="statusbar" statusbar_visible="open,sent_for_validation,confirm"/>
 			</xpath>
             
-            <xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="attributes">
-                <attribute name="attrs">{'invisible':[('state', '!=', 'open'),('state', '!=', 'sent_for_validation')]}</attribute>
+            <xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="replace">
+                    <button name="action_bank_reconcile_bank_statements" string="Reconcile" type="object" class="oe_highlight" attrs="{'invisible':['|','|',('all_lines_reconciled','=',True),('line_ids','=',[]),('state', '=', 'confirm')]}"/>
+
+                
+                
+<!--                 <attribute name="invisible">[('state', '=', 'confierm')]</attribute> -->
+<!--                 <attribute name="attrs">{'invisible':[('state', '!=', 'open'),('state', '!=', 'sent_for_validation')]}</attribute> -->
             </xpath> 
 			
              <xpath expr="//header/button[@name='check_confirm_bank']" position="attributes">
 				<attribute name="attrs">{'invisible':[('state', '!=', 'sent_for_validation')]}</attribute>	 
 			</xpath>
             
+            
+            
+            
+            
+          
+            
+            <xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="attributes">
+                <attribute name="groups">de_validate_revert_reconcilation.revert_reconciliation_users</attribute>
+            </xpath> 
+			
+             <xpath expr="//header/button[@name='check_confirm_bank']" position="attributes">
+				<attribute name="groups">de_validate_revert_reconcilation.revert_reconciliation_users</attribute>	 
+                 <attribute name="states">open,confirm</attribute>	 
+			</xpath>
+            
+            <xpath expr="//header/button[@name='button_reopen']" position="attributes">
+				<attribute name="groups">de_validate_revert_reconcilation.revert_reconciliation_users</attribute>	 
+			</xpath>
+            
+            
+            
+            
+            
+            
+            
+            
+            
             <xpath expr="//header" position="inside">
-              <button string='Send for validation' name="action_Send_validation" states="open" type="object" class="btn-primary"
-                      group='revert_reconciliation_groups_root' />
+              <button string='Send for validation' name="action_Send_validation" states="open" type="object" class="btn-primary" />
             </xpath>
             
-<!--             <xpath expr="//header/button[@name='check_confirm_bank']" position="replace">
-				<button name="check_confirm_bank" string="Validate" type="object" class="oe_highlight" states="sent_for_validation" />	 
-			</xpath> -->
             
-             
-    
+<!--              groups='de_validate_revert_reconcilation.revert_reconciliation_users'  -->
+            
+            
+<!--             <button name="button_cancel_reconciliation" attrs="{'invisible': ['|',('journal_entry_ids', '=', []), ('state', '=', 'confirm')]}" string="Revert reconciliation" type="object" icon="fa-undo"/> -->
+            
+            
+            
+            <xpath expr="//notebook/page/field/tree/button[@name='button_cancel_reconciliation']" position="attributes">
+              <attribute name="groups">de_validate_revert_reconcilation.revert_revert_users</attribute>
+            </xpath>
+            
+   
 		</field>
 	</record>
 
 </odoo>
 
  
-
-<!-- attrs="{'invisible':['|','|',('all_lines_reconciled','=',False),('line_ids','=',[]),('state', '!=', 'open')]}" -->
-
-<!-- <button name="action_bank_reconcile_bank_statements" string="Reconcile" type="object" class="oe_highlight" attrs="{'invisible':['|','|',('all_lines_reconciled','=',True),('line_ids','=',[]),('state', '!=', 'open')]}"/>
- -->

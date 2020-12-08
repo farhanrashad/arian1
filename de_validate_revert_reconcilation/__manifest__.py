@@ -11,7 +11,7 @@
     "author": "Dynexcel",
     "website": "http://www.dynexcel.co",
     "version": '14.0.0.0',
-    "depends": ['base', 'account'],
+    "depends": ['base', 'account','account_accountant'],
     "data": [
 
         # 'security/ir.model.access.csv',
