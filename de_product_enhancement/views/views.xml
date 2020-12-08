@@ -76,8 +76,8 @@
 			<field name="inherit_id" ref="product.product_template_only_form_view"/>
 			<field name="arch" type="xml">
 				<xpath expr="//field[@name='tracking']" position="after">
-<!--                         <field name="allow_location"/>
-             -->
+                        <field name="allow_location"/>
+            
 				</xpath>
 			</field>
 	   </record>

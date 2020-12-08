@@ -86,4 +86,29 @@ class SaleOrder(models.Model):
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
     
-    allow_location = fields.Boolean(string="Change Location")    
+    
+    @api.model
+    def create(self, values):
+        try:
+            if values['purchase_ok'] == True:
+                if values['seller_ids']:
+                    pass
+        except:
+            raise exceptions.ValidationError('Please Select Vendor On Purchase Tab.')    
+        res = super(ProductTemplate, self).create(values)
+        return res
+    
+    
+
+    
+    allow_location = fields.Boolean(string="Is Finish or Un-Finished")    
+    
+    @api.onchange('allow_location')
+    def onchange_location(self):
+        if self.allow_location == True:
+            if self.property_stock_production.id == 15:
+                self.property_stock_production = 22
+        elif self.allow_location == False:        
+            if self.property_stock_production.id == 22:
+                self.property_stock_production = 15    
+    
