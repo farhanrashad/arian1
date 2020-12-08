@@ -13,12 +13,7 @@
     "version": '14.0.0.0',
     "depends": ['base', 'account','account_accountant'],
     "data": [
-
-        # 'security/ir.model.access.csv',
         'security/security.xml',
-        # 'report/fleet_request_report.xml',
-        # 'report/fleet_request_report_pdf.xml',
-        # 'wizard/vehicle_request_wizard_view.xml',
         'view/validate_revert_view.xml',
     ],
 
