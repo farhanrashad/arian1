@@ -97,7 +97,7 @@ class ProductTemplate(models.Model):
         res = super(ProductTemplate, self).create(values)
         return res
     
-    allow_location = fields.Boolean(string="Change Location") 
+    allow_location = fields.Boolean(string="Is Finished or Un-Finished") 
 
     @api.onchange('allow_location')
     def onchange_location(self):
