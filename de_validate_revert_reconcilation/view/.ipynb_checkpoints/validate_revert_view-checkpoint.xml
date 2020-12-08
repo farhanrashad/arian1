@@ -11,66 +11,49 @@
 					 <field name="state" widget="statusbar" statusbar_visible="open,sent_for_validation,confirm"/>
 			</xpath>
             
-            <xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="replace">
-                    <button name="action_bank_reconcile_bank_statements" string="Reconcile" type="object" class="oe_highlight" attrs="{'invisible':['|','|',('all_lines_reconciled','=',True),('line_ids','=',[]),('state', '=', 'confirm')]}"/>
-
-                
-                
-<!--                 <attribute name="invisible">[('state', '=', 'confierm')]</attribute> -->
-<!--                 <attribute name="attrs">{'invisible':[('state', '!=', 'open'),('state', '!=', 'sent_for_validation')]}</attribute> -->
+<!--              <xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="attributes">
+                <attribute name="groups">de_validate_revert_reconcilation.revert_reconciliation_users</attribute>
+            </xpath>  -->
+            
+             <xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="after">
+                     <button name="action_bank_reconcile_bank_statements" string="Reconcile" type="object" class="oe_highlight" attrs="{'invisible':['|','|',('all_lines_reconciled','=',True),('line_ids','=',[]),('state', 'in', ['open','confirm'])]}" groups="de_validate_revert_reconcilation.revert_reconciliation_users"/>
             </xpath> 
-			
+            
+<!--             <xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="attributes">
+                <attribute name="states">open</attribute>	 
+            </xpath>  -->
+<!--             sent_for_validation -->
+            <xpath expr="//header/button[@name='316']" position="attributes">
+                <attribute name="states">open</attribute>	 
+            </xpath> 
+			 
              <xpath expr="//header/button[@name='check_confirm_bank']" position="attributes">
-				<attribute name="attrs">{'invisible':[('state', '!=', 'sent_for_validation')]}</attribute>	 
+				<attribute name="states">sent_for_validation</attribute>	 
 			</xpath>
             
+           
             
-            
-            
-            
-          
-            
-            <xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="attributes">
+            <xpath expr="//header/button[@name='316']" position="attributes">
                 <attribute name="groups">de_validate_revert_reconcilation.revert_reconciliation_users</attribute>
             </xpath> 
 			
              <xpath expr="//header/button[@name='check_confirm_bank']" position="attributes">
-				<attribute name="groups">de_validate_revert_reconcilation.revert_reconciliation_users</attribute>	 
-                 <attribute name="states">open,confirm</attribute>	 
+				<attribute name="groups">de_validate_revert_reconcilation.revert_reconciliation_users</attribute>	  
 			</xpath>
             
             <xpath expr="//header/button[@name='button_reopen']" position="attributes">
 				<attribute name="groups">de_validate_revert_reconcilation.revert_reconciliation_users</attribute>	 
 			</xpath>
             
-            
-            
-            
-            
-            
-            
-            
-            
             <xpath expr="//header" position="inside">
               <button string='Send for validation' name="action_Send_validation" states="open" type="object" class="btn-primary" />
-            </xpath>
-            
-            
-<!--              groups='de_validate_revert_reconcilation.revert_reconciliation_users'  -->
-            
-            
-<!--             <button name="button_cancel_reconciliation" attrs="{'invisible': ['|',('journal_entry_ids', '=', []), ('state', '=', 'confirm')]}" string="Revert reconciliation" type="object" icon="fa-undo"/> -->
-            
-            
+            </xpath> 
             
             <xpath expr="//notebook/page/field/tree/button[@name='button_cancel_reconciliation']" position="attributes">
               <attribute name="groups">de_validate_revert_reconcilation.revert_revert_users</attribute>
             </xpath>
-            
    
 		</field>
 	</record>
 
 </odoo>
-
- 
