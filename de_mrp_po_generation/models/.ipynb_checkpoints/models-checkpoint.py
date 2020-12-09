@@ -111,8 +111,9 @@ class MoBeforhand(models.Model):
                                         'product_uom_qty_order': line.product_uom_qty,
                                         'on_hand_qty':line.product_id.qty_available,
                                         'forcast_qty': line.product_id.virtual_available,
+                                    }))
 
-                        bom_produt = self.env['mrp.bom'].search([('product_id','=',line.product_id.id)])
+
                         
             rec.mo_line_ids = data
             self.write ({
