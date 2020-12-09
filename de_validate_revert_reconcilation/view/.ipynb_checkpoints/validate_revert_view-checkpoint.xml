@@ -11,12 +11,18 @@
 					 <field name="state" widget="statusbar" statusbar_visible="open,sent_for_validation,confirm"/>
 			</xpath>
             
-             <xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="attributes">
+<!--              <xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="attributes">
                 <attribute name="groups">de_validate_revert_reconcilation.revert_reconciliation_users</attribute>
-            </xpath> 
+            </xpath>  -->
             
-            <xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="attributes">
+<!--             <xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="attributes">
                 <attribute name="states">open,sent_for_validation,confirm</attribute>	 
+            </xpath>  -->
+            
+            
+            
+            <xpath expr="//header/button[@name='action_bank_reconcile_bank_statements']" position="after">
+                    <button name="action_bank_reconcile_bank_statements" string="Reconcile" type="object" class="oe_highlight" attrs="{'invisible':['|','|',('all_lines_reconciled','=',True),('line_ids','=',[]),('state', '!=', 'sent_for_validation')]}" groups="de_validate_revert_reconcilation.revert_reconciliation_users"/>
             </xpath> 
             
             <xpath expr="//header/button[@name='316']" position="attributes">
@@ -26,7 +32,6 @@
             <xpath expr="//header/button[@name='check_confirm_bank']" position="attributes">
 				<attribute name="attrs">{'invisible':[('state', 'in', ['open','confirm'])]}</attribute>	 	 
 			</xpath>
-            
             <xpath expr="//header/button[@name='check_confirm_bank']" position="attributes">
 				<attribute name="groups">de_validate_revert_reconcilation.revert_reconciliation_users</attribute>	  
 			</xpath>
