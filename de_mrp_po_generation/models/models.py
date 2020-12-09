@@ -89,19 +89,31 @@ class MoBeforhand(models.Model):
                         for product in bom_produt:
                             for subcontractor in product.subcontractor_ids:
                                 line_data.append(subcontractor.id)
-                        data.append((0,0,{
-                                    'mo_id': self.id,
-                                    'po_process': True, 
-                                     'product_id': line.product_id.id,
-                                    'product_uom_qty_so': line.product_uom_qty,
-                                    'seller_ids':  line_data,
-                                    'product_uom_qty_order': line.product_uom_qty,
-                                    'on_hand_qty':line.product_id.qty_available,
-                                    'forcast_qty': line.product_id.virtual_available,
-                                    'partner_id': vendor_data[0],
-#                                    'partner_id': line.product_id.seller_ids.name.id[0],
-                             }))
-                        bom_produt = self.env['mrp.bom'].search([('product_id','=',line.product_id.id)])
+                        if  line_data:       
+                            data.append((0,0,{
+                                        'mo_id': self.id,
+                                        'po_process': True, 
+                                         'product_id': line.product_id.id,
+                                        'product_uom_qty_so': line.product_uom_qty,
+                                        'seller_ids':  line_data,
+                                        'product_uom_qty_order': line.product_uom_qty,
+                                        'on_hand_qty':line.product_id.qty_available,
+                                        'forcast_qty': line.product_id.virtual_available,
+                                        'partner_id': line_data[0],
+                                 }))
+                        else:
+                            data.append((0,0,{
+                                        'mo_id': self.id,
+                                        'po_process': True, 
+                                         'product_id': line.product_id.id,
+                                        'product_uom_qty_so': line.product_uom_qty,
+                                        'seller_ids':  line_data,
+                                        'product_uom_qty_order': line.product_uom_qty,
+                                        'on_hand_qty':line.product_id.qty_available,
+                                        'forcast_qty': line.product_id.virtual_available,
+                                    }))
+
+
                         
             rec.mo_line_ids = data
             self.write ({

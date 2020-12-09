@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record model="res.groups" id="revert_reconciliation_users">
+            <field name="name">Allow Users for Validation</field>
+            
+        </record>
+    </data>
+    
+    <data>
+        <record model="res.groups" id="revert_revert_users">
+            <field name="name">Allow Revert Reconciliation</field>
+        </record>
+    </data>
+    
+</odoo>
