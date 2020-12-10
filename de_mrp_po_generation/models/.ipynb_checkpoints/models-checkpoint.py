@@ -10,7 +10,7 @@ from odoo.exceptions import Warning
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
     
-    
+
     
     def action_confirm(self):
 
@@ -23,7 +23,7 @@ class SaleOrder(models.Model):
         document.get_sheet_lines()
         document.action_generate_po()
         document.action_done()
-        return res
+       
     
     
     
@@ -35,6 +35,20 @@ class MoBeforhand(models.Model):
     _description = 'Create PO from MO'
     _order = 'name desc, id desc'
     
+    
+    def action_processed_planning(self):
+        
+        for sale_order in self:
+            vals = {
+                'date': fields.Date.today(),
+                'sale_id': sale_order.id,
+            }
+            document = self.env['mrp.mo.beforehand'].create(vals)
+            document.get_sheet_lines()
+            document.action_generate_po()
+            document.action_done()
+           
+           
     
     def material_planning(self):
         self.ensure_one()
