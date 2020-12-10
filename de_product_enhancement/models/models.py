@@ -86,15 +86,30 @@ class SaleOrder(models.Model):
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
+
+
+    @api.returns('self', lambda value: value.id)
+    def copy(self, default=None):
+        # TDE FIXME: should probably be copy_data
+        self.ensure_one()
+        if default is None:
+            default = {}
+        if 'name' not in default:
+            default['name'] = _("%s (copy)") % self.name
+            default['seller_ids'] = self.seller_ids
+        return super(ProductTemplate, self).copy(default=default)
+        
+
     @api.model
     def create(self, values):
+        res = super(ProductTemplate, self).create(values)
         try:
             if values['purchase_ok'] == True:
                 if values['seller_ids']:
                     pass
         except:
             raise exceptions.ValidationError('Please Select Vendor On Purchase Tab.')    
-        res = super(ProductTemplate, self).create(values)
+        
         return res
     
     allow_location = fields.Boolean(string="Is Finished or Un-Finished") 
