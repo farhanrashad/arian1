@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="view_sale_order_form_ex" model="ir.ui.view">
+        <field name="name">sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name = 'note_group']" position="after">
+                <group col="12">
+                    <group >
+                        <field col="12" name="total_quantity"/>
+                        <field col="12" name="total_delivered_quantity"/><br></br>
+                        <field col="12" name="total_invoiced_quantity"/>
+                    </group>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
