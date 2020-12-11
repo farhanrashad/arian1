@@ -24,10 +24,10 @@
 
     # always loaded
     'data': [
+        'wizard/mo_wizard_views.xml',
         'data/po_create_server_action.xml',
         'data/sequence.xml',
         'security/ir.model.access.csv',
-#         'wizard/mo_wizard_views.xml',
         'views/views.xml',
         'views/templates.xml',
     ],

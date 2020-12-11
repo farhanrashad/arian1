@@ -1,5 +1,18 @@
 <odoo>
   <data>
+    <record id="sale_order_form_view_inherit" model="ir.ui.view">
+			<field name="name">sale.order.tree.view.inherit</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='partner_id']" position="after">
+                        <field name="is_processed" />
+            
+				</xpath>
+              
+			</field>
+	   </record>  
+      
    <record id="mrp_mo_beforehand_view_form" model="ir.ui.view">
         <field name="name">Processed Material Planning form view</field>
         <field name="model">mrp.mo.beforehand</field>
@@ -106,19 +119,8 @@
         <field name="res_model">mrp.mo.beforehand</field>
         <field name="view_mode">tree,form</field>
     </record>
-      
-      
-    <record id="generate_processed_material_action" model="ir.actions.server">
-            <field name="name">Processed Material Planning</field>
-            <field name="model_id" ref="de_mrp_po_generation.model_sale_order"/>
-            <field name="binding_model_id" ref="de_mrp_po_generation.model_sale_order"/>            
-            <field name="binding_view_types">list</field>
-            <field name="state">code</field>
-            <field name="code">action = model.action_processed_planning()</field>
-        </record>  
 
     <menuitem id="mos_beforehand_menu" name="Processed Material Planning" parent="mrp.menu_mrp_manufacturing" action="mo_beforehand_generation_action" sequence="3"/>
-      <menuitem id="mos_beforehand_inventory_menu" name="Processed Material Planning" parent="stock.menu_stock_warehouse_mgmt" action="mo_beforehand_generation_action" sequence="3"/>   
-<menuitem id="inventory_processed_material_menu" name="Processed Material Scheduler" parent="stock.menu_stock_warehouse_mgmt" action="generate_processed_material_action" sequence="129"/>
+<menuitem id="inventory_mos_beforehand_menu" name="Processed Material Planning" parent="stock.menu_stock_warehouse_mgmt" action="mo_beforehand_generation_action" sequence="3"/>
   </data>
 </odoo>

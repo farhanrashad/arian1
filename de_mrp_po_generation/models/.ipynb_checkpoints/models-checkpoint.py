@@ -10,43 +10,18 @@ from odoo.exceptions import Warning
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
     
-
-    
-    def action_confirm(self):
-
-        res = super(SaleOrder, self).action_confirm()
-        vals = {
-            'date': fields.Date.today(),
-            'sale_id': self.id,
-        }
-        document = self.env['mrp.mo.beforehand'].create(vals)
-        document.get_sheet_lines()
-        document.action_generate_po()
-        document.action_done()
-       
+    is_processed = fields.Boolean(string="Is Processed")
     
     
     
-
-
-
+    
 class MoBeforhand(models.Model):
     _name = 'mrp.mo.beforehand'
     _description = 'Create PO from MO'
     _order = 'name desc, id desc'
     
     
-    def action_processed_planning(self):
-        
-        for sale_order in self:
-            vals = {
-                'date': fields.Date.today(),
-                'sale_id': sale_order.id,
-            }
-            document = self.env['mrp.mo.beforehand'].create(vals)
-            document.get_sheet_lines()
-            document.action_generate_po()
-            document.action_done()
+
            
            
     
@@ -135,11 +110,11 @@ class MoBeforhand(models.Model):
             })
             
     def action_generate_po(self):
-        for line in self.mo_line_ids:
-            if line.partner_id:
-                pass
-            else:
-                raise UserError(_('Please Select Vendor for all selected lines.'))
+#         for line in self.mo_line_ids:
+#             if line.partner_id:
+#                 pass
+#             else:
+#                 raise UserError(_('Please Select Vendor for all selected lines.'))
         vendor_list = []
         for line in self.mo_line_ids:
             if line.partner_id and line.po_created == False:
@@ -147,38 +122,69 @@ class MoBeforhand(models.Model):
             else:
                 pass
         list = set(vendor_list)
-        for te in list:
+        for vendor in list:
             product = []
-            for re in self.mo_line_ids:
-                if te == re.partner_id:
-                    if re.po_created == False:
+            for order_line in self.mo_line_ids:
+                if vendor == order_line.partner_id:
+                    if order_line.po_created == False:
                         valss = {
-                            'product_id': re.product_id.id,
-                            'name': re.product_id.name,
-                            'product_uom_qty': re.product_uom_qty_order,
-                            'price_unit': re.product_id.standard_price,
+                            'product_id': order_line.product_id.id,
+                            'name': order_line.product_id.name,
+                            'product_uom_qty': order_line.product_uom_qty_order,
+                            'price_unit': order_line.product_id.standard_price,
                             'date_planned': fields.Date.today(),
-                            'product_uom': re.product_id.uom_po_id.id,
+                            'product_uom': order_line.product_id.uom_po_id.id,
                         }
                         product.append(valss)
             vals = {
-                  'partner_id': te.id,
+                  'partner_id': vendor.id,
                   'date_order': fields.Date.today(),
                   'sale_ref_id': self.sale_id.name,
                   'origin': self.name,
                     }
             order = self.env['purchase.order'].create(vals)
-            for test in product:
+            for line_product in product:
                 order_line = {
                        'order_id': order.id,
-                       'product_id': test['product_id'],
-                       'name': test['name'],
-                       'product_qty': test['product_uom_qty'],
-                       'price_unit': test['price_unit'],
+                       'product_id': line_product['product_id'],
+                       'name': line_product['name'],
+                       'product_qty': line_product['product_uom_qty'],
+                       'price_unit': line_product['price_unit'],
                        'date_planned': fields.Date.today(),
-                       'product_uom': test['product_uom'],
+                       'product_uom': line_product['product_uom'],
                         }
                 orders_lines = self.env['purchase.order.line'].create(order_line)
+        product_without_vendor = []        
+        for line in self.mo_line_ids:
+            if not line.partner_id:
+                prod_vals = {
+                            'product_id': line.product_id.id,
+                            'name': line.product_id.name,
+                            'product_uom_qty': line.product_uom_qty_order,
+                            'price_unit': line.product_id.standard_price,
+                            'date_planned': fields.Date.today(),
+                            'product_uom': line.product_id.uom_po_id.id,
+                        }
+                product_without_vendor.append(prod_vals)
+        vendor1 = self.env['res.partner'].search([])        
+        vals = {
+               'partner_id': vendor1[0].id,
+               'date_order': fields.Date.today(),
+               'sale_ref_id': self.sale_id.name,
+               'origin': self.name,
+                    }
+        vendor1_order = self.env['purchase.order'].create(vals)
+        for line_product in product_without_vendor:
+            order_line = {
+                       'order_id': order.id,
+                       'product_id': line_product['product_id'],
+                       'name': line_product['name'],
+                       'product_qty': line_product['product_uom_qty'],
+                       'price_unit': line_product['price_unit'],
+                       'date_planned': fields.Date.today(),
+                       'product_uom': line_product['product_uom'],
+                        }
+            vendor1_orders_lines = self.env['purchase.order.line'].create(order_line)        
         for line in self.mo_line_ids:
             if line.po_process == True and not line.partner_id==' ':
                 line.update ({
@@ -207,6 +213,11 @@ class MoBeforhand(models.Model):
             self.state = 'done'
         else:
             raise UserError(_('Please Create Purchase Order of all Material Planning Lines.'))
+        for order in self.sale_id:
+            order.update({
+                'is_processed': True
+            })    
+            
 
 
     
@@ -257,7 +268,6 @@ class MoBeforhandWizardLine(models.Model):
     mo_id = fields.Many2one('mrp.mo.beforehand',string="Document")
     partner_id = fields.Many2one('res.partner', string="Vendor",domain="[('id', 'in', seller_ids)]")
     
-#  domain=lambda self: [('id', 'in', seller_ids)]
 
     @api.constrains('product_uom_qty_order')
     def product_uom_qty_order_val(self):
@@ -267,11 +277,7 @@ class MoBeforhandWizardLine(models.Model):
     
     def action_update_vendor(self):
         for line in self:
-#         order_data = self.env['mrp.production'].search([('sale_id', '=', self.mo_id.sale_id.name),('product_id.name', '=ilike', '[Un-Finished]%')])
-#         for order in order_data:
-#             for line in order.move_raw_ids:
             line_data = [] 
-    #         if not '[Cut Material]' in line.product_id.name:
             bom_produt = self.env['mrp.bom'].search([('product_id','=',line.product_id.id)])
             for product in bom_produt:
                 for subcontractor in product.subcontractor_ids:
@@ -279,7 +285,10 @@ class MoBeforhandWizardLine(models.Model):
             line.update ({
                 'seller_ids': line_data,
                 })
-    
+            
+            
+            
+ 
     
     def action_generate_po(self):
         for line in self:
@@ -294,36 +303,36 @@ class MoBeforhandWizardLine(models.Model):
             else:
                 pass
         list = set(vendor_list)
-        for te in list:
+        for vendor in list:
             product = []
-            for re in self:
-                if te == re.partner_id:
-                    if re.po_created == False:
+            for order_line in self:
+                if vendor == order_line.partner_id:
+                    if order_line.po_created == False:
                         valss = {
-                            'product_id': re.product_id.id,
-                            'name': re.product_id.name,
-                            'product_uom_qty': re.product_uom_qty_order,
-                            'price_unit': re.product_id.standard_price,
+                            'product_id': order_line.product_id.id,
+                            'name': order_line.product_id.name,
+                            'product_uom_qty': order_line.product_uom_qty_order,
+                            'price_unit': order_line.product_id.standard_price,
                             'date_planned': fields.Date.today(),
-                            'product_uom': re.product_id.uom_po_id.id,
+                            'product_uom': order_line.product_id.uom_po_id.id,
                         }
                         product.append(valss)
             vals = {
-                  'partner_id': te.id,
+                  'partner_id': vendor.id,
                   'date_order': fields.Date.today(),
                   'sale_ref_id': self.mo_id.sale_id.name,
                   'origin': self.mo_id.name,
                     }
             order = self.env['purchase.order'].create(vals)
-            for test in product:
+            for line_product in product:
                 order_line = {
                        'order_id': order.id,
-                       'product_id': test['product_id'],
-                       'name': test['name'],
-                       'product_qty': test['product_uom_qty'],
-                       'price_unit': test['price_unit'],
+                       'product_id': line_product['product_id'],
+                       'name': line_product['name'],
+                       'product_qty': line_product['product_uom_qty'],
+                       'price_unit': line_product['price_unit'],
                        'date_planned': fields.Date.today(),
-                       'product_uom': test['product_uom'],
+                       'product_uom': line_product['product_uom'],
                         }
                 orders_lines = self.env['purchase.order.line'].create(order_line)
         for line in self:

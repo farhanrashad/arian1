@@ -22,14 +22,17 @@
             <field name="code">action = records.action_update_vendor() </field>
         </record>
         
-        <record id="material_planning_server_update_vendor_action" model="ir.actions.server">
-            <field name="name">Update Vendor</field>
-            <field name="model_id" ref="de_mrp_po_generation.model_mrp_mo_beforehand_line"/>
-            <field name="binding_model_id" ref="de_mrp_po_generation.model_mrp_mo_beforehand_line"/>            
-            <field name="binding_view_types">list</field>
+          <record model="ir.cron" forcecreate="True" id="processed_schedular_view">
+            <field name="name">Processed Schedular</field>
+            <field name="model_id" ref="model_sale_order"/>
             <field name="state">code</field>
-            <field name="code">action = records.action_update_vendor() </field>
-        </record>
+            <field name="code">model.action_processed_planning()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+        </record>  
 
 
     </data>
