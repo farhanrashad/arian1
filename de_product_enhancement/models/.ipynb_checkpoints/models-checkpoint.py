@@ -83,8 +83,52 @@ class SaleOrder(models.Model):
     purchase_id = fields.Char(string='Customer PO Number', required=True)
 
     
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+    
+    @api.model
+    def create(self, values):
+        res = super(ProductProduct, self).create(values)
+        reordring_rule = self.env['stock.warehouse.orderpoint']
+        reordring_rule.create ({
+          'name': res.id,
+          'product_id': res.id,
+#           'product_uom':  values['uom_id'],
+          'warehouse_id':1,
+           'company_id': 1,
+          'product_min_qty': 0,
+          'product_max_qty': 0,
+          'location_id': 8, 
+           'lead_type': 'supplier', 
+          'qty_multiple': 1,
+         })
+        return res
+    
+    
+    
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
+    
+    
+    
+    def action_update_quantity_on_hand(self):
+        res = super(ProductTemplate, self).action_update_quantity_on_hand()
+        vals =  ({
+          'name': self.id,
+          'product_id': self.id,
+           'active': True, 
+          'product_uom': self.uom_po_id.id,
+          'warehouse_id':1,
+           'company_id': 1,
+          'product_min_qty': 0,
+          'product_max_qty': 0,
+          'location_id': 8, 
+           'lead_type': 'supplier', 
+          'qty_multiple': 1,
+         })
+        reordring_rule = self.env['stock.warehouse.orderpoint'].create(vals)
+        return res
+    
     
     
     @api.returns('self', lambda value: value.id)
@@ -101,6 +145,22 @@ class ProductTemplate(models.Model):
     @api.model
     def create(self, values):
         res = super(ProductTemplate, self).create(values)
+        reordring_rule = self.env['stock.warehouse.orderpoint']
+        reordring_rule.create ({
+          'name': res.id,
+          'product_id': res.id,
+          'active': True, 
+          'product_uom':  values['uom_po_id'],
+          'warehouse_id':1,
+           'company_id': 1,
+          'product_min_qty': 0,
+          'product_max_qty': 0,
+          'location_id': 8,
+           'lead_days': 1, 
+           'lead_type': 'supplier', 
+          'qty_multiple': 1,
+         })
+        
         try:
             if values['purchase_ok'] == True:
                 if values['seller_ids']:
