@@ -6,6 +6,11 @@
 		<field name="model">account.bank.statement</field>
 		<field name="inherit_id" ref="account.view_bank_statement_form"/>
 		<field name="arch" type="xml">
+            
+            <xpath expr="//field[@name='balance_start']" position="attributes">
+					 <attribute name="readonly">1</attribute>
+			</xpath>
+            
 
             <xpath expr="//header/field[@name='state']" position="replace">
 					 <field name="state" widget="statusbar" statusbar_visible="open,sent_for_validation,confirm"/>
