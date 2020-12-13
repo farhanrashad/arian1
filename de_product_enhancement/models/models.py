@@ -45,7 +45,25 @@ class StockPicking(models.Model):
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
+    
+    
+    
+    bill_amount = fields.Monetary(string="Amount Billed", compute='_compute_bill_amount')
+    remaining_bill_amount = fields.Monetary(string="Remaining Amount to bill", compute='_compute_bill_amount')
 
+    
+    def _compute_bill_amount(self):
+        sum_invoice_amount = 0
+        order_bill = self.env['account.move'].search([('invoice_origin','=',self.name)])
+        for invoice in order_bill:
+            sum_invoice_amount = sum_invoice_amount + invoice.amount_total
+        self.bill_amount = sum_invoice_amount
+        self.remaining_bill_amount = self.amount_total - sum_invoice_amount
+    
+    
+    
+    
+    
     def button_done(self):
         res = super(PurchaseOrder, self).button_done()
         picking = self.env['stock.picking'].search([('origin','=',self.name)])
@@ -86,23 +104,25 @@ class SaleOrder(models.Model):
 class ProductProduct(models.Model):
     _inherit = 'product.product'
     
-    @api.model
-    def create(self, values):
-        res = super(ProductProduct, self).create(values)
-        reordring_rule = self.env['stock.warehouse.orderpoint']
-        reordring_rule.create ({
-          'name': res.id,
-          'product_id': res.id,
-#           'product_uom':  values['uom_id'],
-          'warehouse_id':1,
-           'company_id': 1,
-          'product_min_qty': 0,
-          'product_max_qty': 0,
-          'location_id': 8, 
-           'lead_type': 'supplier', 
-          'qty_multiple': 1,
-         })
-        return res
+#     @api.model
+#     def create(self, values):
+#         res = super(ProductProduct, self).create(values)
+#         pg1 = self.env['procurement.group'].create({})
+#         reordring_rule = self.env['stock.warehouse.orderpoint']
+#         reordring_rule.create ({
+#           'name': res.id,
+#           'product_id': res.id,
+# #           'product_uom':  values['uom_id'],
+#           'warehouse_id':1,
+#            'company_id': 1,
+#           'product_min_qty': 0,
+#           'product_max_qty': 0,
+#           'location_id': 8, 
+#            'lead_type': 'supplier', 
+#           'qty_multiple': 1,
+#           'group_id': pg1.id,
+#          })
+#         return res
     
     
     
@@ -113,20 +133,30 @@ class ProductTemplate(models.Model):
     
     def action_update_quantity_on_hand(self):
         res = super(ProductTemplate, self).action_update_quantity_on_hand()
-        vals =  ({
-          'name': self.id,
-          'product_id': self.id,
-           'active': True, 
-          'product_uom': self.uom_po_id.id,
-          'warehouse_id':1,
-           'company_id': 1,
-          'product_min_qty': 0,
-          'product_max_qty': 0,
-          'location_id': 8, 
-           'lead_type': 'supplier', 
-          'qty_multiple': 1,
-         })
-        reordring_rule = self.env['stock.warehouse.orderpoint'].create(vals)
+        pg1 = self.env['procurement.group'].create({})
+        self.env['stock.warehouse.orderpoint'].create({
+            'name': 'test',
+            'product_id': self.id,
+            'product_min_qty': 0,
+            'product_max_qty': 0,
+            'location_id': self.env.user.company_id.subcontracting_location_id.id,
+            'allowed_location_ids': self.env.user.company_id.subcontracting_location_id.id, 
+            'group_id': pg1.id,
+        })
+#         vals =  ({
+#           'name': self.id,
+#           'product_id': self.id,
+#            'active': True, 
+#           'product_uom': self.uom_po_id.id,
+#           'warehouse_id':1,
+#            'company_id': 1,
+#           'product_min_qty': 0,
+#           'product_max_qty': 0,
+#           'location_id': 8, 
+#            'lead_type': 'supplier', 
+#           'qty_multiple': 1,
+#          })
+#         reordring_rule = self.env['stock.warehouse.orderpoint'].create(vals)
         return res
     
     

@@ -43,6 +43,11 @@
                         <field name="payment_term_date" widget="date"/>
                         <field name="is_received" invisible="1"/>
 				</xpath>
+                <xpath expr="//field[@name='amount_total']" position="after">
+                        <field name="bill_amount" />
+                        <field name="remaining_bill_amount" />
+                        
+				</xpath>
                 <xpath expr="//page[@name='purchase_delivery_invoice']//group//group[@name='planning']" position="replace">
                   <group name="planning">
                       <label for="date_planned" string="Original Date"/>
