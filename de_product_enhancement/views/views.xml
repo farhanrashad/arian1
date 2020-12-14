@@ -22,7 +22,25 @@
 				</xpath>
 			</field>
 	   </record>
-
+      
+      
+      
+       <record id="purchase_order_form_view_inherit" model="ir.ui.view">
+			<field name="name">purchase.order.tree.view.inherit</field>
+			<field name="model">purchase.order</field>
+			<field name="inherit_id" ref="purchase.purchase_order_tree"/>
+			<field name="arch" type="xml">
+               
+                <xpath expr="//field[@name='amount_total']" position="after">
+                        <field name="bill_amount" optional="hide"/>
+                        <field name="remaining_bill_amount"  optional="hide"/>
+                        
+				</xpath>
+              
+			</field>
+	   </record>
+      
+      
 
        
       <record id="purchase_order_form_view_inherit" model="ir.ui.view">

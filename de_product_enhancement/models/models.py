@@ -8,6 +8,11 @@ from odoo.exceptions import UserError, ValidationError
 from datetime import datetime
 
 
+
+class AccountPayment(models.Model):
+    _inherit = 'stock.quant'
+
+
 class StockQuant(models.Model):
     _inherit = 'stock.quant'
     
@@ -54,9 +59,8 @@ class PurchaseOrder(models.Model):
     
     def _compute_bill_amount(self):
         sum_invoice_amount = 0
-        order_bill = self.env['account.move'].search([('invoice_origin','ilike',self.name)])
-        for invoice in order_bill:
-            sum_invoice_amount = sum_invoice_amount + invoice.amount_total
+        for line in self.order_line:
+            sum_invoice_amount = sum_invoice_amount + (line.qty_invoiced * line.price_unit)
         self.bill_amount = sum_invoice_amount
         self.remaining_bill_amount = self.amount_total - sum_invoice_amount
     
