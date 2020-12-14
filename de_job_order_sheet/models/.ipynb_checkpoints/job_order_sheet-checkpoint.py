@@ -258,23 +258,39 @@ class JobOrderSheetLine(models.Model):
             print(line.product_name)
             update_qty = line.in_house_production + line.outsource_production
             order = self.env['mrp.production'].search([('id', '=', line.mo_order_id.id)])
-            order.update({
-                'product_qty': line.in_house_production
-            })
-            stock_picking = self.env['stock.picking'].search([('origin', '=', line.mo_order_id.name),
-                                                              ('picking_type_id', 'in', pickings)])
-            print('stock', stock_picking)
-            for picking in stock_picking:
-                for pick_line in picking.move_ids_without_package:
-                    print('qty', line.in_house_production)
-                    pick_line.update({
+            if line.in_house_production > 0:
+                order.update({
+                    'product_qty': line.in_house_production
+                })
+                stock_picking = self.env['stock.picking'].search([('origin', '=', line.mo_order_id.name),
+                                                                  ('picking_type_id', 'in', pickings)])
+                print('stock', stock_picking)
+                for picking in stock_picking:
+                    for pick_line in picking.move_ids_without_package:
+                        print('qty', line.in_house_production)
+                        pick_line.update({
+                            'product_uom_qty': line.in_house_production
+                        })
+                for qty in order.move_raw_ids:
+                    qty.update({
                         'product_uom_qty': line.in_house_production
                     })
-            for qty in order.move_raw_ids:
-                qty.update({
-                    'product_uom_qty': line.in_house_production
+            else:
+                order.update({
+                    'state': 'cancel'
                 })
-    
+                for move_line in order.move_raw_ids:
+                    move_line.update({
+                    'state': 'cancel'
+                     })       
+#                 supply_finished_picking = self.env['stock.picking'].search([('picking_type_id.name',  '=',   
+#                                                                              'Supply Finished Product'),('origin','=',order.name)])
+#                 for finished_picking in supply_finished_picking:
+#                     finished_picking.update({
+#                      'state': 'waiting'
+#                       })                                    
+
+                
     
     def action_generate_purchase_order(self):
         for record in self:
