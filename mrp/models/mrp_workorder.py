@@ -307,8 +307,8 @@ class MrpWorkorder(models.Model):
                     if workorder.state in ('progress', 'done', 'cancel'):
                         raise UserError(_('You cannot change the workcenter of a work order that is in progress or done.'))
                     workorder.leave_id.resource_id = self.env['mrp.workcenter'].browse(values['workcenter_id']).resource_id
-        if list(values.keys()) != ['time_ids'] and any(workorder.state == 'done' for workorder in self):
-            raise UserError(_('You can not change the finished work order.'))
+        #if list(values.keys()) != ['time_ids'] and any(workorder.state == 'done' for workorder in self):
+         #   raise UserError(_('You can not change the finished work order.'))
         if 'date_planned_start' in values or 'date_planned_finished' in values:
             for workorder in self:
                 start_date = fields.Datetime.to_datetime(values.get('date_planned_start')) or workorder.date_planned_start
