@@ -54,7 +54,7 @@ class PurchaseOrder(models.Model):
     
     def _compute_bill_amount(self):
         sum_invoice_amount = 0
-        order_bill = self.env['account.move'].search([('invoice_origin','=',self.name)])
+        order_bill = self.env['account.move'].search([('invoice_origin','ilike',self.name)])
         for invoice in order_bill:
             sum_invoice_amount = sum_invoice_amount + invoice.amount_total
         self.bill_amount = sum_invoice_amount

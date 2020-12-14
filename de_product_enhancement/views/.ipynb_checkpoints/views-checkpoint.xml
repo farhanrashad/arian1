@@ -68,9 +68,8 @@
                         <field name="purchase_id"/>
             
 				</xpath>
-                <xpath expr="//field[@name='commitment_date']" position="attributes">
-                    <attribute name="required">1</attribute>
-            
+                <xpath expr="//field[@name='commitment_date']" position="replace">
+                     <field name="commitment_date" attrs="{'readonly': [('state','=','done')]}"/>            
 				</xpath>
 			</field>
 	   </record>
