@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <form string="Parameters">
                 <p>
-                The stock will be reserved for operations waiting for availability and the reordering rules will be triggered.
+                Purchase RFQs for Processed Materials required against confirmed sales will be generated.
                 </p>
                 <footer>
                     <button name="procure_calculation" string="Run Processed Scheduler" type="object" class="btn-primary"/>
