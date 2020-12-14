@@ -46,6 +46,20 @@ class StockPicking(models.Model):
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
+    bill_amount = fields.Float(string="Amount Billed", compute='_compute_bill_amount', store=True)
+    remaining_bill_amount = fields.Float(string="Remaining Amount to bill", compute='_compute_bill_amount', store=True)
+
+    
+    def _compute_bill_amount(self):
+        for order in self:
+            sum_invoice_amount = 0
+            for line in order.order_line:
+                sum_invoice_amount = sum_invoice_amount + (line.qty_invoiced * line.price_unit)
+            order.bill_amount = sum_invoice_amount
+            order.remaining_bill_amount = order.amount_total - sum_invoice_amount
+
+    
+
     def button_done(self):
         res = super(PurchaseOrder, self).button_done()
         picking = self.env['stock.picking'].search([('origin','=',self.name)])
