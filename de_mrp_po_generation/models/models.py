@@ -166,25 +166,26 @@ class MoBeforhand(models.Model):
                             'product_uom': line.product_id.uom_po_id.id,
                         }
                 product_without_vendor.append(prod_vals)
-        vendor1 = self.env['res.partner'].search([])        
-        vals = {
-               'partner_id': vendor1[0].id,
-               'date_order': fields.Date.today(),
-               'sale_ref_id': self.sale_id.name,
-               'origin': self.name,
-                    }
-        vendor1_order = self.env['purchase.order'].create(vals)
-        for line_product in product_without_vendor:
-            order_line = {
-                       'order_id': order.id,
-                       'product_id': line_product['product_id'],
-                       'name': line_product['name'],
-                       'product_qty': line_product['product_uom_qty'],
-                       'price_unit': line_product['price_unit'],
-                       'date_planned': fields.Date.today(),
-                       'product_uom': line_product['product_uom'],
+        vendor1 = self.env['res.partner'].search([('id','=',3727)])  
+        if product_without_vendor:
+            vals = {
+                   'partner_id': vendor1,
+                   'date_order': fields.Date.today(),
+                   'sale_ref_id': self.sale_id.name,
+                   'origin': self.name,
                         }
-            vendor1_orders_lines = self.env['purchase.order.line'].create(order_line)        
+            vendor1_order = self.env['purchase.order'].create(vals)
+            for line_product in product_without_vendor:
+                order_line = {
+                           'order_id': order.id,
+                           'product_id': line_product['product_id'],
+                           'name': line_product['name'],
+                           'product_qty': line_product['product_uom_qty'],
+                           'price_unit': line_product['price_unit'],
+                           'date_planned': fields.Date.today(),
+                           'product_uom': line_product['product_uom'],
+                            }
+                vendor1_orders_lines = self.env['purchase.order.line'].create(order_line)        
         for line in self.mo_line_ids:
             if line.po_process == True and not line.partner_id==' ':
                 line.update ({
