@@ -283,13 +283,16 @@ class JobOrderSheetLine(models.Model):
                     move_line.update({
                     'state': 'cancel'
                      })       
-#                 supply_finished_picking = self.env['stock.picking'].search([('picking_type_id.name',  '=',   
-#                                                                              'Supply Finished Product'),('origin','=',order.name)])
-#                 for finished_picking in supply_finished_picking:
-#                     finished_picking.update({
-#                      'state': 'waiting'
-#                       })                                    
-
+                pcs_finished_picking = self.env['stock.picking'].search([('picking_type_id.name',  '=',   
+                                                                             'Pick Components from Supply'),('origin','=',order.name)])
+                for pcs_picking in pcs_finished_picking:
+                    pcs_picking.update({
+                     'state': 'cancel'
+                      })                                    
+                    for picking_line in pcs_picking.move_ids_without_package:
+                        picking_line.update({
+                        'state': 'cancel'
+                        })    
                 
     
     def action_generate_purchase_order(self):
@@ -309,7 +312,7 @@ class JobOrderSheetLine(models.Model):
             product = []
             for re in self:
                 if te == re.vendor_id:
-                    if line.created_po == False:
+                    if line.created_po == False and line.outsource_production > 0:
                         valss = {
                             'product_id': re.product_id.id,
                             'name': re.product_id.name,
