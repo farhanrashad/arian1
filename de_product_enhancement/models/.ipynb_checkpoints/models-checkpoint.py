@@ -53,17 +53,18 @@ class PurchaseOrder(models.Model):
     
     
     
-    bill_amount = fields.Monetary(string="Amount Billed", compute='_compute_bill_amount')
-    remaining_bill_amount = fields.Monetary(string="Remaining Amount to bill", compute='_compute_bill_amount')
+    bill_amount = fields.Float(string="Amount Billed", compute='_compute_bill_amount', store=True)
+    remaining_bill_amount = fields.Float(string="Remaining Amount to bill", compute='_compute_bill_amount', store=True)
 
     
     def _compute_bill_amount(self):
-        sum_invoice_amount = 0
-        for line in self.order_line:
-            sum_invoice_amount = sum_invoice_amount + (line.qty_invoiced * line.price_unit)
-        self.bill_amount = sum_invoice_amount
-        self.remaining_bill_amount = self.amount_total - sum_invoice_amount
-    
+        for order in self:
+            sum_invoice_amount = 0
+            for line in order.order_line:
+                sum_invoice_amount = sum_invoice_amount + (line.qty_invoiced * line.price_unit)
+            order.bill_amount = sum_invoice_amount
+            order.remaining_bill_amount = order.amount_total - sum_invoice_amount
+
     
     
     

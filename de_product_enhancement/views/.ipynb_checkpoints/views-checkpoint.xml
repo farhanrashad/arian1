@@ -23,17 +23,33 @@
 			</field>
 	   </record>
       
+         
       
       
-       <record id="purchase_order_form_view_inherit" model="ir.ui.view">
+       <record id="purchase_order_pivot_view_inherit" model="ir.ui.view">
+			<field name="name">purchase.order.tree.view.inherit</field>
+			<field name="model">purchase.order</field>
+			<field name="inherit_id" ref="purchase.purchase_order_pivot"/>
+			<field name="arch" type="xml">
+               
+                <xpath expr="//field[@name='amount_total']" position="after">
+                        <field name="bill_amount"  widget='monetary'/>
+                        <field name="remaining_bill_amount"  widget='monetary'/>
+                        
+				</xpath>
+              
+			</field>
+	   </record>
+      
+       <record id="purchase_order_tree_view_inherit" model="ir.ui.view">
 			<field name="name">purchase.order.tree.view.inherit</field>
 			<field name="model">purchase.order</field>
 			<field name="inherit_id" ref="purchase.purchase_order_tree"/>
 			<field name="arch" type="xml">
                
                 <xpath expr="//field[@name='amount_total']" position="after">
-                        <field name="bill_amount" optional="hide"/>
-                        <field name="remaining_bill_amount"  optional="hide"/>
+                        <field name="bill_amount" optional='hide' widget='monetary'/>
+                        <field name="remaining_bill_amount"  optional='hide' widget='monetary'/>
                         
 				</xpath>
               
@@ -62,8 +78,8 @@
                         <field name="is_received" invisible="1"/>
 				</xpath>
                 <xpath expr="//field[@name='amount_total']" position="after">
-                        <field name="bill_amount" />
-                        <field name="remaining_bill_amount" />
+                        <field name="bill_amount" widget='monetary'/>
+                        <field name="remaining_bill_amount" widget='monetary'/>
                         
 				</xpath>
                 <xpath expr="//page[@name='purchase_delivery_invoice']//group//group[@name='planning']" position="replace">
