@@ -8,10 +8,10 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/header/button[@name='post']" position="after">
                     <button name="submit_payment" class="oe_highlight" states="draft" string="Submit" groups="de_payment_workflow.group_submit_payment" type="object"/>
-                    <button name="action_return" class="oe_highlight" string="Payment Return" type="object"    attrs="{'invisible': ['|',('payment_method_code', '!=', 'pdc'),('state', '!=', 'posted')]}"/>                   
-                     <button name="action_deposit" class="oe_highlight" string="Payment Deposit" type="object"   attrs="{'invisible': ['|',('payment_method_code', '!=', 'pdc'),('state', '!=', 'posted')]}"/>
+                    <button name="action_return" class="oe_highlight" string="Return" type="object"    attrs="{'invisible': ['|',('payment_method_code', '!=', 'pdc'),('state', '!=', 'posted')]}"/>                   
+                     <button name="action_deposit" class="oe_highlight" string="Deposit" type="object"   attrs="{'invisible': ['|',('payment_method_code', '!=', 'pdc'),('state', '!=', 'posted')]}"/>
                     
-                    <button name="action_post_payment" class="oe_highlight" states="approved" string="Post Payment" type="object"  attrs="{'invisible': ['|',('payment_method_code', '!=', 'pdc'),('state', '!=', 'approved')]}"/>
+                    <button name="action_post_payment" class="oe_highlight"  string="Payment" type="object"  attrs="{'invisible': ['|',('payment_method_code', '!=', 'pdc'),('state', '!=', 'approved')]}"/>
 
 
                     
@@ -20,7 +20,7 @@
 
                 </xpath>
                 <xpath expr="/form/header/button[@name='post']" position="replace">
-                    <button name="post" class="oe_highlight"  string="Confirm" groups="de_payment_workflow.group_payment_confirm" type="object" attrs="{'invisible': ['|',('payment_method_code', '!=', 'pdc'),('state', 'in', ['approved','draft','posted','returned','deposited','reconciled','cancelled','submit'])]}"/>
+                    <button name="post" class="oe_highlight"  string="Confirm" groups="de_payment_workflow.group_payment_confirm" type="object" attrs="{'invisible': ['|',('payment_method_code', '=', 'pdc'),('state', 'in', ['draft','posted','returned','deposited','reconciled','cancelled','submit'])]}"/>
                 </xpath>
                 <xpath expr="/form/header/field[@name='state']" position="replace">
 
@@ -30,11 +30,13 @@
                 </xpath>
                  <xpath expr="//field[@name='payment_method_id']" position="after">
 
-                        <field name="pdc_account_id" 
-                              attrs="{'invisible': [('payment_method_code', '!=', 'pdc')]}"/>
+                        <field name="pdc_journal_id" 
+                              attrs="{'invisible': [('payment_method_code', '!=', 'pdc')],'required': [('payment_method_code', '=', 'pdc')]}"/>
                        <field name="planned_date" 
                                attrs="{'invisible': [('payment_method_code', '!=', 'pdc')]}"/>
-                       <field name="encshed_date" 
+                       <field name="encashed_date" 
+                               attrs="{'invisible': [('payment_method_code', '!=', 'pdc')]}"/>
+                       <field name="check_status" 
                                attrs="{'invisible': [('payment_method_code', '!=', 'pdc')]}"/>
 
                 </xpath>

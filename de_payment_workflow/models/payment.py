@@ -74,7 +74,7 @@ class account_payment(models.Model):
             write_off_amount = payment.payment_difference_handling == 'reconcile' and -payment.payment_difference or 0.0
             if payment.payment_type in ('outbound', 'transfer'):
                 counterpart_amount = payment.amount               
-                liquidity_line_account = payment.pdc_account_id
+                liquidity_line_account = payment.pdc_journal_id.default_credit_account_id
             else:
                 counterpart_amount = -payment.amount
                 liquidity_line_account = payment.journal_id.default_credit_account_id
@@ -136,7 +136,7 @@ class account_payment(models.Model):
             move_vals = {
                 'date': payment.payment_date,
                 'ref': payment.communication,
-                'journal_id': payment.journal_id.id,
+                'journal_id': payment.pdc_journal_id.id,
                 'currency_id': payment.journal_id.currency_id.id or payment.company_id.currency_id.id,
                 'partner_id': payment.partner_id.id,
                 'line_ids': [
@@ -246,9 +246,9 @@ class account_payment(models.Model):
         debit_sum = 0.0
         credit_sum = 0.0
         move_dict = {
-              'journal_id': self.journal_id.id,
+              'journal_id': self.pdc_journal_id.id,
               'date': self.payment_date,
-              'state': 'posted',
+              'state': 'draft',
                    }
                         #step2:debit side entry
         debit_line = (0, 0, {
@@ -257,7 +257,7 @@ class account_payment(models.Model):
                             'credit': 0.0,
                             'date_maturity': self.payment_date,
                             'partner_id': self.partner_id.commercial_partner_id.id,
-                            'account_id': self.pdc_account_id.id,
+                            'account_id': self.pdc_journal_id.default_credit_account_id.id,
                             'payment_id': self.id,
                          })
         line_ids.append(debit_line)
@@ -278,6 +278,9 @@ class account_payment(models.Model):
 
         move_dict['line_ids'] = line_ids
         move = self.env['account.move'].create(move_dict)
+        move.update({
+            'state': 'posted'
+        })
         self.update({
             'state': 'returned'
         })
@@ -353,6 +356,7 @@ class account_payment(models.Model):
 #               'name': self.name,
               'journal_id': self.journal_id.id,
               'date': self.payment_date,
+              'invoice_origin': self.name,
               'state': 'draft',
                    }
                         #step2:debit side entry
@@ -362,7 +366,7 @@ class account_payment(models.Model):
                             'credit': 0.0,
                             'date_maturity': self.payment_date,
                             'partner_id': self.partner_id.commercial_partner_id.id,
-                            'account_id': self.pdc_account_id.id,
+                            'account_id': self.pdc_journal_id.default_credit_account_id.id,
                             'payment_id': self.id,
                          })
         line_ids.append(debit_line)
@@ -383,6 +387,9 @@ class account_payment(models.Model):
 
         move_dict['line_ids'] = line_ids
         move = self.env['account.move'].create(move_dict)
+        move.update({
+            'state': 'posted'
+        })
         self.update({
             'state': 'deposited'
         })
@@ -391,9 +398,12 @@ class account_payment(models.Model):
     
     
     
-    planned_date = fields.Datetime(string='Planeed Date')
-    encshed_date = fields.Datetime(string='Date Encashed')
-    pdc_account_id = fields.Many2one('account.account', string='PDC Account')
+    planned_date = fields.Datetime(string='Planned Date')
+    encashed_date = fields.Datetime(string='Date Encashed')
+    check_status = fields.Selection([('freeze','Freeze'),
+                                     ('un_freeze','Un-Freeze')
+                                    ], string='Check Status')
+    pdc_journal_id = fields.Many2one('account.journal', string='PDC Journal')
     state = fields.Selection([('draft', 'Draft'),
                               ('submit', 'Submit'),
                               ('approved', 'approved'),
