@@ -154,7 +154,7 @@ class account_payment(models.Model):
                     }),
                     # Liquidity line.
                     (0, 0, {
-                        'name': liquidity_line_name,
+                        'name': liquidity_line_name  +' Check No: '+ str(payment.cheque_number),
                         'amount_currency': -liquidity_amount if liquidity_line_currency_id else 0.0,
                         'currency_id': liquidity_line_currency_id,
                         'debit': balance < 0.0 and -balance or 0.0,
@@ -253,7 +253,7 @@ class account_payment(models.Model):
                    }
                         #step2:debit side entry
         debit_line = (0, 0, {
-                           'name': self.name,
+                           'name':   _('Retrun of %s') %  self.name +' '+ 'Check No: ' + str(self.cheque_number),
                             'debit': self.amount,
                             'credit': 0.0,
                             'date_maturity': self.payment_date,
@@ -266,7 +266,7 @@ class account_payment(models.Model):
 
                 #step3:credit side entry
         credit_line = (0, 0, {
-                            'name': _('Transfer from %s') % self.pdc_journal_id.name,
+                            'name': _('Return of Check No: %s') % self.cheque_number,
                             'debit': 0.0,
                             'credit': self.amount,
                             'date_maturity': self.payment_date,
@@ -361,7 +361,7 @@ class account_payment(models.Model):
                    }
                         #step2:debit side entry
         debit_line = (0, 0, {
-                           'name': self.name,
+                           'name': self.name   +' Check No:'+ str(self.cheque_number),
                             'debit': self.amount,
                             'credit': 0.0,
                             'date_maturity': self.payment_date,
@@ -374,7 +374,7 @@ class account_payment(models.Model):
 
                 #step3:credit side entry
         credit_line = (0, 0, {
-                            'name': _('Transfer from %s') % self.journal_id.name,
+                            'name': _('Transfer from %s') % self.journal_id.name +' Check No'+ str(self.cheque_number),
                             'debit': 0.0,
                             'credit': self.amount,
                             'date_maturity': self.payment_date,
@@ -400,8 +400,14 @@ class account_payment(models.Model):
     
     planned_date = fields.Datetime(string='Planned Date')
     encashed_date = fields.Datetime(string='Date Encashed')
-    check_status = fields.Selection([('freeze','Freeze'),
-                                     ('un_freeze','Un-Freeze')
+    cheque_number = fields.Char(
+        string="Check Number",
+        store=True,
+        help="The selected journal is configured to print check numbers. If your pre-printed check paper already has numbers "
+             "or if the current numbering is wrong, you can change it in the journal configuration page.",
+    )
+    check_status = fields.Selection([('freeze','Freezed'),
+                                     ('un_freeze','Un-Freezed')
                                     ], string='Check Status')
     pdc_journal_id = fields.Many2one('account.journal', string='PDC Journal')
     state = fields.Selection([('draft', 'Draft'),
@@ -415,6 +421,8 @@ class account_payment(models.Model):
                               ('cancelled', 'Cancelled')],
                              readonly=True, default='draft', copy=False, string="Status", track_visibility='onchange')
 
+
+   
 
     def action_draft(self):
         res = super(account_payment, self).action_draft()
