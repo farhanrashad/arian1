@@ -246,8 +246,9 @@ class account_payment(models.Model):
         debit_sum = 0.0
         credit_sum = 0.0
         move_dict = {
+#               'name' : self.name, 
               'journal_id': self.pdc_journal_id.id,
-              'date': self.payment_date,
+              'date': fields.Date.today(),
               'state': 'draft',
                    }
                         #step2:debit side entry
@@ -265,7 +266,7 @@ class account_payment(models.Model):
 
                 #step3:credit side entry
         credit_line = (0, 0, {
-                            'name': _('Transfer from %s') % self.journal_id.name,
+                            'name': _('Transfer from %s') % self.pdc_journal_id.name,
                             'debit': 0.0,
                             'credit': self.amount,
                             'date_maturity': self.payment_date,
@@ -278,9 +279,8 @@ class account_payment(models.Model):
 
         move_dict['line_ids'] = line_ids
         move = self.env['account.move'].create(move_dict)
-        move.update({
-            'state': 'posted'
-        })
+        move.action_post()
+
         self.update({
             'state': 'returned'
         })
@@ -354,8 +354,8 @@ class account_payment(models.Model):
         credit_sum = 0.0
         move_dict = {
 #               'name': self.name,
-              'journal_id': self.journal_id.id,
-              'date': self.payment_date,
+              'journal_id':self.journal_id.id,
+              'date': self.encashed_date,
               'invoice_origin': self.name,
               'state': 'draft',
                    }
@@ -387,12 +387,12 @@ class account_payment(models.Model):
 
         move_dict['line_ids'] = line_ids
         move = self.env['account.move'].create(move_dict)
-        move.update({
-            'state': 'posted'
-        })
+        move.action_post()
         self.update({
             'state': 'deposited'
         })
+    
+
 
     
     
