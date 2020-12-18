@@ -443,21 +443,22 @@ class account_payment(models.Model):
     @api.onchange('cheque_number')
     def _onchange_number(self):
         payment_journal = self.env['account.journal'].search([('name','=',self.journal_id.name)])
-        
-        for journal in payment_journal:
-            journal.update({
-                'cheque_number_next': self.cheque_number
-            })
+        if self.payment_method_code == 'pdc':
+            for journal in payment_journal:
+                journal.update({
+                    'cheque_number_next': self.cheque_number
+                })
             
             
     
-    @api.onchange('journal_id')
+    @api.onchange('payment_method_id')
     def _onchange_amount(self):
         payment_journal = self.env['account.journal'].search([('name','=',self.journal_id.name)])
-        for journal in payment_journal:
-            self.update({
-                'cheque_number': journal.cheque_number_next + 1
-            })
+        if self.payment_method_code == 'pdc':
+            for journal in payment_journal:
+                self.update({
+                    'cheque_number': journal.cheque_number_next + 1
+                })
    
 
     def action_draft(self):
