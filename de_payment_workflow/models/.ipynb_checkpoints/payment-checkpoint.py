@@ -15,7 +15,7 @@
 from odoo.exceptions import Warning
 from datetime import datetime
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, AccessError, ValidationError, RedirectWarning
 
     
     
@@ -27,7 +27,19 @@ class AccountMove(models.Model):
     def _validate_move_modification(self):
         if 'posted' in self.mapped('line_ids.payment_id.state'):
             pass
-
+        
+class AccountJournal(models.Model):
+    _inherit = 'account.journal'
+    
+    cheque_number_next = fields.Integer(
+        string="Check Book Number",
+        store=True,
+        help="The selected journal is configured to print check numbers. If your pre-printed check paper already has numbers "
+             "or if the current numbering is wrong, you can change it in the journal configuration page.",
+      
+    )
+    
+   
 
 
 class PaymentState(models.Model):
@@ -394,17 +406,16 @@ class account_payment(models.Model):
     
 
 
+
     
     
     
     
     planned_date = fields.Datetime(string='Planned Date')
     encashed_date = fields.Datetime(string='Date Encashed')
-    cheque_number = fields.Char(
+    cheque_number = fields.Integer(
         string="Check Number",
         store=True,
-        help="The selected journal is configured to print check numbers. If your pre-printed check paper already has numbers "
-             "or if the current numbering is wrong, you can change it in the journal configuration page.",
     )
     check_status = fields.Selection([('freeze','Freezed'),
                                      ('un_freeze','Un-Freezed')
@@ -420,8 +431,32 @@ class account_payment(models.Model):
                               ('reconciled', 'Reconciled'),
                               ('cancelled', 'Cancelled')],
                              readonly=True, default='draft', copy=False, string="Status", track_visibility='onchange')
+   
 
 
+    @api.depends('cheque_number')
+    def _compute_check_number(self):
+        self.cheque_number = self.journal_id.cheque_number_next
+
+
+    
+    @api.onchange('cheque_number')
+    def _onchange_number(self):
+        payment_journal = self.env['account.journal'].search([('name','=',self.journal_id.name)])
+        for journal in payment_journal:
+            journal.update({
+                'cheque_number_next': self.cheque_number
+            })
+            
+            
+    
+    @api.onchange('journal_id')
+    def _onchange_amount(self):
+        payment_journal = self.env['account.journal'].search([('name','=',self.journal_id.name)])
+        for journal in payment_journal:
+            self.update({
+                'cheque_number': journal.cheque_number_next + 1
+            })
    
 
     def action_draft(self):

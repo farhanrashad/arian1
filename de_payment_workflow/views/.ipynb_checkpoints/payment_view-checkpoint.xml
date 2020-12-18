@@ -37,7 +37,7 @@
                        <field name="encashed_date" 
                                attrs="{'invisible': [('payment_method_code', '!=', 'pdc')]}"/>
                        <field name="cheque_number" 
-                               attrs="{'invisible': [('payment_method_code', '!=', 'pdc')]}" readonly="0"/>
+                               readonly="0"/>
                        <field name="check_status" 
                                attrs="{'invisible': [('payment_method_code', '!=', 'pdc')]}"/>
 
@@ -65,6 +65,17 @@
 	                        class="btn-primary" attrs="{'invisible': [('payment_type', '!=', 'outbound')]}"/>
 	                    <button string="Cancel" class="btn-default" special="cancel"/>
                     </footer>
+                </xpath>
+            </field>
+        </record>
+        
+            <record id="inherit_view_account_journal_form" model="ir.ui.view">
+            <field name="name">account.journal.invoice.form</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='code']" position="after">
+                        <field name="cheque_number_next" />
                 </xpath>
             </field>
         </record>
