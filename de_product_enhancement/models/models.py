@@ -49,7 +49,16 @@ class PurchaseOrder(models.Model):
     bill_amount = fields.Float(string="Amount Billed", compute='_compute_bill_amount', store=True)
     remaining_bill_amount = fields.Float(string="Remaining Amount to bill", compute='_compute_bill_amount', store=True)
 
-    
+    @api.onchange('amount_total')
+    def onchange_amount_total(self):
+        for order in self:
+            sum_invoice_amount = 0
+            for line in order.order_line:
+                sum_invoice_amount = sum_invoice_amount + (line.qty_invoiced * line.price_unit)
+            order.bill_amount = sum_invoice_amount
+            order.remaining_bill_amount = order.amount_total - sum_invoice_amount
+            
+    @api.depends('amount_total','order_line')
     def _compute_bill_amount(self):
         for order in self:
             sum_invoice_amount = 0
