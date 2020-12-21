@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        
         <record id="inherit_payment_workflow_form_view" model="ir.ui.view">
             <field name="name">inherit.payment.workflow.form.view</field>
             <field name="model">account.payment</field>
@@ -31,13 +32,13 @@
                  <xpath expr="//field[@name='payment_method_id']" position="after">
 
                         <field name="pdc_journal_id" 
-                              attrs="{'invisible': [('payment_method_code', '!=', 'pdc')],'required': [('payment_method_code', '=', 'pdc')]}"/>
+                              attrs="{'invisible': [('payment_method_code', '!=', 'pdc')],'required': [('payment_method_code', '=', 'pdc')],'readonly': [('state', '!=', 'draft')]}"/>
                        <field name="planned_date" 
                                attrs="{'invisible': [('payment_method_code', '!=', 'pdc')]}"/>
                        <field name="encashed_date" 
                                attrs="{'invisible': [('payment_method_code', '!=', 'pdc')]}"/>
                        <field name="cheque_number" 
-                               attrs="{'invisible': [('payment_method_code', '!=', 'pdc')]}"/>
+                               attrs="{'invisible': [('payment_method_code', '!=', 'pdc')],'readonly': [('state', 'not in', ['draft','submit','approved'])]}"/>
                        <field name="check_status" 
                                attrs="{'invisible': [('payment_method_code', '!=', 'pdc')]}"/>
 

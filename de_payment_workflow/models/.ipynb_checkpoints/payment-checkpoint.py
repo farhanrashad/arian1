@@ -17,6 +17,11 @@ from datetime import datetime
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, AccessError, ValidationError, RedirectWarning
 
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+    
+    
     
     
 
@@ -39,7 +44,7 @@ class AccountJournal(models.Model):
       
     )
     
-   
+  
 
 
 class PaymentState(models.Model):
@@ -154,7 +159,7 @@ class account_payment(models.Model):
                 'line_ids': [
                     # Receivable / Payable / Transfer line.
                     (0, 0, {
-                        'name': rec_pay_line_name,
+                        'name': rec_pay_line_name +' Check No: '+ str(payment.cheque_number),
                         'amount_currency': counterpart_amount + write_off_amount if currency_id else 0.0,
                         'currency_id': currency_id,
                         'debit': balance + write_off_balance > 0.0 and balance + write_off_balance or 0.0,
@@ -373,7 +378,7 @@ class account_payment(models.Model):
                    }
                         #step2:debit side entry
         debit_line = (0, 0, {
-                           'name': self.name   +' Check No:'+ str(self.cheque_number),
+                           'name': self.name   +' Check No: '+ str(self.cheque_number),
                             'debit': self.amount,
                             'credit': 0.0,
                             'date_maturity': self.payment_date,
@@ -386,7 +391,7 @@ class account_payment(models.Model):
 
                 #step3:credit side entry
         credit_line = (0, 0, {
-                            'name': _('Transfer from %s') % self.journal_id.name +' Check No'+ str(self.cheque_number),
+                            'name': _('Transfer from %s') % self.journal_id.name +' Check No: '+ str(self.cheque_number),
                             'debit': 0.0,
                             'credit': self.amount,
                             'date_maturity': self.payment_date,
@@ -433,7 +438,23 @@ class account_payment(models.Model):
                              readonly=True, default='draft', copy=False, string="Status", track_visibility='onchange')
    
 
+    _sql_constraints = [
+        ('name_uniq', 'UNIQUE (cheque_number)',  'This check number is already issued. Please change check number !')
+        ]
 
+#     @api.constrains('cheque_number')
+#     def check_number_next_uniq(self):
+#         sum_count = 0
+#         for number in self:
+#             check_number_uniq = self.env['account.payment'].search([('cheque_number','=',number.cheque_number)])
+#             for count in check_number_uniq:
+#                 sum_count = sum_count + 1
+#                 if sum_count >= 2:
+#                     raise UserError(_("This check number is already issued. Please change check number")) 
+
+    
+    
+    
     @api.depends('cheque_number')
     def _compute_check_number(self):
         self.cheque_number = self.journal_id.cheque_number_next
