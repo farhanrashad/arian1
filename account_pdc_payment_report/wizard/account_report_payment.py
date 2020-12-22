@@ -18,8 +18,8 @@ class AccountReportPayment(models.TransientModel):
     effective_date_from = fields.Date('Effective Date From')
     effective_date_to = fields.Date('Effective Date Upto')
 
-    planed_date_from = fields.Date('Planed Date From')
-    planed_date_to = fields.Date('Planed Date Upto')
+    planed_date_from = fields.Date('Planned Date From')
+    planed_date_to = fields.Date('Planned Date Upto')
 
     date_encashed_from = fields.Date('Date Encashed From')
     date_encashed_to = fields.Date('Date Encashed Upto')
