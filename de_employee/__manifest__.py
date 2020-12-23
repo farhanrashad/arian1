@@ -1,6 +1,6 @@
 {
     'name': 'de_employee',
-    'version': '13.0.1',
+    'version': '13.0.0.1',
     'author': '',
     'website': "",
     'depends': ['base','hr'],
