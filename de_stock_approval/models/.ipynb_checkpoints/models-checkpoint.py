@@ -10,9 +10,10 @@ class stockPickingInherit(models.Model):
 
 
     def action_assign(self):
-        record = self.move_line_ids_without_package
         
-        for rec in record:            
+        res = super(stockPickingInherit, self).action_assign()
+        
+        for rec in self.move_ids_without_package :           
             if rec.state != 'assigned':
                 self.update({
                     'state': 'partially_available'
@@ -22,7 +23,8 @@ class stockPickingInherit(models.Model):
                 self.update({
                     'state': 'assigned'
                 })
-        
+        return res
+    
                 
 
     
