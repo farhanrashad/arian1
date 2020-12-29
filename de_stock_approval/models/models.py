@@ -18,6 +18,7 @@ class stockPickingInherit(models.Model):
                 self.update({
                     'state': 'partially_available'
                 })
+                'show_check_availability', '=', True
                 break
             else: 
                 self.update({
