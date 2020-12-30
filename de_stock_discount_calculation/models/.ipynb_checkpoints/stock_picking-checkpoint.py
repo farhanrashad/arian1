@@ -34,30 +34,35 @@ class StockPicking(models.Model):
     
     @api.onchange('tax_before_id')
     def onchange_tax_before_discount(self):
-        self.is_before_tax = True
-        for line in self.move_ids_without_package:
-            line.update({
-                    'tax_amount' : (self.tax_before_id.amount/100) * line.product_uom_qty
-                })
+        if self.tax_before_id:
+            self.is_before_tax = True
+            for line in self.move_ids_without_package:
+                line.update({
+                        'tax_amount' : (self.tax_before_id.amount/100) * line.subtotal
+                    })
+        else:
+            self.is_before_tax = False
              
         
         
         
     @api.onchange('after_tax_id')
     def onchange_tax_after_discount(self):
-        self.is_after_tax = True
-        if self.discount > 0:
-            for line in self.move_ids_without_package:
-                after_discount = (line.product_uom_qty * (self.discount/100))
-                line.update({
-                    'tax_amount' : (self.after_tax_id.amount/100) * after_discount
-                })
+        if self.after_tax_id:
+            self.is_after_tax = True
+            if self.discount > 0:
+                for line in self.move_ids_without_package:
+                    after_discount = (line.subtotal * (self.discount/100))
+                    line.update({
+                        'tax_amount' : (self.after_tax_id.amount/100) * after_discount
+                    })
+            else:
+                for line in self.move_ids_without_package:
+                    line.update({
+                        'tax_amount' : (self.after_tax_id.amount/100) * line.subtotal
+                    })
         else:
-            for line in self.move_ids_without_package:
-                line.update({
-                    'tax_amount' : (self.after_tax_id.amount/100) * line.product_uom_qty
-                })
-            
+            self.is_after_tax = False
                 
         
         
@@ -72,7 +77,7 @@ class StockMove(models.Model):
     unit_price = fields.Float(related='product_id.lst_price') 
     tax_amount = fields.Float(string='Tax Amount') 
     currency_id = fields.Many2one('res.currency', 'Currency')
-    subtotal = fields.Monetary(string='Subtotal', compute='_compute_amount_subtotal') 
+    subtotal = fields.Float(string='Subtotal', compute='_compute_amount_subtotal') 
     
     
     @api.depends('subtotal','unit_price', 'product_uom_qty')    

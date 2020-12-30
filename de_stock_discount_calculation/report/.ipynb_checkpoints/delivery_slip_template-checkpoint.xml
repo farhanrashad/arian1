@@ -1,0 +1,33 @@
+<odoo>
+  <data>
+  <template id="report_stock_report_delivery_document_inherit" inherit_id="stock.report_delivery_document">
+      <xpath expr="/t/t/t/div/table[1]/thead/tr/th[2]" position="after">
+        <th colspan="2" class="text-center">
+            <span>Tax Amount</span>
+        </th>
+        <th>
+            <span>Subtotal</span>
+        </th>
+    </xpath>
+      
+        <xpath expr="/t/t/t/div/table[1]/thead/tr/th[2]" position="after">
+        <th colspan="2" class="text-center">
+            <span>Tax Amount</span>
+        </th>
+        <th>
+            <span>Subtotal</span>
+        </th>
+    </xpath>
+    <xpath expr="/t/t/t/div/table[1]/tbody/tr/td[2]" position="after">
+        <td>
+            <span t-field="move.tax_amount"/>
+        </td>
+        <td>
+            <span t-field="move.subtotal"   />
+        </td>
+       
+    </xpath>
+
+    </template>
+  </data>
+</odoo>
