@@ -6,15 +6,29 @@
 			<field name="inherit_id" ref="stock.view_picking_form"/>
 			<field name="arch" type="xml">
                <xpath expr="//field[@name='origin']" position="after">
-                        <field name="tax_before_discount"/>
-                        <field name="tax_after_discount"/>
-                        <field name="discount"/>
+                        <field name="discount" attrs="{'readonly': [('state','=','done')]}"/>
+                        <field name="tax_before_id" attrs="{'invisible': [('is_after_tax','=',True)],'readonly': [('state','=','done')]}" />
+                        <field name="after_tax_id" attrs="{'invisible': [('is_before_tax','=',True)],'readonly': [('state','=','done')]}"  />                        
+                        <field name="is_before_tax" invisible="1"/>
+                        <field name="is_after_tax" invisible="1"/>
 				</xpath>
-                <xpath expr="field[@name='move_ids_without_package']//tree//field[@name='product_id']" position="after">
+                <xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='product_id']" position="after">
                         <field name="unit_price"/>
-                        <field name="tax_calculation"/>
-                        <field name="subtotal"/>
+                        <field name="tax_amount"/>
 				</xpath>
+                                
+                <xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='product_uom']" position="after">
+                        <field name="subtotal"/>
+				</xpath>  
+                
+                 <xpath expr="//field[@name='move_ids_without_package']" position="after">
+                    <group class="oe_subtotal_footer">
+                        <field name="amount_tax"/>
+
+                        <field name="total_amount" class="oe_subtotal_footer_separator"/>
+                     </group>
+                </xpath> 
+                
 			</field>
 	  </record>   
   </data>
