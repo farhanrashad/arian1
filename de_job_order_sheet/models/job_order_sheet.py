@@ -283,8 +283,8 @@ class JobOrderSheetLine(models.Model):
                     move_line.update({
                     'state': 'cancel'
                      })       
-                pcs_finished_picking = self.env['stock.picking'].search([('picking_type_id.name',  '=',   
-                                                                             'Pick Components from Supply'),('origin','=',order.name)])
+                pcs_finished_picking = self.env['stock.picking'].search([('picking_type_id.id',  'in',   
+                                                                             [10,12]),('origin','=',order.name)])
                 for pcs_picking in pcs_finished_picking:
                     pcs_picking.update({
                      'state': 'cancel'
