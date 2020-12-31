@@ -8,8 +8,14 @@
 			<xpath expr="//header/field[@name = 'state']" position="replace">
 				<field name="state" widget="statusbar" statusbar_visible="draft,confirmed,partially_available,assigned,done"/>
 			</xpath>
+            
+            
+            <xpath expr="//header/button[@name = 'action_assign']" position="after">
+                    <button name="action_assign" states="partially_available" string="Check Availability" type="object" class="oe_highlight" groups="base.group_user"/>
+			</xpath>
+            
+            
 		</field>
 	</record>
 </odoo>
-
 
