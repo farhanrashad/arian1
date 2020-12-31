@@ -22,8 +22,11 @@ class StockPicking(models.Model):
     @api.onchange('discount')
     def onchange_discount(self):
         for line in self.move_ids_without_package:
+            total =  (line.unit_price * line.product_uom_qty)  + line.tax_amount
+            discount_amount = total * (line.discount/100)
             line.update({
-                'discount': self.discount
+                'discount': self.discount,
+                'subtotal': total - discount_amount
             })
         
     
@@ -48,14 +51,20 @@ class StockPicking(models.Model):
         if self.tax_before_id:
             self.is_before_tax = True
             for line in self.move_ids_without_package:
+                total =  (line.unit_price * line.product_uom_qty)  + line.tax_amount
+                discount_amount = total * (line.discount/100)
                 line.update({
-                        'tax_amount' : (self.tax_before_id.amount/100) * line.subtotal
+                        'tax_amount' : (self.tax_before_id.amount/100) * line.subtotal,
+                        'subtotal': total - discount_amount
                     })
         else:
             self.is_before_tax = False
             for line in self.move_ids_without_package:
+                total =  (line.unit_price * line.product_uom_qty)  + line.tax_amount
+                discount_amount = total * (line.discount/100)
                 line.update({
-                        'tax_amount' : (self.tax_before_id.amount/100) * line.subtotal
+                        'tax_amount' : (self.tax_before_id.amount/100) * line.subtotal,
+                        'subtotal': total - discount_amount
                     }) 
         
         
@@ -66,19 +75,29 @@ class StockPicking(models.Model):
             self.is_after_tax = True
             if self.discount > 0:
                 for line in self.move_ids_without_package:
+                    total =  (line.unit_price * line.product_uom_qty)  + line.tax_amount
+                    discount_amount = total * (line.discount/100)
                     line.update({
-                        'tax_amount' : (self.after_tax_id.amount/100) * line.subtotal
+                        'tax_amount' : (self.after_tax_id.amount/100) * line.subtotal,
+                        'subtotal': total - discount_amount
+                        
                     })
             else:
                 for line in self.move_ids_without_package:
+                    total =  (line.unit_price * line.product_uom_qty)  + line.tax_amount
+                    discount_amount = total * (line.discount/100)
                     line.update({
-                        'tax_amount' : (self.after_tax_id.amount/100) * line.subtotal
+                        'tax_amount' : (self.after_tax_id.amount/100) * line.subtotal,
+                        'subtotal': total - discount_amount
                     })
         else:
             self.is_after_tax = False
             for line in self.move_ids_without_package:
+                total =  (line.unit_price * line.product_uom_qty)  + line.tax_amount
+                discount_amount = total * (line.discount/100)
                 line.update({
-                        'tax_amount' : (self.after_tax_id.amount/100) * line.subtotal
+                        'tax_amount' : (self.after_tax_id.amount/100) * line.subtotal,
+                        'subtotal': total - discount_amount
                     })
                 
         
@@ -103,4 +122,7 @@ class StockMove(models.Model):
         for line in self:
             total =  (line.unit_price * line.product_uom_qty)  + line.tax_amount
             discount_amount = total * (line.discount/100)
-            line.subtotal = total - discount_amount
+            line.update({
+                'subtotal': total - discount_amount
+            })
+           
