@@ -18,6 +18,16 @@ class StockPicking(models.Model):
     amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all')
     
     
+    
+    @api.onchange('discount')
+    def onchange_discount(self):
+        for line in self.move_ids_without_package:
+            line.update({
+                'discount': self.discount
+            })
+        
+    
+    
     @api.depends('move_ids_without_package.subtotal')
     def _amount_all(self):
         for order in self:
@@ -26,8 +36,9 @@ class StockPicking(models.Model):
                 amount_untaxed += line.subtotal
                 amount_tax += line.tax_amount 
             order.update({
-                'total_amount': amount_untaxed,
-                'amount_tax': amount_tax
+                'amount_untaxed': amount_untaxed,
+                'amount_tax': amount_tax,
+                'total_amount': amount_untaxed + amount_tax,
                 })
             
 
@@ -55,9 +66,8 @@ class StockPicking(models.Model):
             self.is_after_tax = True
             if self.discount > 0:
                 for line in self.move_ids_without_package:
-                    after_discount = (line.subtotal * (self.discount/100))
                     line.update({
-                        'tax_amount' : (self.after_tax_id.amount/100) * after_discount
+                        'tax_amount' : (self.after_tax_id.amount/100) * line.subtotal
                     })
             else:
                 for line in self.move_ids_without_package:
@@ -83,6 +93,7 @@ class StockMove(models.Model):
     
     unit_price = fields.Float(related='product_id.lst_price') 
     tax_amount = fields.Float(string='Tax Amount') 
+    discount = fields.Float(string='Discount %')
     currency_id = fields.Many2one('res.currency', 'Currency')
     subtotal = fields.Float(string='Subtotal', compute='_compute_amount_subtotal') 
     
@@ -90,4 +101,6 @@ class StockMove(models.Model):
     @api.depends('subtotal','unit_price', 'product_uom_qty')    
     def _compute_amount_subtotal(self):
         for line in self:
-            line.subtotal = line.unit_price * line.product_uom_qty 
+            total =  (line.unit_price * line.product_uom_qty)  + line.tax_amount
+            discount_amount = total * (line.discount/100)
+            line.subtotal = total - discount_amount
