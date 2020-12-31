@@ -42,7 +42,10 @@ class StockPicking(models.Model):
                     })
         else:
             self.is_before_tax = False
-             
+            for line in self.move_ids_without_package:
+                line.update({
+                        'tax_amount' : (self.tax_before_id.amount/100) * line.subtotal
+                    }) 
         
         
         
@@ -63,6 +66,10 @@ class StockPicking(models.Model):
                     })
         else:
             self.is_after_tax = False
+            for line in self.move_ids_without_package:
+                line.update({
+                        'tax_amount' : (self.after_tax_id.amount/100) * line.subtotal
+                    })
                 
         
         

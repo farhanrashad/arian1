@@ -1,17 +1,29 @@
 <odoo>
   <data>
   <template id="report_stock_report_delivery_document_inherit" inherit_id="stock.report_delivery_document">
-      <xpath expr="/t/t/t/div/table[1]/thead/tr/th[2]" position="after">
-        <th colspan="2" class="text-center">
-            <span>Tax Amount</span>
-        </th>
-        <th>
-            <span>Subtotal</span>
-        </th>
+      <xpath expr="/t/t/t/div/div" position="inside">
+        <div t-if="o.tax_before_id" class="col-auto" name="div_tax_before">
+             <strong>Tax Before Discount:</strong>
+              <t t-if="o.tax_before_id">
+                     <p t-field="o.tax_before_id"/>
+               </t>
+          </div>
+           <div t-if="o.after_tax_id" class="col-auto" name="div_tax_after">
+             <strong>Tax After Discount:</strong>
+              <t t-if="o.after_tax_id">
+                     <p t-field="o.after_tax_id"/>
+               </t>
+          </div>
+           <div t-if="o.discount" class="col-auto" name="div_discount">
+             <strong>Discount:</strong>
+              <t t-if="o.discount">
+                     <p t-field="o.discount"/>
+               </t>
+          </div>
     </xpath>
       
         <xpath expr="/t/t/t/div/table[1]/thead/tr/th[2]" position="after">
-        <th colspan="2" class="text-center">
+        <th class="text-center">
             <span>Tax Amount</span>
         </th>
         <th>
