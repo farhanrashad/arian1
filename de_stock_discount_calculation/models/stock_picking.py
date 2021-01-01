@@ -22,7 +22,7 @@ class StockPicking(models.Model):
     @api.onchange('discount')
     def onchange_discount(self):
         for line in self.move_ids_without_package: 
-            total =  (line.unit_price * line.product_uom_qty)
+            total =  (line.unit_price * line.product_uom_qty) + line.tax_amount
             discount_amount = total * (self.discount/100)
             line.update({
                 'discount': self.discount,
@@ -80,7 +80,7 @@ class StockPicking(models.Model):
                     
                 for line in self.move_ids_without_package:
                     line.update({
-                        'tax_amount' : (self.after_tax_id.amount/100) * ( (line.unit_price * line.product_uom_qty) - ((line.unit_price * line.product_uom_qty) * (self.discount/100))),                        
+                        'tax_amount' : (self.after_tax_id.amount/100) * ( (line.unit_price * line.product_uom_qty)  - (line.unit_price * line.product_uom_qty)),                        
                     })    
             else:
                 for line in self.move_ids_without_package:                 
@@ -114,7 +114,7 @@ class StockMove(models.Model):
     @api.depends('subtotal','unit_price', 'product_uom_qty')    
     def _compute_amount_subtotal(self):
         for line in self:
-            total =  (line.unit_price * line.product_uom_qty)
+            total =  (line.unit_price * line.product_uom_qty) + line.tax_amount
             discount_amount = total * (line.discount/100)
             line.update({
                 'subtotal': total - discount_amount
