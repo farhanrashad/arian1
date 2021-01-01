@@ -26,7 +26,6 @@ class stockPickingInherit(models.Model):
             if rec.state != 'assigned':
                 self.update({
                     'state': 'partially_available',
-                    'show_check_availability' :  True
                 })
                 
                 break
@@ -35,12 +34,6 @@ class stockPickingInherit(models.Model):
                     'state': 'assigned'
                 })
                 
-        for rec in self.move_ids_without_package :           
-            self.update({
-                    'show_check_availability' :  True
-                })
-            
-        if self.state == 'partially_available':
-            self.show_check_availability = True
+
         return res
  
