@@ -166,53 +166,55 @@ class AccountMoveInherit(models.Model):
     commission_rate = fields.Float(string = 'Commission Rate')
     commission_prcentage = fields.Float(string = 'Commission %age')
     total_commission = fields.Float(compute='cal_total_commission',string = 'Total Commission')
-    commission_method = fields.Selection([
-        ('by_rate_uom' , 'By Rate / UOM'),
-        ('by_per_age','By %age of Total Amount')
-    ], string='Commission Calculation Method')
 
     def cal_total_commission(self):
-        total = 0
-        commission_rate_uom_bill = self.broker_partner_ref_bill.commission_rate
-        commission_percent_age_bill = self.broker_partner_ref_bill.commission_per
-        if self.commission_method == 'by_rate_uom':
-            total_qty = 0
+        if self.commission_prcentage:
+            self.total_commission = float(self.amount_total) * ((self.commission_prcentage/100) + 1)
+        elif self.commission_rate:
+            total_q = 0
+            for record in self.invoice_line_ids:
+                for rec in record:
+                    total_q +=rec.quantity
+            self.total_commission = float(total_q) * self.commission_rate
+        else:
+            self.total_commission = 0.00
 
-            for line in self.invoice_line_ids:
-                total_qty += line.quantity
-            total = total_qty *commission_rate_uom_bill
-
-        if self.commission_method == 'by_per_age':
-            total = self.amount_total * commission_percent_age_bill
-        self.total_commission = total
-        
-    def invoice_line_enhancement(self):
-        
+    def action_post(self):
+        res = super(AccountMoveInherit, self).action_post()
+      
         line_ids = []
         debit_sum = 0.0
         credit_sum = 0.0
-        
+        move_dict = {
+              'name': self.name,
+              'journal_id': self.journal_id.id,
+#               'date': self.date_order,
+              'state': 'draft',
+                   }
+                        #step2:debit side entry
         debit_line = (0, 0, {
-                  	'move_id': self.id,
+#                 	'move_id': self.id,
                     'name': self.name ,
                     'debit': abs(self.total_commission),
-                    'credit': 0.0,
+                    'credit': 0.0,                   
                     'account_id': self.broker_partner_ref_bill.commission_paid_on_purchases_account.id,
-                         })
+            })
         line_ids.append(debit_line)
-        
-#         debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
+        debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
 
+                #step3:credit side entry
         credit_line = (0, 0, {
-                  'move_id': self.id,
+#                   'move_id': self.id,
                   'name': self.name,
                   'debit': 0.0,
                   'credit': abs(self.total_commission),
                   'account_id': self.broker_partner_ref_bill.property_account_payable_id.id,
-                          })
+        })
         line_ids.append(credit_line)
-#         credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
-#         move = self.env['account.move.line'].create(line_ids)
-        
+        credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
 
-        self.line_ids = line_ids
+        move_dict['line_ids'] = line_ids
+        move = self.env['account.move'].create(move_dict)
+        
+        return res
+    
