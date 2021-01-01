@@ -13,18 +13,22 @@ class StockPicking(models.Model):
     is_before_tax = fields.Boolean(string='Before Tax')
     is_after_tax = fields.Boolean(string='After Tax')
     currency_id = fields.Many2one('res.currency', 'Currency')
-    total_amount = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all')
-    amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all')
-    amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all')
+    total_amount = fields.Float(string='Total', store=True, readonly=True, compute='_amount_all')
+    amount_untaxed = fields.Float(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all')
+    amount_tax = fields.Float(string='Taxes', store=True, readonly=True, compute='_amount_all')
     
     
     
     @api.onchange('discount')
     def onchange_discount(self):
-        for line in self.move_ids_without_package:           
+        for line in self.move_ids_without_package: 
+            total =  (line.unit_price * line.product_uom_qty)
+            discount_amount = total * (self.discount/100)
             line.update({
                 'discount': self.discount,
+                'subtotal': total - discount_amount
             })
+            
         
     
     
@@ -49,14 +53,14 @@ class StockPicking(models.Model):
             self.is_before_tax = True
             for line in self.move_ids_without_package:
                 line.update({
-                        'tax_amount' : (self.tax_before_id.amount/100) * line.subtotal,
+                        'tax_amount' : (self.tax_before_id.amount/100) *  (line.unit_price * line.product_uom_qty),
                         
                     })
         else:
             self.is_before_tax = False
             for line in self.move_ids_without_package:
                 line.update({
-                        'tax_amount' : (self.tax_before_id.amount/100) * line.subtotal,
+                        'tax_amount' : (self.tax_before_id.amount/100) * (line.unit_price * line.product_uom_qty),
                         
                     }) 
         
@@ -68,20 +72,26 @@ class StockPicking(models.Model):
             self.is_after_tax = True
             if self.discount > 0:
                 for line in self.move_ids_without_package:
-                  
+                    total =  (line.unit_price * line.product_uom_qty)
+                    discount_amount = total * (line.discount/100)
                     line.update({
-                        'tax_amount' : (self.after_tax_id.amount/100) * line.subtotal ,                        
+                        'subtotal': total - discount_amount,
                     })
+                    
+                for line in self.move_ids_without_package:
+                    line.update({
+                        'tax_amount' : (self.after_tax_id.amount/100) * ( (line.unit_price * line.product_uom_qty) - ((line.unit_price * line.product_uom_qty) * (self.discount/100))),                        
+                    })    
             else:
                 for line in self.move_ids_without_package:                 
                     line.update({
-                        'tax_amount' : (self.after_tax_id.amount/100) * line.subtotal,
+                        'tax_amount' : (self.after_tax_id.amount/100) * (line.unit_price * line.product_uom_qty),
                     })
         else:
             self.is_after_tax = False
             for line in self.move_ids_without_package:
                 line.update({
-                        'tax_amount' : (self.after_tax_id.amount/100) * line.subtotal,
+                        'tax_amount' : (self.after_tax_id.amount/100) * (line.unit_price * line.product_uom_qty),
                     })
                 
         
@@ -104,7 +114,7 @@ class StockMove(models.Model):
     @api.depends('subtotal','unit_price', 'product_uom_qty')    
     def _compute_amount_subtotal(self):
         for line in self:
-            total =  (line.unit_price * line.product_uom_qty)  + line.tax_amount
+            total =  (line.unit_price * line.product_uom_qty)
             discount_amount = total * (line.discount/100)
             line.update({
                 'subtotal': total - discount_amount

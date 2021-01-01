@@ -23,7 +23,7 @@
     </xpath>
       
         <xpath expr="/t/t/t/div/table[1]/thead/tr/th[2]" position="after">
-        <th class="text-center">
+        <th>
             <span>Tax Amount</span>
         </th>
         <th>
@@ -31,14 +31,47 @@
         </th>
     </xpath>
     <xpath expr="/t/t/t/div/table[1]/tbody/tr/td[2]" position="after">
+        
         <td>
             <span t-field="move.tax_amount"/>
         </td>
+        
         <td>
-            <span t-field="move.subtotal"   />
+            <span t-esc="move.subtotal + move.tax_amount"   />
         </td>
        
     </xpath>
+    
+      <xpath expr="/t/t/t/div/table[2]" position="after">
+       <div id="total" class="row justify-content-end">
+                <div class="col-4">
+                    <table class="table table-sm">
+                        <tr class="border-black">
+                            <td name="td_subtotal_label"><strong>Untaxed Amount</strong></td>
+                            <td class="text-right">
+                                <span t-field="o.amount_untaxed" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td name="td_taxes_label">Taxes</td>
+                            <td class="text-right">
+                               <t t-set="sum_qty_finish" t-value="o.currency_id.id"/>   
+                                <span t-field="o.amount_tax"/>
+                            </td>
+                        </tr>
+                        <tr class="border-black o_total">
+                            <td name="td_amount_total_label"><strong>Total</strong></td>
+                            <td class="text-right">
+                               <t t-set="sum_qty_finish" t-value="o.currency_id.id"/>   
+                                <span t-field="o.total_amount"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+    </xpath> 
+      
+      
 
     </template>
   </data>
