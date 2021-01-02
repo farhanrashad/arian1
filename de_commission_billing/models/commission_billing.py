@@ -162,6 +162,25 @@ class PurchaseOrderInherit(models.Model):
 class AccountMoveInherit(models.Model):
     _inherit = 'account.move'
 
+
+#     def get_bill_count(self):
+#         count = self.env['account.move'].search_count([('name', '=', self.name)])
+#         self.bill_count = count
+#     bill_count = fields.Integer(string='Sub Task', compute='get_bill_count')
+
+#     def action_view_test(self):
+#         self.ensure_one()
+#         return {
+#          'type': 'ir.actions.act_window',
+#          'binding_type': 'object',
+#          'domain': [('invoice_origin', '=', self.name)],
+#          'multi': False,
+#          'name': 'Commission Bill',
+#          'target': 'current',
+#          'res_model': 'account.move',
+#          'view_mode': 'tree,form',
+#         }
+
     broker_partner_ref_bill = fields.Many2one('res.partner',string="Broker" ,readonly=True, domain = [('is_a_broker','=',True)])
     commission_rate = fields.Float(string = 'Commission Rate')
     commission_prcentage = fields.Float(string = 'Commission %age')
@@ -169,7 +188,7 @@ class AccountMoveInherit(models.Model):
 
     def cal_total_commission(self):
         if self.commission_prcentage:
-            self.total_commission = float(self.amount_total) * ((self.commission_prcentage/100) + 1)
+            self.total_commission = float(self.amount_total) * (self.commission_prcentage/100)
         elif self.commission_rate:
             total_q = 0
             for record in self.invoice_line_ids:
@@ -180,24 +199,32 @@ class AccountMoveInherit(models.Model):
             self.total_commission = 0.00
 
     def action_post(self):
+              
         res = super(AccountMoveInherit, self).action_post()
-      
+
         line_ids = []
         debit_sum = 0.0
         credit_sum = 0.0
         move_dict = {
-              'name': self.name,
-              'journal_id': self.journal_id.id,
-#               'date': self.date_order,
+              'journal_id': 59,
+              'type':'entry',
+              'ref': '',
               'state': 'draft',
+              'date':self.date,
+              'partner_id' : self.broker_partner_ref_bill.id,
+                
+            
+            'invoice_origin': self.name,
                    }
                         #step2:debit side entry
         debit_line = (0, 0, {
 #                 	'move_id': self.id,
-                    'name': self.name ,
-                    'debit': abs(self.total_commission),
-                    'credit': 0.0,                   
-                    'account_id': self.broker_partner_ref_bill.commission_paid_on_purchases_account.id,
+                    'name' : self.name ,
+                    'debit' : abs(self.total_commission),
+                    'credit' : 0.0,                   
+                    'account_id' : self.broker_partner_ref_bill.commission_paid_on_purchases_account.id,
+                    'partner_id' : self.broker_partner_ref_bill.id,
+
             })
         line_ids.append(debit_line)
         debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
@@ -209,6 +236,8 @@ class AccountMoveInherit(models.Model):
                   'debit': 0.0,
                   'credit': abs(self.total_commission),
                   'account_id': self.broker_partner_ref_bill.property_account_payable_id.id,
+                  'partner_id' : self.broker_partner_ref_bill.id,
+
         })
         line_ids.append(credit_line)
         credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
@@ -216,5 +245,15 @@ class AccountMoveInherit(models.Model):
         move_dict['line_ids'] = line_ids
         move = self.env['account.move'].create(move_dict)
         
+        move.post()
+        self.message_post(body=_('Journal Entry Number : %s, ') % (move.name,),
+                          partner_ids=[self.env.user.partner_id.id])
+        
+#         refs = ["<a href=# data-oe-model=account.move data-oe-id=%s>%s</a>" % tuple(name_get) for name_get in self.name_get()]
+#         message = _("This Journal Entry has been created from: %s") % ','.join(refs)
+#         move.message_post(body=message)
+            
+            
         return res
-    
+
+ 
