@@ -126,15 +126,15 @@ class ProductTemplate(models.Model):
     @api.model
     def create(self, values):
         res = super(ProductTemplate, self).create(values)
-        try:
-            if values['purchase_ok'] == True:
-                if values['seller_ids']:
-                    pass
-            else:
-                raise exceptions.ValidationError('Please Select Vendor On Purchase Tab.')    
+       # try:
+       #     if values['purchase_ok'] == True:
+       #         if values['seller_ids']:
+       #             pass
+       ##     else:
+       #         raise exceptions.ValidationError('Please Select Vendor On Purchase Tab.')    
             
-       except:
-            pass
+      # except:
+      #      pass
         return res
     
     allow_location = fields.Boolean(string="Is Finished or Un-Finished") 
