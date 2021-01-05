@@ -130,9 +130,11 @@ class ProductTemplate(models.Model):
             if values['purchase_ok'] == True:
                 if values['seller_ids']:
                     pass
-        except:
-            raise exceptions.ValidationError('Please Select Vendor On Purchase Tab.')    
-        
+            else:
+                raise exceptions.ValidationError('Please Select Vendor On Purchase Tab.')    
+            
+       except:
+            pass
         return res
     
     allow_location = fields.Boolean(string="Is Finished or Un-Finished") 
