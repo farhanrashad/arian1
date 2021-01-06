@@ -77,6 +77,10 @@ class PurchaseOrder(models.Model):
                 pick.update({
                     'state': 'cancel'
                 })
+        for line in self.order_line:
+            line.update({
+                'product_qty': line.qty_received
+            })
       
         return res     
     
