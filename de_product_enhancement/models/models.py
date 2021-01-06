@@ -46,8 +46,8 @@ class StockPicking(models.Model):
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
-    bill_amount = fields.Float(string="Amount Billed", compute='_compute_bill_amount', store=True)
-    remaining_bill_amount = fields.Float(string="Remaining Amount to bill", compute='_compute_bill_amount', store=True)
+    bill_amount = fields.Float(string="Amount Billed", compute='_compute_bill_amount')
+    remaining_bill_amount = fields.Float(string="Remaining Amount to bill", compute='_compute_bill_amount')
 
     @api.onchange('amount_total')
     def onchange_amount_total(self):
