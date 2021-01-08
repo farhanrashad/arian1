@@ -40,8 +40,7 @@ class stockPickingInherit(models.Model):
 
         return res
  
-    def button_validate(self):
-        
+    def button_validate(self):        
         origins = self.env['stock.picking'].search([('origin','=',self.name),('state','=', 'done')])
         for picking_line in  self.move_ids_without_package:            
             bom = self.env['mrp.bom'].search([('product_id','=',picking_line.product_id.id)])
