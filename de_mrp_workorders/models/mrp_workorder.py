@@ -263,7 +263,12 @@ class MrpProduction(models.Model):
     
                 
     def button_plans(self):
-
+        workorders = self.env['mrp.workorder'].search([('production_id','=',self.name),('state','!=','done')])
+        producing_qty = 0
+        for workorder in workorders:
+            producing_qty = producing_qty + (workorder.qty_production - workorder.qty_produced)
+            
+            
 
         total_quantity = 0.0
         total_processes_qty = 0.0
@@ -283,18 +288,17 @@ class MrpProduction(models.Model):
             if line.product_uom_qty_planned_ratio > minimum_planned:
                 pass
             else:
-                minimum_planned = line.product_uom_qty_planned_ratio
- 
-            
+                minimum_planned = (line.product_uom_qty_planned_ratio - round(line.quantity_done,2))
+                    
+                    
         for finish_line in self.finished_move_line_ids:
             finish_qty = finish_qty + finish_line.qty_done
             
         total_processes_qty = total_processes_qty + minimum_planned
-#         total_quantity = total_quantity + finish_qty
             
-            
-        if total_quantity > minimum_planned:
-            raise exceptions.ValidationError('Failed to Plan. Please Check  if the components are reserved properly and the requested quantity to plan is not greater than total demand. You can only plan Quantity:' + str(minimum_planned) )            
+        permissible_qty = minimum_planned - producing_qty    
+        if total_quantity > permissible_qty:
+            raise exceptions.ValidationError('Failed to Plan. Please Check  if the components are reserved properly and the requested quantity to plan is not greater than total demand. You can only plan Quantity:' + str(permissible_qty) )            
         else:        
             if self.routing_f_id != '' and self.product_f_qty != 0.0:
 
