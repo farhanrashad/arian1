@@ -11,8 +11,8 @@ class stockPickingInherit(models.Model):
             ('draft', 'Draft'),
             ('waiting', 'Waiting Another Operation'),
             ('confirmed', 'Waiting'),
-            ('partially_available', 'Partially Available'),
-            ('assigned', 'Ready'),
+            ('assigned', 'Partially Available'),
+            ('partially_available', 'Ready'),
             ('done', 'Done'),
             ('cancel', 'Cancelled'),
         ],
@@ -21,23 +21,24 @@ class stockPickingInherit(models.Model):
     
     def action_assign(self):
         res = super(stockPickingInherit, self).action_assign()
-
-        for rec in self.move_ids_without_package :  
-            if rec.state == 'confirmed':
-                pass
-            else:
-                if rec.state != 'assigned':
-                    self.update({
-                        'state': 'partially_available',
-                    })
-
-                    break
-                else: 
-                    self.update({
-                        'state': 'assigned'
-                    })
-                
-
+        move_count = 0
+        picking_move_count = 0
+        for line in self.move_ids_without_package: 
+            move_count = move_count + 1
+            
+        for move_line in self.move_ids_without_package: 
+            if move_line.state == 'assigned':
+                picking_move_count = picking_move_count + 1    
+        
+        if picking_move_count != move_count:        
+            self.show_validate = True
+        
+        if picking_move_count == move_count:
+            self.show_validate = False
+            self.update({
+                'state': 'partially_available',
+                })    
+               
         return res
  
     def button_validate(self):        
