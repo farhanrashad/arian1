@@ -15,15 +15,14 @@
 								class="btn-primary" />
                         <button name="action_approve" string="Approve" type="object"
 								groups="de_extra_issuance.extra_issuance_approve"
-
+                                attrs="{'invisible': [('state', '!=', 'submitted')]}"
 								class="btn-primary" />
-<!--						attrs="{'invisible': [('state', '!=', 'submitted')]}"-->
                         <field name="state" widget="statusbar"/>
                     </header>
 					<sheet>
 						<group>
 							<group>
-								<field name="sale_order" />
+								<field name="sale_id" />
 							</group>
 							<group>
 								<field name="reason" />
@@ -59,7 +58,7 @@
 			<field name="model">extra.issuance</field>
 			<field name="arch" type="xml">
 				<tree string="Extra Issuance Tree">
-					<field name="sale_order" />
+					<field name="sale_id" />
 					<field name="reason" />
 				</tree>
 			</field>
@@ -70,7 +69,7 @@
 			<field name="model">extra.issuance</field>
 			<field name="arch" type="xml">
 				<search string="Extra Issuance Search">
-					<field name="sale_order" />
+					<field name="sale_id" />
 					<field name="reason" />
 				</search>
 			</field>

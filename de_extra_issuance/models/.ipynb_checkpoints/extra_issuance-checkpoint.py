@@ -10,7 +10,6 @@ class ExtraIssuance(models.Model):
     _rec_name = 'sale_id'
 
     sale_id = fields.Many2one('sale.order', string='Sale Order')
-    sale_order = fields.Many2one('sale.order', string='Sale Order')
     reason = fields.Char(string='Reason')
     articles_lines = fields.One2many('extra.issuance.article.line', 'relation_article')
     component_lines = fields.One2many('extra.issuance.component.line', 'relation_component')
@@ -24,16 +23,26 @@ class ExtraIssuance(models.Model):
     def action_process(self):
 
         for mrec in self.articles_lines:
+            article_qty = mrec.quantity
             boms = self.env['mrp.bom'].search([('product_id', '=', mrec.product_id.id)])
             for bom_line in boms.bom_line_ids:
-                vals = {
-                        'relation_component': self.id,
-                        'product_id': bom_line.product_id.id,
-                        'component_qty': bom_line.product_qty * mrec.quantity,
-                    }
-                bom_component = self.env['extra.issuance.component.line'].create(vals)
-#             raise UserError((boms))
-#             for line in bom.bom_line_ids:
+                component_existing = self.env['extra.issuance.component.line'].search([('relation_component', '=', self.id)])
+                if component_existing:
+                    for line in self.component_lines:
+                        if line.product_id.id == bom_line.product_id.id:
+                            quant = line.component_qty + bom_line.product_qty * article_qty
+                            line.update({
+                                'component_qty': quant
+                            })
+                else:            
+                    vals = {
+                            'relation_component': self.id,
+                            'product_id': bom_line.product_id.id,
+                            'component_qty': bom_line.product_qty * article_qty,
+                        }
+                    bom_component = self.env['extra.issuance.component.line'].create(vals)
+                    
+#             for line in bom_line:
 #                 component_exists = self.env['extra.issuance.component.line'].search([('relation_component', '=', self.id)])
 #                 if not component_exists:
 #                     self.env['extra.issuance.component.line'].create({
@@ -50,22 +59,20 @@ class ExtraIssuance(models.Model):
 #                             'product_id': line.product_id.id,
 #                             'component_qty': line.product_qty * mrec.quantity,
 #                         })
-#         self.write({'state': 'processed'})
+        self.write({'state': 'processed'})
+    
     def action_submit(self):
         self.write({'state': 'submitted'})
 
     def action_approve(self):
-
         picking_delivery = self.env['stock.picking.type'].search([('code', '=', 'internal')], limit=1)
         print(picking_delivery.default_location_src_id.name)
-        # picking_incoming = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
-        # print(self.return_id.delivery_location)
         vals = {
             'location_id': picking_delivery.default_location_src_id.id,
             'location_dest_id': picking_delivery.default_location_dest_id.id,
             'partner_id': self.env.user.id,
             'picking_type_id': picking_delivery.id,
-            'origin': self.sale_order.name,
+            'origin': self.sale_id.name,
         }
         picking = self.env['stock.picking'].create(vals)
         print('header created')
