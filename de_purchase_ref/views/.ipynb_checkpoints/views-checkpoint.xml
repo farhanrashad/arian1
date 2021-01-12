@@ -25,9 +25,7 @@
 			</xpath>
 		</field>
 	</record>
-    
-    
-    
+
         <record id="mrp_production_pivot_view_inherit" model="ir.ui.view">
 			<field name="name">mrp.production.pivot.view.inherit</field>
 			<field name="model">mrp.production</field>
@@ -42,7 +40,6 @@
 			</field>
 	   </record>
     
-    
     <record id="view_stock_pivot_inhrt" model="ir.ui.view">
 		<field name="name">stock.move.line.tree</field>
 		<field name="model">stock.move.line</field>
@@ -53,26 +50,30 @@
 			</xpath>
 		</field>
 	</record>
-
-
     
-<!--     <record id="view_sale_order_form_inhrt" model="ir.ui.view">
+    <record id="view_sale_order_form_inhrt" model="ir.ui.view">
 		<field name="name">sale.order.form</field>
 		<field name="model">sale.order</field>
 		<field name="inherit_id" ref="sale.view_order_form" />
 		<field name="arch" type="xml">
-			<xpath expr="//sheet/notebook/page/field[@name = 'order_line']/group/group" position="after">
-				
-				<field name="exp_del_date"/>
+            <xpath expr="//field[@name = 'partner_id']" position="after">
+                <button name="calculate_date" string="Return" type="object" class="oe_highlight"/>
+			</xpath>
+			<xpath expr="//group[@name = 'sale_shipping']" position="after">
+                <group>
+                    <group>
+                        <field name="insert_days" />
+                    </group>
+                    <group>
+                        <field name="days_days" string="Days"/>
+                    </group>
+                </group>
+                <group>
+                     <field name="bl_date" />
+                </group>
 			</xpath>
 		</field>
-    
-    
-    
-    
-    
-	</record>  -->
-    
-    
+	</record> 
     
 </odoo>
+
