@@ -8,9 +8,14 @@
 			<xpath expr="//header/field[@name = 'state']" position="replace">
 				<field name="state" widget="statusbar" statusbar_visible="draft,confirmed,partially_available,assigned,done"/>
 			</xpath>
+            
+             <xpath expr="//header/button[@name = 'button_validate']" position="after">
+                   <button name="button_validate" states="partially_available" string="Validate" type="object" class="oe_highlight" groups="stock.group_stock_user"/>
+
+			</xpath>
                 
             <xpath expr="//header/button[@name = 'action_assign']" position="after">
-                    <button name="action_assign" states="partially_available" string="Check Availability" type="object" class="oe_highlight" groups="base.group_user"/>
+                    <button name="action_assign" states="assigned" string="Check Availability" type="object" class="oe_highlight" groups="base.group_user"/>
 			</xpath>
             
 		</field>
