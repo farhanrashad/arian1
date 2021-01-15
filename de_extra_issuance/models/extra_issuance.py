@@ -8,42 +8,68 @@ class ExtraIssuance(models.Model):
 
     _name = 'extra.issuance'
     _rec_name = 'sale_id'
-
+    
+    
+    
     sale_id = fields.Many2one('sale.order', string='Sale Order')
     reason = fields.Char(string='Reason')
-    articles_lines = fields.One2many('extra.issuance.article.line', 'relation_article')
-    component_lines = fields.One2many('extra.issuance.component.line', 'relation_component')
+    articles_lines = fields.One2many('extra.issuance.article.line', 'article_id')
+    component_lines = fields.One2many('extra.issuance.component.line', 'component_id')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('processed', 'Processed'),
         ('submitted', 'Submitted'),
         ('approved', 'Approved')],
         readonly=True, index=True, copy=False, default='draft')
+    
+    
+            
+            
+            
+        
 
     def action_process(self):
-
-        for mrec in self.articles_lines:
-            article_qty = mrec.quantity
-            boms = self.env['mrp.bom'].search([('product_id', '=', mrec.product_id.id)])
-            for bom_line in boms.bom_line_ids:
-                component_existing = self.env['extra.issuance.component.line'].search([('relation_component', '=', self.id)])
-                if component_existing:
-                    for line in self.component_lines:
-                        if line.product_id.id == bom_line.product_id.id:
-                            quant = line.component_qty + bom_line.product_qty * article_qty
-                            line.update({
-                                'component_qty': quant
-                            })
-                else:            
-                    vals = {
-                            'relation_component': self.id,
-                            'product_id': bom_line.product_id.id,
-                            'component_qty': bom_line.product_qty * article_qty,
-                        }
-                    bom_component = self.env['extra.issuance.component.line'].create(vals)
+        bom_ids = []
+        all_boms = []
+        for article_line in self.articles_lines:
+            if not (article_line.bom_id in bom_ids):
+                bom_ids.append(article_line.bom_id)
+        for boms in bom_ids:
+            all_boms += boms._recursive_boms()
+        all_boms.reverse()
+        bom_id = all_boms[0]
+        product = self.env['product.product'].search([('bom_id','=',bom_id)])
+        bom_component = self.env['mrp.bom'].search([('product_id','=',product.id)])
+        for bom_line in bom_component:
+           vals = {
+                   'component_id': self.id,
+                   'product_id': bom_line.product_id.id,
+                    'component_qty': bom_line.product_qty * article_qty,
+                     }
+           bom_component = self.env['extra.issuance.component.line'].create(vals)
+        
+                    
+#             article_qty = mrec.quantity
+#             boms = self.env['mrp.bom'].search([('product_id', '=', mrec.product_id.id)])
+#             for bom_line in boms.bom_line_ids:
+#                 component_existing = self.env['extra.issuance.component.line'].search([('component_id', '=', self.id)])
+#                 if component_existing:
+#                     for line in self.component_lines:
+#                         if line.product_id.id == bom_line.product_id.id:
+#                             quant = line.component_qty + bom_line.product_qty * article_qty
+#                             line.update({
+#                                 'component_qty': quant
+#                             })
+#                 else:            
+#                     vals = {
+#                             'component_id': self.id,
+#                             'product_id': bom_line.product_id.id,
+#                             'component_qty': bom_line.product_qty * article_qty,
+#                         }
+#                     bom_component = self.env['extra.issuance.component.line'].create(vals)
                     
 #             for line in bom_line:
-#                 component_exists = self.env['extra.issuance.component.line'].search([('relation_component', '=', self.id)])
+#                 component_exists = self.env['extra.issuance.component.line'].search([('component', '=', self.id)])
 #                 if not component_exists:
 #                     self.env['extra.issuance.component.line'].create({
 #                         'relation_component': self.id,
@@ -104,15 +130,16 @@ class ExtraIssuance(models.Model):
 class ExtraIssuanceArticleLine(models.Model):
 
     _name = 'extra.issuance.article.line'
-
-    relation_article = fields.Many2one('extra.issuance')
-    product_id = fields.Many2one('product.product', string='Product')
+    
+    
+    article_id = fields.Many2one('extra.issuance', string="Article")
+    product_id = fields.Many2one('product.product', string='Product', )
     quantity = fields.Float(string='Quantity')
 
 class ExtraIssuanceComponentLine(models.Model):
 
     _name = 'extra.issuance.component.line'
 
-    relation_component = fields.Many2one('extra.issuance')
+    component_id = fields.Many2one('extra.issuance')
     product_id = fields.Many2one('product.product', string='Component')
     component_qty = fields.Float(string='Total Quantity')

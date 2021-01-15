@@ -23,6 +23,7 @@
 						<group>
 							<group>
 								<field name="sale_id" />
+								
 							</group>
 							<group>
 								<field name="reason" />
@@ -34,7 +35,7 @@
 									<tree  editable="bottom">
 										<field name="product_id"/>
 										<field name="quantity"/>
-										<field name="relation_article" invisible="1"/>
+										<field name="article_id" invisible="1"/>
 									</tree>
 								</field>
 							</page>
@@ -43,7 +44,7 @@
 									<tree  editable="bottom">
 										<field name="product_id"/>
 										<field name="component_qty"/>
-										<field name="relation_component" invisible="1"/>
+										<field name="component_id" invisible="1"/>
 									</tree>
 								</field>
 							</page>
