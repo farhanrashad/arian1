@@ -29,8 +29,24 @@ class ExtraIssuance(models.Model):
     
     
     
+    @api.model
+    def create(self,vals):
+        if vals.get('name',_('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('extra.issuance') or _('New')    
+        res = super(ExtraIssuance,self).create(vals)
+        return res
+    
+    def unlink(self):
+        for isuance in self:
+            if isuance.state in ('processed','submitted','approved'):
+                raise UserError(_('You cannot delete an Document  which is not draft or cancelled.'))
+     
+            return super(ExtraIssuance, self).unlink()
+
+    
+    name = fields.Char('Reference', copy=False, readonly=True, default=lambda x: _('New'))    
     sale_id = fields.Many2one('sale.order', string='Sale Order')
-    reason = fields.Char(string='Reason')
+    reason = fields.Char(string='Reason', required=True)
     articles_lines = fields.One2many('extra.issuance.article.line', 'article_id')
     component_lines = fields.One2many('extra.issuance.component.line', 'component_id')
     state = fields.Selection([
@@ -136,7 +152,6 @@ class ExtraIssuance(models.Model):
                                                   }
                                                 bom_product.append(bom_vals)       
         for material_line in bom_product:
-                
             vals = {
                 'component_id': material_line['component_id'],
                 'product_id': material_line['product_id'],
