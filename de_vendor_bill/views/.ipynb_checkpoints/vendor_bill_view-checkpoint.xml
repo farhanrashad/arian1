@@ -56,6 +56,11 @@
                      <attribute name="groups">de_vendor_bill.group_show_reset_to_draft_button</attribute>
                 </xpath>
                 
+                <xpath expr="//button[@name='%(account.action_view_account_move_reversal)d']" position="attributes">
+                    <attribute name='groups'>de_vendor_bill.group_can_reverse_journal_entry_button</attribute>
+                </xpath>
+                
+                
             </field>
         </record>
 
