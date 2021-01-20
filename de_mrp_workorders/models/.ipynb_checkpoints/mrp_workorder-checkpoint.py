@@ -300,7 +300,7 @@ class MrpProduction(models.Model):
         if total_quantity > permissible_qty:
             raise exceptions.ValidationError('Failed to Plan. Please Check  if the components are reserved properly and the requested quantity to plan is not greater than total demand. You can only plan Quantity:' + str(permissible_qty) )            
         else:        
-            if self.routing_f_id != '' and self.product_f_qty != 0.0:
+            if self.routing_f_id != False and self.product_f_qty != 0.0:
 
                 quantity = max(self.product_f_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
                 quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
@@ -308,7 +308,7 @@ class MrpProduction(models.Model):
                 fval = {
                     'name': self.name,
                     'production_id': self.id,
-                    'workcenter_id': self.routing_f_id.id,
+                    'workcenter_id': self.routing_f_id.operation_ids.workcenter_id.id,
                     'date_planned_start': self.date_planned_start,
                     'date_planned_finished': self.date_planned_start,                             
                     'product_uom_id': self.product_id.uom_id.id,
@@ -317,7 +317,7 @@ class MrpProduction(models.Model):
                     'is_last_step': True,
                     'skipped_check_ids': [],
                     'is_last_lot': True,
-                    'operation_id': self.routing_f_id.operation_ids.id,
+                    'operation_id': self.routing_f_id.id,
                     'duration_expected': self.routing_f_id.operation_ids.time_cycle,
                     'state':'ready' or 'pending',
                     'qty_production': self.product_f_qty,
@@ -347,7 +347,7 @@ class MrpProduction(models.Model):
             else:
                 pass
 
-            if self.routing_s_id != '' and self.product_s_qty != 0.0:
+            if self.routing_s_id != False and self.product_s_qty != 0.0:
                 work_orders_line = self.env['mrp.workorder.line']
                 quantity = max(self.product_s_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
                 quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
@@ -355,7 +355,7 @@ class MrpProduction(models.Model):
                 sval = {
                     'name': self.name,
                     'production_id': self.id,
-                    'workcenter_id': self.routing_s_id.id,
+                    'workcenter_id': self.routing_s_id.operation_ids.workcenter_id.id,
                     'date_planned_start': self.date_planned_start,
                     'date_planned_finished': self.date_planned_start,             
                     'product_uom_id': self.product_id.uom_id.id,
@@ -364,7 +364,7 @@ class MrpProduction(models.Model):
                     'is_last_step': True,
                     'skipped_check_ids': [],
                     'is_last_lot': True,
-                    'operation_id': self.routing_s_id.operation_ids.id,
+                    'operation_id': self.routing_s_id.id,
                     'duration_expected': self.routing_s_id.operation_ids.time_cycle,
                     'state':'ready' or 'pending',
                     'qty_production': self.product_s_qty,
@@ -392,7 +392,7 @@ class MrpProduction(models.Model):
             else:
                 pass
 
-            if self.routing_t_id != '' and self.product_t_qty != 0.0:
+            if self.routing_t_id != False and self.product_t_qty != 0.0:
                 work_ordert_line = self.env['mrp.workorder.line']
                 quantity = max(self.product_t_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
                 quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
@@ -400,7 +400,7 @@ class MrpProduction(models.Model):
                 tval = {
                     'name': self.name,
                     'production_id': self.id,
-                    'workcenter_id': self.routing_t_id.id,
+                    'workcenter_id': self.routing_t_id.operation_ids.workcenter_id.id,
                     'date_planned_start': self.date_planned_start,
                     'date_planned_finished': self.date_planned_start,
                     'company_id': self.company_id.id,
@@ -436,7 +436,7 @@ class MrpProduction(models.Model):
             else:
                 pass
 
-            if self.routing_fo_id != '' and self.product_fo_qty != 0.0:
+            if self.routing_fo_id != False and self.product_fo_qty != 0.0:
                 work_orderfo_line = self.env['mrp.workorder.line']
                 quantity = max(self.product_fo_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
                 quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
@@ -444,7 +444,7 @@ class MrpProduction(models.Model):
                 foval = {
                     'name': self.name,
                     'production_id': self.id,
-                    'workcenter_id': self.routing_fo_id.id,
+                    'workcenter_id': self.routing_fo_id.operation_ids.workcenter_id.id,
                     'date_planned_start': self.date_planned_start,
                     'date_planned_finished': self.date_planned_start,
                     'company_id': self.company_id.id,

@@ -69,19 +69,20 @@ class accountMoveInherit(models.Model):
     
     @api.model
     def create(self, values):
-        if values['invoice_payment_term_id']:
-            rec = super(accountMoveInherit, self).create(values)
-            payment_term = self.env['account.payment.term'].search([('id' ,'=',rec.invoice_payment_term_id.id)])
-        
-            for line in payment_term.line_ids:
-                select_by_date = line.option
-                select_by_day = line.days
-                if select_by_date == 'day_after_bl_date' and rec.invoice_origin:
-                    sale_id = self.env['sale.order'].search([('name','=',rec.invoice_origin)])
-                    bl_date = sale_id.bl_date
-                    new_due_date = bl_date + timedelta(days = select_by_day)
-                    rec.invoice_date_due = new_due_date
-            return rec
+        if 'invoice_payment_term_id' in values:
+            if values['invoice_payment_term_id']:
+                rec = super(accountMoveInherit, self).create(values)
+                payment_term = self.env['account.payment.term'].search([('id' ,'=',rec.invoice_payment_term_id.id)])
+            
+                for line in payment_term.line_ids:
+                    select_by_date = line.option
+                    select_by_day = line.days
+                    if select_by_date == 'day_after_bl_date' and rec.invoice_origin:
+                        sale_id = self.env['sale.order'].search([('name','=',rec.invoice_origin)])
+                        bl_date = sale_id.bl_date
+                        new_due_date = bl_date + timedelta(days = select_by_day)
+                        rec.invoice_date_due = new_due_date
+                return rec
             
         else:
             rec = super(accountMoveInherit, self).create(values)

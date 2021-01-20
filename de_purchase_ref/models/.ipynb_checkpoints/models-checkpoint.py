@@ -34,17 +34,18 @@ class MrpProductionInherit(models.Model):
 class SaleOrderInherit(models.Model):
     _inherit = 'sale.order'
     
-    def calculate_date(self):    
-        specific_date = self.commitment_date
-        new_due_date = specific_date+ timedelta(days = self.insert_days) 
-        new_date = datetime.strptime(str(new_due_date),'%Y-%m-%d %H:%M:%S')
-        new_date = new_date.date()
-        self.bl_date = new_date
+    @api.onchange('commitment_date','insert_days')
+    def calculate_date(self): 
+        if self.commitment_date and self.insert_days:   
+            new_due_date = self.commitment_date + timedelta(days = self.insert_days) 
+            new_date = datetime.strptime(str(new_due_date),'%Y-%m-%d %H:%M:%S')
+            new_date = new_date.date()
+            self.bl_date = new_date
                 
     insert_days = fields.Integer(string="Expected On Boarding Date after Delivery Date")
     days_days = fields.Char(default=' ',readonly=True)
-    
-    bl_date = fields.Date(string="BL Date", readonly=True,compute='calculate_date')
+    bl_date = fields.Date(string="BL Date")
+       
        
 class AccountPaymentTermLineInherit(models.Model):
     _inherit = "account.payment.term.line"
@@ -59,36 +60,51 @@ class AccountPaymentTermLineInherit(models.Model):
         default='day_after_invoice_date', required=True, string='Options'
         )
 
-    
-#         res = super(AccountPaymentTermLineInherit, self).compute()  
-#         return res
+
+
+
 class accountMoveInherit(models.Model):
     _inherit = 'account.move'
-    
-    def btn_fn(self):
-        payment_term = self.env['account.payment.term'].search([('id' ,'=',self.invoice_payment_term_id.id)])
-        select_by_date = payment_term.line_ids.option
-        select_by_day = payment_term.line_ids.days
-        if select_by_date == 'day_after_bl_date':
-            sale_id = self.env['sale.order'].search([('name','=',self.invoice_origin)])
-            bl_date = sale_id.bl_date
-            new_due_date = bl_date + timedelta(days = select_by_day)
-            self.invoice_date_due = new_due_date
-#             raise UserError((type(new_due_date)))
 
     
-    
-#     @api.model
-#     def create(self, values):
+    @api.model
+    def create(self, values):
+        if 'invoice_payment_term_id' in values:
+            if values['invoice_payment_term_id']:
+                rec = super(accountMoveInherit, self).create(values)
+                payment_term = self.env['account.payment.term'].search([('id' ,'=',rec.invoice_payment_term_id.id)])
+            
+                for line in payment_term.line_ids:
+                    select_by_date = line.option
+                    select_by_day = line.days
+                    if select_by_date == 'day_after_bl_date' and rec.invoice_origin:
+                        sale_id = self.env['sale.order'].search([('name','=',rec.invoice_origin)])
+                        bl_date = sale_id.bl_date
+                        new_due_date = bl_date + timedelta(days = select_by_day)
+                        rec.invoice_date_due = new_due_date
+                return rec
+            
+        else:
+            rec = super(accountMoveInherit, self).create(values)
+            return rec
+        
 #         rec = super(accountMoveInherit, self).create(values)
-#         payment_term = self.env['account.payment.term'].search([('id' ,'=',rec.invoice_payment_term_id.id)])
-#         select_by_date = payment_term.line_ids.option
-#         select_by_day = payment_term.line_ids.days
-#         if select_by_date == 'day_after_bl_date':
-#             sale_id = self.env['sale.order'].search([('name','=',rec.invoice_origin)])
-#             bl_date = sale_id.bl_date
-#             new_due_date = bl_date + timedelta(days = select_by_day)
-#             rec.invoice_date_due = new_due_date
-#         return rec
-    
+#         payment_term_id = rec.invoice_payment_term_id.id
+#         print('----------------rec.invoice_payment_term_id',payment_term_id)
+#         
+#         if payment_term_id != False:
+#             print('-----1111111111')
+#             payment_term = self.env['account.payment.term'].search([('id' ,'=',rec.invoice_payment_term_id.id)])
+#         
+#             for line in payment_term.line_ids:
+#                 select_by_date = line.option
+#                 select_by_day = line.days
+#                 if select_by_date == 'day_after_bl_date' and rec.invoice_origin:
+#                     sale_id = self.env['sale.order'].search([('name','=',rec.invoice_origin)])
+#                     bl_date = sale_id.bl_date
+#                     new_due_date = bl_date + timedelta(days = select_by_day)
+#                     rec.invoice_date_due = new_due_date
+#                     print('------------inv dateee-----,',rec.invoice_date_due)
+#             return rec
+#     
     
