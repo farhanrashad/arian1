@@ -151,13 +151,21 @@ class ExtraIssuance(models.Model):
                                                 'component_qty': component_level6.product_qty * article_qty,
                                                   }
                                                 bom_product.append(bom_vals)       
+                                                
+                                                
+        product_component_quantity = 0
+        duplicate_product = 0
         for material_line in bom_product:
-            vals = {
+            if  duplicate_product == material_line['product_id']:
+                
+                vals = {
                 'component_id': material_line['component_id'],
                 'product_id': material_line['product_id'],
                 'component_qty': material_line['component_qty'],
               }
             component_bom = self.env['extra.issuance.component.line'].create(vals)
+            product_component_quantity =  material_line['component_qty']
+            duplicate_product  =  material_line['product_id']
             
         
         self.write({'state': 'processed'})
@@ -171,7 +179,7 @@ class ExtraIssuance(models.Model):
             'location_id': picking_delivery.default_location_src_id.id,
             'location_dest_id': picking_delivery.default_location_dest_id.id,
             'picking_type_id': picking_delivery.id,
-            'origin': self.sale_id.name,
+#             'origin': self.sale_id.name,
             'sale_ref': self.sale_id.name,
         }
         picking = self.env['stock.picking'].create(vals)
@@ -201,24 +209,27 @@ class ExtraIssuance(models.Model):
             print('moves created')
         self.write({'state': 'approved'})       
 
-class ExtraIssuanceArticleLine(models.Model):
+    product_ids = fields.One2many('extra.issuance.article.line','product_id',string="Lines")
 
+class ExtraIssuanceArticleLine(models.Model):
     _name = 'extra.issuance.article.line'
     
+    @api.onchange('relation_article')
+    def _compute_product_ids(self):
+        data = []
+        for product in self:
+            for line in product.relation_article.sale_id.order_line:
+                data.append(line.product_id.id)
+                product.product_ids = data
+
     
     article_id = fields.Many2one('extra.issuance', string="Article")
-    bom_id = fields.Many2one('mrp.bom', string='BOM')
-    product_id = fields.Many2one('product.product', string='Product', )
+    product_ids = fields.Many2many('product.product', compute='_compute_product_ids')
+    product_id = fields.Many2one('product.product', string='Product', domain="[('id', 'in', product_ids)]" )
     quantity = fields.Float(string='Quantity')
     
-    @api.onchange('product_id')
-    def onchange_product(self):
-        bom_product = self.env['mrp.bom'].search([('product_id','=',self.product_id.id)])
-        self.bom_id = bom_product[0].id
-            
-
+    
 class ExtraIssuanceComponentLine(models.Model):
-
     _name = 'extra.issuance.component.line'
 
     component_id = fields.Many2one('extra.issuance')

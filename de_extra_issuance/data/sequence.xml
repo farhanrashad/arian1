@@ -6,7 +6,7 @@
         <record id="extra_issuance_sequence_generation" model="ir.sequence">
             <field name="name">Issuance Sequence</field>
             <field name="code">extra.issuance</field>
-            <field name="prefix">DOC/</field>
+            <field name="prefix">EXT/</field>
             <field name="padding">4</field>
             <field eval="1" name="number_next"/>
             <field eval="1" name="number_increment"/>
