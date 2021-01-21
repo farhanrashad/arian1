@@ -7,7 +7,7 @@ from odoo.exceptions import UserError
 class SaleOrderInherit(models.Model):
     _inherit = 'sale.order'
 
-    bl_date = fields.Date()
+#     bl_date = fields.Date()
  
     @api.constrains('bl_date')
     def future_date_restriction(self):
@@ -20,13 +20,16 @@ class SaleOrderInherit(models.Model):
 class AccountMoveInherit(models.Model):
     _inherit = 'account.move'
 
-    invoice_date = fields.Date()
- 
+#     invoice_date = fields.Date()
+    
     @api.constrains('invoice_date')
     def future_date_restriction(self):
         today = date.today()
         if self.invoice_date > today:
             raise UserError("Sorry! You can't select future invoice_date ")
+        if self.date > today:
+            raise UserError("Sorry! You can't select future Accounting date ")
+        
 
             
             
