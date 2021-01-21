@@ -12,8 +12,9 @@ class SaleOrderInherit(models.Model):
     @api.constrains('bl_date')
     def future_date_restriction(self):
         today = date.today()
-        if self.bl_date > today:
-            raise UserError("Sorry! You can't select future BL_Date ")
+        if self.bl_date: 
+            if self.bl_date > today:
+                raise UserError("Sorry! You can't select future BL_Date ")
 
 
 
@@ -25,10 +26,13 @@ class AccountMoveInherit(models.Model):
     @api.constrains('invoice_date')
     def future_date_restriction(self):
         today = date.today()
-        if self.invoice_date > today:
-            raise UserError("Sorry! You can't select future invoice_date ")
-        if self.date > today:
-            raise UserError("Sorry! You can't select future Accounting date ")
+        if self.type == 'out_invoice': 
+            if self.invoice_date:
+                if self.invoice_date > today:
+                    raise UserError("Sorry! You can't select future invoice_date ")
+        if self.date:
+            if self.date > today:
+                raise UserError("Sorry! You can't select future Accounting date ")
         
 
             
