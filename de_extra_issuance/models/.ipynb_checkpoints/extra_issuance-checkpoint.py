@@ -214,18 +214,18 @@ class ExtraIssuance(models.Model):
 class ExtraIssuanceArticleLine(models.Model):
     _name = 'extra.issuance.article.line'
     
-    @api.onchange('relation_article')
+    @api.onchange('article_id')
     def _compute_product_ids(self):
         data = []
         for product in self:
-            for line in product.relation_article.sale_id.order_line:
+            for line in product.article_id.sale_id.order_line:
                 data.append(line.product_id.id)
                 product.product_ids = data
 
     
     article_id = fields.Many2one('extra.issuance', string="Article")
     product_ids = fields.Many2many('product.product', compute='_compute_product_ids')
-    product_id = fields.Many2one('product.product', string='Product', domain="[('id', 'in', product_ids)]" )
+    product_id = fields.Many2one('product.product', string='Product', )
     quantity = fields.Float(string='Quantity')
     
     

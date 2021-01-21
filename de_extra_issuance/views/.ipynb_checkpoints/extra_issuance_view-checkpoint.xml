@@ -102,5 +102,7 @@
 				  action="de_extra_issuance.action_extra_issuance_view"
 				  parent="stock.menu_stock_warehouse_mgmt"
 				  sequence="1" />
+    
+      
 
 </odoo>

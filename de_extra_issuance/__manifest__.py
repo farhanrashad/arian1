@@ -14,6 +14,9 @@
     "version": '13.0.0.0',
     "depends": ['sale_management','stock','contacts','hr'],
     "data": [
+        'wizard/extra_issuance_wizard.xml',
+        'report/extra_issuance_report.xml',
+        'report/extra_issuance_template.xml',
         'data/sequence.xml',
         'security/ir.model.access.csv',
         'security/security.xml',
