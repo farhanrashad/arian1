@@ -30,8 +30,9 @@ class ExtraIssuanceReport(models.AbstractModel):
             product_tmpl_bom = self.env['mrp.bom'].search([('product_tmpl_id.name','=',sale.product_id.name)])
             if product_variant_bom:
                 if product_variant_bom.type == 'normal' and product_variant_bom.product_id.categ_id.id !=81:
-                    if product_variant_bom.product_id.categ_id.id !=85:                    
+                    if product_variant_bom.product_id.categ_id.id !=85:
                         bom_vals = {
+                               'id': product_variant_bom.product_id.id,
                                'product_id': product_variant_bom.product_id.name,
                                'component_qty': product_variant_bom.product_qty * article_qty,
                                  }
@@ -41,6 +42,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                     if  component_level1.product_id.categ_id.id != 81:
                         if  component_level1.product_id.categ_id.id != 85:
                             bom_vals = {
+                           'id': component_level3.product_id.id,
                            'product_id': component_level1.product_id.id,
                            'component_qty': component_level1.product_qty * article_qty,
                              }
@@ -50,6 +52,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                         if component_level2.product_id.categ_id.id != 81:
                             if  component_level2.product_id.categ_id.id != 85:
                                 bom_vals = {
+                               'id': component_level2.product_id.id,
                                'product_id': component_level2.product_id.name,
                                'component_qty': component_level2.product_qty * article_qty,
                                  }
@@ -60,6 +63,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                             if component_level3.product_id.categ_id.id != 81:
                                 if component_level3.product_id.categ_id.id != 85:
                                     bom_vals = {
+                                    'id': component_level3.product_id.id,
                                    'product_id': component_level3.product_id.name,
                                    'component_qty': component_level3.product_qty * article_qty,
                                      }
@@ -71,6 +75,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                                 if component_level4.product_id.categ_id.id != 81:
                                     if component_level4.product_id.categ_id.id != 85:
                                         bom_vals = {
+                                       'id': component_level4.product_id.id,
                                        'product_id': component_level4.product_id.name,
                                        'component_qty': component_level4.product_qty * article_qty,
                                          }
@@ -83,6 +88,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                                         if component_level5.product_id.categ_id.id != 85:
 
                                             bom_vals = {
+                                           'id': component_level5.product_id.id,
                                            'product_id': component_level5.product_id.name,
                                            'component_qty': component_level5.product_qty * article_qty,
                                              }
@@ -94,13 +100,27 @@ class ExtraIssuanceReport(models.AbstractModel):
                                             if component_level6.product_id.categ_id.id != 85: 
                                                
                                                 bom_vals = {
+                                                'id': component_level6.product_id.id,
                                                 'product_id': component_level6.product_id.name,
                                                 'component_qty': component_level6.product_qty * article_qty,
                                                   }
-                                                bom_product.append(bom_vals)       
+                                                bom_product.append(bom_vals)  
+        count = 0                                        
+        for product in bom_product:
+            for inner_product in bom_product:
+                if inner_product['id'] == product['id']:
+                    if count == 0:
+                        all_boms.append({
+                          'id': inner_product['id'],
+                          'product_id': inner_product['product_id'],
+                          'component_qty': inner_product['component_qty'],  
+                        }) 
+                        count = count + 1
+                    else:
+                        pass
+                    
                                                         
-        if bom_product:
-        
+        if bom_product:        
             return {
                 'docs': docs,
                 'bom_product': bom_product,

@@ -28,6 +28,17 @@ class ExtraIssuance(models.Model):
     _rec_name = 'sale_id'
     
     
+    @api.onchange('sale_id')
+    def _onchange_invoice_date(self):
+        data = []
+        for line in self.sale_id.order_line:
+            if line.display_type != 'line_section':
+                data.append(line.product_id.id)
+        self.product_line_ids = data
+
+    product_line_ids = fields.Many2many('product.product', string="Product",)
+
+    
     
     @api.model
     def create(self,vals):
@@ -45,7 +56,7 @@ class ExtraIssuance(models.Model):
 
     
     name = fields.Char('Reference', copy=False, readonly=True, default=lambda x: _('New'))    
-    sale_id = fields.Many2one('sale.order', string='Sale Order')
+    sale_id = fields.Many2one('sale.order', string='Sale Order', required=True)
     reason = fields.Char(string='Reason', required=True)
     articles_lines = fields.One2many('extra.issuance.article.line', 'article_id')
     component_lines = fields.One2many('extra.issuance.component.line', 'component_id')
@@ -152,20 +163,14 @@ class ExtraIssuance(models.Model):
                                                   }
                                                 bom_product.append(bom_vals)       
                                                 
-                                                
-        product_component_quantity = 0
-        duplicate_product = 0
-        for material_line in bom_product:
-            if  duplicate_product == material_line['product_id']:
-                
+            for material_line in  bom_product:                                
                 vals = {
-                'component_id': material_line['component_id'],
-                'product_id': material_line['product_id'],
-                'component_qty': material_line['component_qty'],
-              }
-            component_bom = self.env['extra.issuance.component.line'].create(vals)
-            product_component_quantity =  material_line['component_qty']
-            duplicate_product  =  material_line['product_id']
+                    'component_id': material_line['component_id'],
+                    'product_id': material_line['product_id'],
+                    'component_qty': material_line['component_qty'],
+                  }
+                component_bom = self.env['extra.issuance.component.line'].create(vals)
+           
             
         
         self.write({'state': 'processed'})
@@ -214,18 +219,10 @@ class ExtraIssuance(models.Model):
 class ExtraIssuanceArticleLine(models.Model):
     _name = 'extra.issuance.article.line'
     
-    @api.onchange('article_id')
-    def _compute_product_ids(self):
-        data = []
-        for product in self:
-            for line in product.article_id.sale_id.order_line:
-                data.append(line.product_id.id)
-                product.product_ids = data
-
     
     article_id = fields.Many2one('extra.issuance', string="Article")
-    product_ids = fields.Many2many('product.product', compute='_compute_product_ids')
-    product_id = fields.Many2one('product.product', string='Product', )
+    product_line_ids = fields.Many2many(related="article_id.product_line_ids", string="Product",)
+    product_id = fields.Many2one('product.product', string='Product', domain="[('id', 'in', product_line_ids)]")
     quantity = fields.Float(string='Quantity')
     
     
