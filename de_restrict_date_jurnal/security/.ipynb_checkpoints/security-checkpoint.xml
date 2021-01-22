@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record model="res.groups" id="group_back_date_allow_users">
+            <field name="name">Allow Entries in Back Date</field>
+        </record>
+    </data>
+</odoo>
