@@ -27,6 +27,19 @@ class ExtraIssuance(models.Model):
     _name = 'extra.issuance'
     _rec_name = 'sale_id'
     
+    def action_view_picking(self):
+        self.ensure_one()
+        return {
+         'type': 'ir.actions.act_window',
+         'binding_type': 'object',
+         'domain': [('origin', '=', self.name)],
+         'multi': False,
+         'name': 'Picking',
+         'target': 'current',
+         'res_model': 'stock.picking',
+         'view_mode': 'tree,form',
+        }
+    
     
     @api.onchange('sale_id')
     def _onchange_invoice_date(self):
@@ -36,6 +49,11 @@ class ExtraIssuance(models.Model):
                 data.append(line.product_id.id)
         self.product_line_ids = data
 
+    def get_picking_count(self):
+        count = self.env['stock.picking'].search_count([('origin', '=', self.name)])
+        self.picking_count = count
+        
+    picking_count = fields.Integer(string='Picking', compute='get_picking_count')    
     product_line_ids = fields.Many2many('product.product', string="Product",)
 
     
@@ -98,6 +116,7 @@ class ExtraIssuance(models.Model):
                 for component_level1 in product_variant_bom.bom_line_ids:
                     if  component_level1.product_id.categ_id.id != 81:
                         if  component_level1.product_id.categ_id.id != 85:
+                            if component_level1.product_id.id in bom_product
                             bom_vals = {
                            'component_id': self.id,
                            'product_id': component_level1.product_id.id,
@@ -162,15 +181,53 @@ class ExtraIssuance(models.Model):
                                                 'component_qty': component_level6.product_qty * article_qty,
                                                   }
                                                 bom_product.append(bom_vals)       
-                                                
-            for material_line in  bom_product:                                
+            uniq_prod = []                                    
+            for material_line in  bom_product:
+                for inner_line in bom_product:
+                    if inner_line['product_id'] == material_line['product_id']:
+                        quant =  material_line['component_qty'] + inner_line['component_qty']
+                        inner_line['component_qty'] == quant
+#             uniq_prod = set(bom_product)
+            u_value = set(val for dic in bom_product for val in dic.values())
+
+            for order_line in u_value:
                 vals = {
-                    'component_id': material_line['component_id'],
-                    'product_id': material_line['product_id'],
-                    'component_qty': material_line['component_qty'],
-                  }
+                    'component_id': order_line['component_id'],
+                    'product_id': order_line['product_id'],
+                    'component_qty': order_line['component_qty'],
+                        }
                 component_bom = self.env['extra.issuance.component.line'].create(vals)
-           
+            
+#                     vals = {
+#                              'component_id': material_line['component_id'],
+#                               'product_id': material_line['product_id'],
+#                              'component_qty': material_line['component_qty'],
+#                                 }
+#                     niq_prod.create(vals)
+#                 break
+            
+#             for material_line in  bom_product:  
+#                 for compnent_line in self.component_lines:
+#                     if compnent_line.product_id.id == material_line['product_id']:
+#                         quant =  material_line['component_qty'] + compnent_line.component_qty
+#                         compnent_line.update({
+#                                   'component_qty': quant ,
+#                                }) 
+#                     else:
+#                         vals = {
+#                               'component_id': material_line['component_id'],
+#                              'product_id': material_line['product_id'],
+#                               'component_qty': material_line['component_qty'],
+#                                 }
+#                         component_bom = self.env['extra.issuance.component.line'].create(vals)
+#                 else:
+#                     vals = {
+#                            'component_id': material_line['component_id'],
+#                            'product_id': material_line['product_id'],
+#                             'component_qty': material_line['component_qty'],
+#                               }
+#                     component_bom = self.env['extra.issuance.component.line'].create(vals)
+                    
             
         
         self.write({'state': 'processed'})
@@ -184,7 +241,7 @@ class ExtraIssuance(models.Model):
             'location_id': picking_delivery.default_location_src_id.id,
             'location_dest_id': picking_delivery.default_location_dest_id.id,
             'picking_type_id': picking_delivery.id,
-#             'origin': self.sale_id.name,
+            'origin': self.name,
             'sale_ref': self.sale_id.name,
         }
         picking = self.env['stock.picking'].create(vals)
@@ -208,7 +265,7 @@ class ExtraIssuance(models.Model):
                 'location_id': picking_delivery.default_location_src_id.id,
                 'location_dest_id': picking_delivery.default_location_dest_id.id,
                 'product_uom_id': line.product_id.uom_id.id,
-                'product_uom_qty': line.component_qty,
+#                 'product_uom_qty': line.component_qty,
             }
             stock_move_line_id = self.env['stock.move.line'].create(moves)
             print('moves created')
