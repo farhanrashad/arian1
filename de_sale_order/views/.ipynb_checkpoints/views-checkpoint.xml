@@ -7,36 +7,19 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
           <xpath expr="//notebook/page[@name = 'order_lines']/group[@name = 'note_group']" position="after">
-                      
               
-<!-- 			<field name="parent_product" />
-              <field name="total_quantity" />
-              <field name="total_amount" /> -->
-              
-<!--                   <field name="sale_order_total_chile_id">
-                    <tree editable="bottom">
-                        <field name="parent_product"/>
-                        <field name="total_quantity"/>
-                        <field name="total_amount"/>
-                    </tree>
-                </field> -->
-
-              <field name="sale_order_total_chile_id">   
-                    <group>
-                        <tree>
-                            <field name="parent_product" />
-                            <field name="total_quantity" />
-                            <field name="total_amount"/>
-                        </tree>
-                  </group>
-                 
-            </field>
-             
+              <field name="sale_order_total_chile_id">
+                <tree>
+                    <field name="parent_product" />
+                    <field name="total_quantity" />
+                    <field name="total_amount"/>
+                </tree>                        
+              </field>
+            
             </xpath>
         </field>
     </record>
-
+    
 </odoo>
-
 
 
