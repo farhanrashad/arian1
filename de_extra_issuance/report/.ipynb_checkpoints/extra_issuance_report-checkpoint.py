@@ -34,6 +34,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                         bom_vals = {
                                'id': product_variant_bom.product_id.id,
                                'product_id': product_variant_bom.product_id.name,
+                               'product_uom_id': product_variant_bom.product_id.uom_id.id,
                                'component_qty': product_variant_bom.product_qty * article_qty,
                                  }
                         bom_product.append(bom_vals)
@@ -43,7 +44,8 @@ class ExtraIssuanceReport(models.AbstractModel):
                         if  component_level1.product_id.categ_id.id != 85:
                             bom_vals = {
                            'id': component_level3.product_id.id,
-                           'product_id': component_level1.product_id.id,
+                           'product_id': component_level1.product_id.name,
+                           'product_uom_id': component_level1.product_id.uom_id.name,
                            'component_qty': component_level1.product_qty * article_qty,
                              }
                             bom_product.append(bom_vals)        
@@ -54,6 +56,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                                 bom_vals = {
                                'id': component_level2.product_id.id,
                                'product_id': component_level2.product_id.name,
+                               'product_uom_id': component_level2.product_id.uom_id.name,
                                'component_qty': component_level2.product_qty * article_qty,
                                  }
                                 bom_product.append(bom_vals)   
@@ -65,6 +68,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                                     bom_vals = {
                                     'id': component_level3.product_id.id,
                                    'product_id': component_level3.product_id.name,
+                                   'product_uom_id': component_level3.product_id.uom_id.name,
                                    'component_qty': component_level3.product_qty * article_qty,
                                      }
                                     bom_product.append(bom_vals) 
@@ -77,6 +81,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                                         bom_vals = {
                                        'id': component_level4.product_id.id,
                                        'product_id': component_level4.product_id.name,
+                                       'product_uom_id': component_level4.product_id.uom_id.name,
                                        'component_qty': component_level4.product_qty * article_qty,
                                          }
                                         bom_product.append(bom_vals)   
@@ -90,6 +95,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                                             bom_vals = {
                                            'id': component_level5.product_id.id,
                                            'product_id': component_level5.product_id.name,
+                                           'product_uom_id': component_level5.product_id.uom_id.name,
                                            'component_qty': component_level5.product_qty * article_qty,
                                              }
                                             bom_product.append(bom_vals)                                               
@@ -102,6 +108,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                                                 bom_vals = {
                                                 'id': component_level6.product_id.id,
                                                 'product_id': component_level6.product_id.name,
+                                                'product_uom_id': component_level6.product_id.uom_id.name,
                                                 'component_qty': component_level6.product_qty * article_qty,
                                                   }
                                                 bom_product.append(bom_vals)  
@@ -115,12 +122,15 @@ class ExtraIssuanceReport(models.AbstractModel):
         for uniq in uniq_product:
             product_name = ' '
             component_qty  = 0.0
+            uom_id = ' '
             for product in bom_product:
                 if uniq == product['id']:
                     component_qty = component_qty + product['component_qty']
                     product_name =  product['product_id']
+                    uom_id = product['product_uom_id']
             uniq_list.append({
                 'product_id': product_name,
+                'uom_id': uom_id,
                 'component_qty': component_qty,
                 })    
             

@@ -7,11 +7,12 @@
                     <div class="page">
                         <div class="row justify-content-end">
                             <div class="col-12">
-                                <table class="table table-bordered" style="table-layout: fixed">
+                                <table class="table table-bordered" style="table-layout: fixed" >
                                     <thead>
                                         <tr>
-                                            <th>Product</th>
-                                            <th>Quantity</th>
+                                            <th >Product</th>
+                                            <th >Product Uom</th>
+                                            <th >Quantity</th>
                                         </tr>
                                     </thead>
                                     
@@ -23,11 +24,15 @@
                                       <t t-foreach="bom_product" t-as="component">                                                                               
                                         <tr>
                                             <td>
-                                                <span t-esc="component['product_id']"/>
+                                                <span t-esc="component['product_id']"  />
+                                            </td>
+                                            
+                                             <td>
+                                                <span t-esc="component['uom_id']" />
                                             </td>
                                 
                                             <td>
-                                                <span t-esc="round(component['component_qty'],4)"/>
+                                                <span t-esc="round(component['component_qty'],4)" />
                                             </td>
                                             <t t-set="totquantity" t-value="totquantity + component['component_qty']"/>
                                         </tr>

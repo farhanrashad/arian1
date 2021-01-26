@@ -179,17 +179,10 @@ class ExtraIssuance(models.Model):
                                                 'product_id': component_level6.product_id.id,
                                                 'component_qty': component_level6.product_qty * article_qty,
                                                   }
-                                                bom_product.append(bom_vals)       
-            uniq_prod = []                                    
-            for material_line in  bom_product:
-                for inner_line in bom_product:
-                    if inner_line['product_id'] == material_line['product_id']:
-                        quant =  material_line['component_qty'] + inner_line['component_qty']
-                        inner_line['component_qty'] == quant
-#             uniq_prod = set(bom_product)
-            u_value = set(val for dic in bom_product for val in dic.values())
-
-            for order_line in u_value:
+                                                bom_product.append(bom_vals)    
+                                                
+                                                
+           
                 vals = {
                     'component_id': order_line['component_id'],
                     'product_id': order_line['product_id'],
