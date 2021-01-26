@@ -15,9 +15,12 @@
                                         </tr>
                                     </thead>
                                     
-                                     <t t-set="totquantity" t-value="0"/>
+                                 <t t-set="totquantity" t-value="0"/>
+                                    
+                                    
+                                 
                                     <tbody>
-                                      <t t-foreach="bom_product" t-as="component">
+                                      <t t-foreach="bom_product" t-as="component">                                                                               
                                         <tr>
                                             <td>
                                                 <span t-esc="component['product_id']"/>
@@ -28,18 +31,9 @@
                                             </td>
                                             <t t-set="totquantity" t-value="totquantity + component['component_qty']"/>
                                         </tr>
-                                      </t>
-                                        <tr>
                                           
-                                  
-<!--                                          
-                                            <td>
-                                                Total
-                                            </td>
-                                            <td>
-                                                <span t-esc="round(totquantity,4)"/>
-                                            </td> -->
-                                        </tr>
+                                      </t>
+                                        
                                     </tbody>
                                 </table>
 

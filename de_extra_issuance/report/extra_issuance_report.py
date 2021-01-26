@@ -105,26 +105,31 @@ class ExtraIssuanceReport(models.AbstractModel):
                                                 'component_qty': component_level6.product_qty * article_qty,
                                                   }
                                                 bom_product.append(bom_vals)  
-        count = 0                                        
+                                                
+                                                
+        duplicate_product = []
+        uniq_list = []
         for product in bom_product:
-            for inner_product in bom_product:
-                if inner_product['id'] == product['id']:
-                    if count == 0:
-                        all_boms.append({
-                          'id': inner_product['id'],
-                          'product_id': inner_product['product_id'],
-                          'component_qty': inner_product['component_qty'],  
-                        }) 
-                        count = count + 1
-                    else:
-                        pass
-                    
+            duplicate_product.append(product['id'])
+        uniq_product = set(duplicate_product)
+        for uniq in uniq_product:
+            product_name = ' '
+            component_qty  = 0.0
+            for product in bom_product:
+                if uniq == product['id']:
+                    component_qty = component_qty + product['component_qty']
+                    product_name =  product['product_id']
+            uniq_list.append({
+                'product_id': product_name,
+                'component_qty': component_qty,
+                })    
+            
+    
                                                         
-        if bom_product:        
+        if uniq_list:        
             return {
                 'docs': docs,
-                'bom_product': bom_product,
-               
+                'bom_product': uniq_list,               
             }
         else:
             raise UserError("There is not any Purchase invoice in between selected dates")

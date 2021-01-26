@@ -116,7 +116,6 @@ class ExtraIssuance(models.Model):
                 for component_level1 in product_variant_bom.bom_line_ids:
                     if  component_level1.product_id.categ_id.id != 81:
                         if  component_level1.product_id.categ_id.id != 85:
-                            if component_level1.product_id.id in bom_product
                             bom_vals = {
                            'component_id': self.id,
                            'product_id': component_level1.product_id.id,
