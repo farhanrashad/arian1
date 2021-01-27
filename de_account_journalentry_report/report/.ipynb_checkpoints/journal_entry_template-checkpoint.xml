@@ -6,15 +6,14 @@
                 <t t-call="web.internal_layout">
                     <div class="page">
                          <h2>
-<!--                            <span t-if="o.state == 'posted'">Invoice</span>
-                          <span t-if="o.state == 'draft'">Draft Invoice</span> -->
+
                           <span t-if="o.name != '/'" t-field="o.name"/>
                           </h2>
 
                     <div id="informations" class="row mt32 mb32">
                         <div class="col-auto mw-100 mb-2" t-if="o.date" name="date">
                             <strong>Invoice Date:</strong>
-                            <p class="m-0" t-field="o.date"/>
+                            <p class="m-0" t-field="o.date" />
                         </div>
                         <div class="col-auto mw-100 mb-2" t-if="o.invoice_date_due and o.state == 'posted'" name="due_date">
                             <strong>Due Date:</strong>
@@ -33,7 +32,6 @@
                             <p class="m-0" t-field="o.ref"/>
                         </div>
                     </div>
-<!--                         style="table-layout: fixed" -->
                         <div class="row justify-content-end">
                             <div class="col-12">
                                 <table class="table table-bordered" >
@@ -42,49 +40,42 @@
                                             <th>Account</th>
                                             <th>Partner</th>
                                             <th style="max-width:400px; word-wrap:break-word;">Label</th>
-<!--                                             <th>Taxes</th> -->
                                             <th>Debit</th>
                                             <th>Credit</th>
                                         </tr>
                                     </thead>
-<!--                                      <t t-set="qty" t-value="0"/> -->
                                      <t t-set="debit" t-value="0"/>
                                      <t t-set="credit" t-value="0"/>
                                     <tbody>
                                       <t t-foreach="o.line_ids" t-as="line">
                                         <tr>
                                             <td>
-                                                <span t-field="line.account_id"/>
+                                                <span t-field="line.account_id" style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
                                             </td>
                                             <td>
-                                                <span t-field="line.partner_id"/>
+                                                <span t-field="line.partner_id" style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
                                             </td>
                                             <td >
-                                                <span t-field="line.name" style="max-width:300px; word-wrap:break-word;"/>
+                                                <span t-field="line.name" style="font-size: 11pt;max-width:300px; word-wrap:break-word;" />
                                             </td>
-<!--                                             <td>
-                                                <span t-field="line.tax_ids.name"/>
-                                            </td> -->
+
                                             <td>
-                                                <span t-field="line.debit"/>
+                                                <span t-field="line.debit" style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
                                             </td>
                                             <t t-set="debit" t-value="debit + line.debit"/>
                                             <td>
-                                                <span t-field="line.credit"/>
+                                                <span t-field="line.credit" style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
                                             </td>
                                             <t t-set="credit" t-value="credit + line.credit"/>
                                         </tr>
                                       </t>
                                         <tr>
                                             <td>
-<!--                                                <span t-field="line.product_id"/>-->
                                             </td>
                                            
                                             <td>
-<!--                                                <span t-field="line.lot_id"/>-->
                                             </td>
                                             <td>
-<!--                                                 <span t-esc="qty"/> -->
                                             </td>
                                             <td>
                                                 <span t-esc="debit"/>
@@ -103,16 +94,8 @@
                                    Remarks <span t-field="o.narration"/>
                                </p>
                                 <br/>
-                                <br/>   
-                                <br/>   
-                                <br/>   
-                                <br/>  
-                                <br/>   
-                                <br/>   
-                                
-                                
-                                
-                                
+                               
+                                                            
                                <table class="table" style="table-layout: fixed">
                                     <thead>
                                         <tr>
