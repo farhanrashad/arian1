@@ -181,45 +181,33 @@ class ExtraIssuance(models.Model):
                                                   }
                                                 bom_product.append(bom_vals)    
                                                 
-                                                
-           
-                vals = {
+        duplicate_product = []
+        uniq_list = []
+        for product in bom_product:
+            duplicate_product.append(product['product_id'])
+        uniq_product = set(duplicate_product)
+        for uniq in uniq_product:
+            product_name = ' '
+            component_qty  = 0.0
+            for product in bom_product:
+                if uniq == product['product_id']:
+                    component_qty = component_qty + product['component_qty']
+                    product_name =  product['product_id']
+            uniq_list.append({
+                'product_id': product_name,
+                'component_id': self.id,
+                'component_qty': component_qty,
+                }) 
+            
+        for order_line in uniq_list:    
+            vals = {
                     'component_id': order_line['component_id'],
                     'product_id': order_line['product_id'],
                     'component_qty': order_line['component_qty'],
                         }
-                component_bom = self.env['extra.issuance.component.line'].create(vals)
+            component_bom = self.env['extra.issuance.component.line'].create(vals)
             
-#                     vals = {
-#                              'component_id': material_line['component_id'],
-#                               'product_id': material_line['product_id'],
-#                              'component_qty': material_line['component_qty'],
-#                                 }
-#                     niq_prod.create(vals)
-#                 break
-            
-#             for material_line in  bom_product:  
-#                 for compnent_line in self.component_lines:
-#                     if compnent_line.product_id.id == material_line['product_id']:
-#                         quant =  material_line['component_qty'] + compnent_line.component_qty
-#                         compnent_line.update({
-#                                   'component_qty': quant ,
-#                                }) 
-#                     else:
-#                         vals = {
-#                               'component_id': material_line['component_id'],
-#                              'product_id': material_line['product_id'],
-#                               'component_qty': material_line['component_qty'],
-#                                 }
-#                         component_bom = self.env['extra.issuance.component.line'].create(vals)
-#                 else:
-#                     vals = {
-#                            'component_id': material_line['component_id'],
-#                            'product_id': material_line['product_id'],
-#                             'component_qty': material_line['component_qty'],
-#                               }
-#                     component_bom = self.env['extra.issuance.component.line'].create(vals)
-                    
+
             
         
         self.write({'state': 'processed'})
@@ -247,20 +235,9 @@ class ExtraIssuance(models.Model):
                 'location_id': picking_delivery.default_location_src_id.id,
                 'location_dest_id': picking_delivery.default_location_dest_id.id,
                 'product_uom_qty': line.component_qty,
-#                 'quantity_done': line.component_qty,
             }
             stock_move = self.env['stock.move'].create(lines)
-            print('lines created')
-            moves = {
-                'move_id': stock_move.id,
-                'product_id': line.product_id.id,
-                'location_id': picking_delivery.default_location_src_id.id,
-                'location_dest_id': picking_delivery.default_location_dest_id.id,
-                'product_uom_id': line.product_id.uom_id.id,
-#                 'product_uom_qty': line.component_qty,
-            }
-            stock_move_line_id = self.env['stock.move.line'].create(moves)
-            print('moves created')
+
         self.write({'state': 'approved'})       
 
     product_ids = fields.One2many('extra.issuance.article.line','product_id',string="Lines")
