@@ -2,7 +2,7 @@
 
 from odoo import fields, models, api, _
 from collections import defaultdict
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class PurchaseOrderExt(models.Model):
@@ -15,7 +15,6 @@ class MrpProductionSale(models.Model):
     _inherit = 'mrp.production'
 
     sale_order = fields.Many2one(comodel_name='sale.order', string='Sale Order')
-    # sale_id = fields.Char(string='Ref Sale')
 
 
 class JobOrderSheet(models.Model):
@@ -170,30 +169,7 @@ class JobOrderSheet(models.Model):
                     'created_po': True,
                   	})
             
-#         for line in self.sheet_ids:
-#             if line.outsource_production > 0:
-#                 supplier_line = {
-#                     'product_id': line.product_id.id,
-#                     'name': 'Product',
-#                     'product_qty': line.outsource_production,
-#                     'price_unit': line.product_id.list_price,
-#                     'order_id': self.id,
-#                     'date_planned': fields.Date.today(),
-#                     'product_uom': line.product_id.uom_id.id,
-#                 }
-#                 b_prod = self.env['product.product'].search([('id', '=', line.product_id.id)])
-#                 b_prod_line = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', b_prod.id)], limit=1)
-#                 print(b_prod_line.name.name)
-#                 self.env['purchase.order'].create({
-#                     'partner_id': line.vendor_id.id,
-#                     'jo_sheet_reference': self.name,
-#                     # 'sale_order_ref': rec.job_order_id.sale_order_id.name,
-#                     'date_order': fields.Date.today(),
-#                     'order_line': [(0, 0, supplier_line)],
-#                 })
-#                 self.write({
-#                     'po_created': True
-#                 })
+
 
     name = fields.Char(
         'Reference', copy=False, readonly=True, default=lambda x: _('New'))
@@ -240,12 +216,21 @@ class JobOrderSheetLine(models.Model):
     mo_order_id = fields.Many2one(comodel_name='mrp.production', string='Reference', required=True)
     product_id = fields.Many2one(comodel_name='product.product', string='Product')
     product_name = fields.Char(string='Product Name', related='product_id.name')
-    product_quantity = fields.Float(string='Quantity')
+    product_quantity = fields.Float(string='Quantity', readonly=True)
     in_house_production = fields.Float(string='InHouse Production')
     outsource_production = fields.Float(string='Outsource Production')
     vendor_id = fields.Many2one(comodel_name='res.partner', string='Vendor')
     
-    
+
+    @api.constrains('outsource_production','in_house_production')
+    def _check_production_quantity(self):
+        quant = self.in_house_production  +  self.outsource_production
+        if self.product_quantity < quant:     
+            raise ValidationError(
+                _("Sum of Inhouse and Outsource Production must be equal or less than: " + str(self.product_quantity) +" for product " + str(self.product_id.name))
+            )
+            
+
     def action_stock_quantity_update(self):
         pickings = []
         picking_doc = self.env['stock.picking.type'].search([('name', 'in',
@@ -283,8 +268,8 @@ class JobOrderSheetLine(models.Model):
                     move_line.update({
                     'state': 'cancel'
                      })       
-                pcs_finished_picking = self.env['stock.picking'].search([('picking_type_id.id',  'in',   
-                                                                             [10,12]),('origin','=',order.name)])
+                pcs_finished_picking = self.env['stock.picking'].search([('picking_type_id.name',  '=',   
+                                                                             'Pick Components from Supply'),('origin','=',order.name)])
                 for pcs_picking in pcs_finished_picking:
                     pcs_picking.update({
                      'state': 'cancel'
@@ -318,7 +303,6 @@ class JobOrderSheetLine(models.Model):
                             'name': re.product_id.name,
                             'product_qty': re.outsource_production,
                             'price_unit': re.product_id.list_price,
-#                             'order_id': re.sheet_id.id,
                             'date_planned': fields.Date.today(),
                             'product_uom': re.product_id.uom_id.id,
                         }
