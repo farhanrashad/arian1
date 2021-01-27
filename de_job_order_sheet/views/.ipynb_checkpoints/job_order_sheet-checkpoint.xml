@@ -2,17 +2,7 @@
 
 <odoo>
 
-<!--    <record id="mrp_production_sale_view_inherit" model="ir.ui.view">-->
-<!--        <field name="name">mrp.production.sale.form.view.inherit</field>-->
-<!--        <field name="model">mrp.production</field>-->
-<!--        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>-->
-<!--        <field name="arch" type="xml">-->
-<!--            <xpath expr="//field[@name='bom_id']" position="after">-->
-<!--&lt;!&ndash;                <field name="sale_order"/>&ndash;&gt;-->
-<!--                <field name="sale_id"/>-->
-<!--            </xpath>-->
-<!--        </field>-->
-<!--    </record>-->
+
 
     <record id="de_job_order_sheet.purchase_order_inherit_from_view" model="ir.ui.view">
         <field name="name">purchase order inherit form view</field>
@@ -35,7 +25,7 @@
                 <field name="product_id" readonly="1" />
                 <field name="po_process" invisible="1"/>
                 <field name="created_po"  invisible="1"/>
-                <field name="product_quantity"  attrs="{'readonly': [('created_po','=', True)]}"/>
+                <field name="product_quantity"  readonly="1"/>
                 <field name="in_house_production" attrs="{'readonly': [('created_po','=', True)]}" />
                 <field name="outsource_production" attrs="{'readonly': [('created_po','=', True)]}" /> 
                 <field name="vendor_id" attrs="{'required': [('po_process','=', True)],'readonly':[('created_po','=',True)]}"/>
@@ -76,12 +66,12 @@
                     <button name="get_sheet_lines" type="object" string="Process"
                             attrs="{'invisible': [('progress', '=', 'done')]}"
                             class="oe_highlight" style="margin:5px;"/>
-                    <button name="action_quantity_update" type="object" string="Update"
+                  <!--  <button name="action_quantity_update" type="object" string="Update"
                                     class="oe_highlight" style="margin:5px;"/>
                     <button name="action_generate_po" type="object" string="Create PO"
-                            class="oe_highlight"/>
+                            class="oe_highlight"/> -->
                     <notebook>
-                        <page string="Material Planing" name="job_order_sheet_lines">
+                        <page string="Material Planing" name="job_order_sheet_lines" invisible="1">
                             <field name="sheet_ids">
                                 <tree editable="bottom"  decoration-danger="created_po==True">
                                     <field name="mo_order_id" attrs="{'readonly': [('created_po','=', True)]}"/>
