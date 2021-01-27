@@ -207,6 +207,11 @@ class ExtraIssuance(models.Model):
                         }
             component_bom = self.env['extra.issuance.component.line'].create(vals)
             
+        for line in self.articles_lines:
+            line.update({
+                'is_processed': True
+            })
+            
 
             
         
@@ -247,6 +252,7 @@ class ExtraIssuanceArticleLine(models.Model):
     
     
     article_id = fields.Many2one('extra.issuance', string="Article")
+    is_processed = fields.Boolean(string="Is Processed")
     product_line_ids = fields.Many2many(related="article_id.product_line_ids", string="Product",)
     product_id = fields.Many2one('product.product', string='Product', domain="[('id', 'in', product_line_ids)]")
     quantity = fields.Float(string='Quantity')

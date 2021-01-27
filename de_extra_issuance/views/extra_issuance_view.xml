@@ -30,27 +30,28 @@
                         </div>
 						<group>
 							<group>
-								<field name="sale_id" />
+								<field name="sale_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
 								<field name="product_line_ids" widget="many2many_tags" invisible="1"/>
 							</group>
 							<group>
-								<field name="reason" />
+								<field name="reason" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
 							</group>
 						</group>
 						<notebook>
-							<page string="Articles">
-								<field name="articles_lines">
-									<tree  editable="bottom">
-                                        <field name="product_line_ids" invisible="1"/>
+							<page string="Articles" attrs="{'readonly': [('state', '!=', 'draft')]}">
+								<field name="articles_lines" >
+									<tree  editable="bottom" attrs="{'readonly': [('is_processed', '=', True)]}">
+                                        <field name="product_line_ids" invisible="1" />
 										<field name="product_id"/>
+										<field name="is_processed" invisible="1"/>
 										<field name="quantity"/>
 										<field name="article_id" invisible="1"/>
 									</tree>
 								</field>
 							</page>
 							<page string="Components">
-								<field name="component_lines">
-									<tree  editable="bottom">
+								<field name="component_lines" >
+									<tree  editable="bottom" create="false" delete="false">
 										<field name="product_id"/>
 										<field name="component_qty"/>
 										<field name="component_id" invisible="1"/>
