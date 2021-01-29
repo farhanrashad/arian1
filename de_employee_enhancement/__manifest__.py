@@ -13,10 +13,9 @@
     "author": "Dynexcel",
     "website": "http://www.dynexcel.co",
     "version": '13.1.0.0',
-    "depends": ['sale'],
+    "depends": ['hr', 'hr_contract'],
     "data": [
-#         'security/ir.model.access.csv',
-#         'security/security.xml',
+        'data/sequence.xml',
         'views/hr_employee_view.xml',
     ],
     
