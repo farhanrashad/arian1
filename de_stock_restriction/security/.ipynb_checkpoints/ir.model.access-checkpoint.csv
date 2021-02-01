@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_move,access.stock.move,model_stock_move,,1,1,1,1
+access_stock_move_line,access.stock.move.line,model_stock_move_line,,1,1,1,1
+access_stock_valuation_layer,access.stock.valuation.layer,model_stock_valuation_layer,,1,1,1,1
+access_mrp_workorder,access.mrp.workorder,model_mrp_workorder,,1,1,1,1
+access_mrp_production,access.mrp.production,model_mrp_production,,1,1,1,1
