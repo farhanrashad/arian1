@@ -14,7 +14,7 @@ class crmLeadInherit(models.Model):
     date_of_birth = fields.Char(string = "DOB")
     ssn = fields.Char(string = "SSN")
 
-    company_service = fields.Many2one('res.company.service', string = "Service Company")
+    company_service = fields.Char(string = "Service Company")
     service_plan_id = fields.Many2one('res.service.plan', string = "Service Plan")
 
     service_price = fields.Char(string = "Service Price")
@@ -30,6 +30,15 @@ class crmLeadInherit(models.Model):
     ], string = "Contract Term")
     billing_cycle = fields.Selection([
        
+    ], string="Billing Cycle")
+    
+    contract_terms = fields.Selection([
+       ('months_36' , 'Months 36'),
+        ('months_60' , 'Months 60'),
+    ], string = "Contract Term")
+    billing_cycles = fields.Selection([
+       ('monthly' , 'Monthly'),
+        ('quartely' , 'Quartely'),
     ], string="Billing Cycle")
     
     billing_date = fields.Datetime(string = "Billing Date")
