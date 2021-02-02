@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+id_access_res_company_service,access_res_company_service,model_res_company_service,base.group_user,1,1,1,1
+id_access_res_shipping,access_res_shipping,model_res_shipping,base.group_user,1,1,1,1
+id_access_res_service_plan,access_res_service_plan,model_res_service_plan,base.group_user,1,1,1,1
