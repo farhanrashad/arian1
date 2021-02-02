@@ -15,12 +15,12 @@ class crmLeadInherit(models.Model):
     ssn = fields.Char(string = "SSN")
 
     company_service = fields.Many2one('res.company.service', string = "Service Company")
-    service_plan = fields.Many2one('res.service.plan', string = "Service Plan")
+    service_plan_id = fields.Many2one('res.service.plan', string = "Service Plan")
 
     service_price = fields.Char(string = "Service Price")
     order_date = fields.Datetime(string = "Order Date")
     
-    shipping_by = fields.Many2one('res.shipping', string="Expect Shipping By")
+    shipping_id = fields.Many2one('res.shipping', string="Expect Shipping By")
 
     install_date = fields.Datetime(string = "Install Date")
     current_company = fields.Char(string = "Current Company")
