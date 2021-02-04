@@ -32,7 +32,7 @@ class AccountMoveInherit(models.Model):
                 if not self.user_has_groups('de_restrict_date_jurnal.group_back_date_allow_users'): 
                     past_date = today - timedelta(days = 3)
                     if self.date < past_date:
-                        raise UserError("Sorry, you are not allowed to post Bills/Invoices/JVs in dates prior to " + str(post_date))
+                        raise UserError("Sorry, you are not allowed to post Bills/Invoices/JVs in dates prior to " + str(self.date))
                   
                     
    
