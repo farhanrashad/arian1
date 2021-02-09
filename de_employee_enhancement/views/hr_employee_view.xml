@@ -6,13 +6,28 @@
 		<field name="model">hr.employee</field>
 		<field name="inherit_id" ref="hr.view_employee_tree"/>
 		<field name="arch" type="xml">
+			<xpath expr="//field[@name='name']" position="before">
+
+				<field name="sequence_no" />
+			</xpath>
+
 			<xpath expr="//field[@name='name']" position="after">
+
 				<field name="relation_with" />
 			</xpath>
 			
 			<xpath expr="//field[@name='parent_id']" position="after">
 				<field name="salary" />
 			</xpath>
+
+			<xpath expr="//field[@name='work_email']" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+
+			<xpath expr="//field[@name='work_phone']" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+
 				
 		</field>
 	</record>
