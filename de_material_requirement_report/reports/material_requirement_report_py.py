@@ -28,7 +28,7 @@ class MaterialReport(models.AbstractModel):
                         'product_id': pro.product_id.id,
                         'quantity': round(pro.quantity_done, 4),
                         'mr_demand': round(pro.product_uom_qty, 4),
-                        'mr_uom': pro.product_uom.name,
+                        'mr_uom': pro.product_uom.id,
                         'mr_reserved': round(pro.reserved_availability, 4)
                     }
                     self.env['material.requirement.data'].create(vals)

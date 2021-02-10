@@ -30,7 +30,7 @@
                                     <t t-esc="o.mr_reserved"/>
                                 </td>
                                 <td>
-                                    <t t-esc="o.mr_uom"/>
+                                    <t t-esc="o.mr_uom.name"/>
                                 </td>
                             </tr>
                         </t>
