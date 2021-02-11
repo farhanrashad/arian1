@@ -62,6 +62,7 @@
 		  parent="stock.menu_stock_config_settings"
 		  action="action_data_allocation_view"
 		  sequence="10"
+		  invisible="1"
 	/>
 
 </odoo>
