@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="so_total_report_template" inherit_id="stock.report_delivery_document">
+
+        <xpath expr="/t/t/t/div/table[1]/thead/tr/th[2]" position="after">
+            <th>Total</th>
+        </xpath>
+
+    </template>
+
+</odoo>
