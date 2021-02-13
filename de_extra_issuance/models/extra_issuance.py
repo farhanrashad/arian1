@@ -55,7 +55,6 @@ class ExtraIssuance(models.Model):
         
     picking_count = fields.Integer(string='Picking', compute='get_picking_count')    
     product_line_ids = fields.Many2many('product.product', string="Product",)
-
     
     
     @api.model
@@ -92,6 +91,7 @@ class ExtraIssuance(models.Model):
         
 
     def action_process(self):
+        uniq_products = []
         product_list = []
         bom_product = []
         all_boms = []
@@ -106,6 +106,7 @@ class ExtraIssuance(models.Model):
                             if existing_component.product_id.id ==  product_variant_bom.product_id.id: 
                                 quant= existing_component.component_qty
                             else:
+                                uniq_products.append(product_variant_bom.product_id.id)
                                 bom_vals = {
                                'component_id': self.id,
                                'product_id': product_variant_bom.product_id.id,
@@ -116,6 +117,7 @@ class ExtraIssuance(models.Model):
                 for component_level1 in product_variant_bom.bom_line_ids:
                     if  component_level1.product_id.categ_id.id != 81:
                         if  component_level1.product_id.categ_id.id != 85:
+                            uniq_products.append(component_level1.product_id.id)
                             bom_vals = {
                            'component_id': self.id,
                            'product_id': component_level1.product_id.id,
@@ -126,6 +128,7 @@ class ExtraIssuance(models.Model):
                     for component_level2 in component_bom_level2.bom_line_ids:
                         if component_level2.product_id.categ_id.id != 81:
                             if  component_level2.product_id.categ_id.id != 85:
+                                uniq_products.append(component_level2.product_id.id)
                                 bom_vals = {
                                'component_id': self.id,
                                'product_id': component_level2.product_id.id,
@@ -137,6 +140,8 @@ class ExtraIssuance(models.Model):
                         for component_level3 in component_bom_level3.bom_line_ids:
                             if component_level3.product_id.categ_id.id != 81:
                                 if component_level3.product_id.categ_id.id != 85:
+                                                                    
+                                    uniq_products.append(component_level3.product_id.id)
                                     bom_vals = {
                                    'component_id': self.id,
                                    'product_id': component_level3.product_id.id,
@@ -149,6 +154,8 @@ class ExtraIssuance(models.Model):
                             for component_level4 in component_bom_level4.bom_line_ids:
                                 if component_level4.product_id.categ_id.id != 81:
                                     if component_level4.product_id.categ_id.id != 85:
+                                        uniq_products.append(component_level4.product_id.id)
+
                                         bom_vals = {
                                        'component_id': self.id,
                                        'product_id': component_level4.product_id.id,
@@ -161,7 +168,8 @@ class ExtraIssuance(models.Model):
                                 for component_level5 in component_bom_level5.bom_line_ids:
                                     if component_level5.product_id.categ_id.id != 81:
                                         if component_level5.product_id.categ_id.id != 85:
-
+                                            uniq_products.append(component_level5.product_id.id)
+ 
                                             bom_vals = {
                                            'component_id': self.id,
                                            'product_id': component_level5.product_id.id,
@@ -173,7 +181,8 @@ class ExtraIssuance(models.Model):
                                     for component_level6 in component_bom_level6.bom_line_ids:
                                         if component_level6.product_id.categ_id.id != 81: 
                                             if component_level6.product_id.categ_id.id != 85: 
-                                               
+                                                uniq_products.append(component_level6.product_id.id)
+
                                                 bom_vals = {
                                                 'component_id': self.id,
                                                 'product_id': component_level6.product_id.id,
@@ -183,9 +192,13 @@ class ExtraIssuance(models.Model):
                                                 
         duplicate_product = []
         uniq_list = []
+        data2 = []
+        self.product_line_ids = uniq_list
         for product in bom_product:
             duplicate_product.append(product['product_id'])
-        uniq_product = set(duplicate_product)
+        uniq_product = set(uniq_products)
+        for prodcut in uniq_product:
+            data2.append(prodcut)
         for uniq in uniq_product:
             product_name = ' '
             component_qty  = 0.0
@@ -199,14 +212,7 @@ class ExtraIssuance(models.Model):
                 'component_qty': component_qty,
                 }) 
             
-        for order_line in uniq_list:    
-            vals = {
-                    'component_id': order_line['component_id'],
-                    'product_id': order_line['product_id'],
-                    'component_qty': order_line['component_qty'],
-                        }
-            component_bom = self.env['extra.issuance.component.line'].create(vals)
-            
+        self.product_line_ids = uniq_products    
         for line in self.articles_lines:
             line.update({
                 'is_processed': True
@@ -262,7 +268,8 @@ class ExtraIssuanceComponentLine(models.Model):
     _name = 'extra.issuance.component.line'
 
     component_id = fields.Many2one('extra.issuance')
-    product_id = fields.Many2one('product.product', string='Component')
+    product_line_ids = fields.Many2many(related="component_id.product_line_ids", string="Product",)
+    product_id = fields.Many2one('product.product', string='Component', domain="[('id', 'in', product_line_ids)]")
     component_qty = fields.Float(string='Total Quantity',  digits='Product Unit of Measure',)
     
     
