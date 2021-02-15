@@ -26,7 +26,9 @@ class ProductBom(models.Model):
                         'product_tmpl_id': self.id,
                         'product_id': bom.id,
                         'product_qty':  1,
-                        'type': 'normal',
+                        'type': self.type,
+                        'product_uom_id' : self.product_uom_id,
+                        'subcontractor_ids' : self.subcontractor_ids,
                         'bom_line_ids': component_lines,
                         }
                 generated_bom = self.env['mrp.bom'].create(vals)
