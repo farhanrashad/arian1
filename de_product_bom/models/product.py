@@ -15,7 +15,7 @@ class ProductBom(models.Model):
             raise UserError("Please create atleast one bom:")
         for bom in variants:
             component_lines = []
-            for line in bom_exists.bom_line_ids:
+            for line in bom_exists[0].bom_line_ids:
                 component_lines.append((0,0,{
                     'product_id': line.product_id.id,
                     'product_qty': line.product_qty,
