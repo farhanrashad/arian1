@@ -23,10 +23,12 @@ class ProductBom(models.Model):
             variants_bom_exists = self.env['mrp.bom'].search([('product_tmpl_id', '=', self.id),('product_id','=',bom.id)])
             if not variants_bom_exists:
                 vals = {
-                        'product_tmpl_id': self.id,
+                    	'product_tmpl_id': self.id,
                         'product_id': bom.id,
-                        'product_qty':  1,
-                        'type': 'normal',
+                        'product_qty':   bom_exists[0].product_qty,
+                        'type':  bom_exists[0].type,
+                        'product_uom_id': bom_exists[0].product_uom_id.id,
+                        'subcontractor_ids': bom_exists[0].subcontractor_ids,
                         'bom_line_ids': component_lines,
                         }
                 generated_bom = self.env['mrp.bom'].create(vals)
