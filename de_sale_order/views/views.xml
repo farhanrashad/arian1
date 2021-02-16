@@ -7,10 +7,8 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
           <xpath expr="//notebook/page[@name = 'order_lines']/group[@name = 'note_group']" position="after">
-    <button name="change_order_compute" string="SUMMARY" type="object" />
-        <field name="is_compute_qty_amount" invisible="1" />
-              
-              <field name="product_tmpl_ids" attrs="{'invisible':[('is_compute_qty_amount', '=', False)]}">
+    
+              <field name="product_tmpl_ids"   force_save='1'>
                 <tree>
                     <field name="parent_product" />
                     <field name="total_quantity" />
