@@ -23,7 +23,7 @@ from odoo.exceptions import ValidationError
 class PurchaseOrder(models.Model):
     _inherit ='purchase.order'
     
-    merge_id = fields.Many2one('purchase.order', string='Merged PO')
+    merge_id = fields.Many2one('purchase.order', string='Merged PO', domain=[('state','in',('draft','sent'))])
     po_merged = fields.Boolean(string='PO Merged')
 
 
