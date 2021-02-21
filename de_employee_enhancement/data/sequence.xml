@@ -8,7 +8,7 @@
             <field name="code">hr.employee.sequence</field>
             <field name="prefix"></field>
             <field name="padding">5</field>
-            <field name="number_next">257</field>
+            <field name="number_next">314</field>
             <field name="company_id" eval="False"/>
         </record>
 
