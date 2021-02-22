@@ -100,10 +100,14 @@
 			<field name="arch" type="xml">
 				<xpath expr="//field[@name='partner_id']" position="after">
                         <field name="purchase_id"/>
-            
 				</xpath>
                 <xpath expr="//field[@name='commitment_date']" position="replace">
-                     <field name="commitment_date" attrs="{'readonly': [('state','=','done')]}"/>            
+                     <field name="commitment_date" attrs="{'readonly': [('state','=','done')]}"/>  
+                    
+				</xpath>
+                <xpath expr="//group[@name='sale_shipping']" position="inside">
+                     <field name="expected_delivery_date" attrs="{'readonly': [('state','=','done')]}"/>  
+                    
 				</xpath>
 			</field>
 	   </record>
