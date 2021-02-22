@@ -21,7 +21,7 @@ class HrEmployeeInh(models.Model):
     contract_start_date = fields.Date(compute='compute_salary')
     salary = fields.Char('Salary', compute='compute_salary')
     
-    sequence_no = fields.Char('Sequence No.', required=True, readonly=True, default=lambda self: _('New'))
+    sequence_no = fields.Char('Sequence No.', required=False, readonly=True, default=lambda self: _('New'))
     
     
     @api.model
