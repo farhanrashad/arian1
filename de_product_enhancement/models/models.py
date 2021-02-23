@@ -108,6 +108,7 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
     
     purchase_id = fields.Char(string='Customer PO Number', required=True)
+    expected_delivery_date = fields.Date(string="Expected Delivery Date" , required=True)
 
     
 class ProductTemplate(models.Model):
