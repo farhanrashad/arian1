@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="increment_record_action" model="ir.actions.server">
+            <field name="name">Create Increment Records</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="de_increment.model_hr_contract"/>
+            <field name="binding_model_id" ref="de_increment.model_hr_contract"/>
+            <field name="code">records.post_data_to_afr_action()</field>
+
+        </record>
+
+
+
+        <record id="auto_adjust_employee_increment" model="ir.cron">
+            <field name="name">Auto Increment Employee Salary Cron</field>
+            <field name="model_id" ref="de_increment.model_hr_contract"/>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">model.employee_increment_action()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+
+
+</odoo>
