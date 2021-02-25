@@ -1,120 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<report id="report_employee_increment"
-		string="Increment History" model="hr.contract" report_type="qweb-pdf"
-		name="de_increment.increment_report"
-		file="de_increment.increment_report" />
+    <report id="report_employee_increment"
+            string="Increment Report"
+            model="hr.contract"
 
-	<template id="increment_report">
-		<t t-call="web.html_container">
-			<t t-call="web.internal_layout">
+            name="de_increment.increment_report"
+            file="de_increment.increment_report"/>
 
-				<div class="page">
+    <template id="increment_report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
 
-					<div style="width: 30%; float:left; ">
-						<table align="left" class="table table-condensed"
-							style="border: 1px solid black;">
-							<tr>
-								<td>
-									<b>Employee</b>
-								</td>
-								<td>
-									<b>
-										<span t-esc="docs.employee_id.name" />
-									</b>
-								</td>
-							</tr>
+                <div class="page">
 
-							<tr>
-								<td>
-									<b>Contract ref</b>
-								</td>
-								<td>
-									<b>
-										<span t-esc="docs.name" />
-									</b>
-								</td>
-							</tr>
-						</table>
+                    <div style="width: 30%; float:left; ">
+                        <table align="left" class="table table-condensed" style="border: 1px solid black;">
+                            <tr>
+                                <td>
+                                    <b>Contract reference</b>
+                                </td>
+                                <td>
+                                    <b>
+                                        <span t-esc="docs.name"/>
+                                    </b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Employee Name</b>
+                                </td>
+                                <td>
+                                    <b>
+                                        <span t-esc="docs.employee_id.name"/>
+                                    </b>
+                                </td>
+                            </tr>
+                        </table>
 
-					</div>
+                    </div>
 
-					<div style="width: 35%; float:right">
-						<table align="right" class="table table-condensed"
-							style="border: 1px solid black;">
-							<tr>
-								<td>
-									<b>Department</b>
-								</td>
-								<td>
-									<b>
-										<span t-esc="docs.department_id.name" />
-									</b>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b>Job Position</b>
-								</td>
-								<td>
-									<b>
-										<span t-esc="docs.job_id.name" />
-									</b>
-								</td>
-							</tr>
+                    <div style="width: 35%; float:right">
+                        <table align="right" class="table table-condensed" style="border: 1px solid black;">
+                            <tr>
+                                <td>
+                                    <b>Department Name</b>
+                                </td>
+                                <td>
+                                    <b>
+                                        <span t-esc="docs.department_id.name"/>
+                                    </b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Job Position</b>
+                                </td>
+                                <td>
+                                    <b>
+                                        <span t-esc="docs.job_id.name"/>
+                                    </b>
+                                </td>
+                            </tr>
 
-						</table>
+                        </table>
 
-					</div>
+                    </div>
 
-					<h1 style=" text-align: center">Increment History</h1>
+                    <h1 style=" text-align: center">Increment History</h1>
 
-					<table class="table table-condensed">
-						<thead>
-							<tr>
-								<th>SNO</th>
-								<!-- <th>Year</th> -->
-								<th>Effective Date</th>
-								<th>Amount</th>
-							</tr>
-						</thead>
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>SNO</th>
+                                <th>Year</th>
+                                <th>Effective Date</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
 
-						<tbody>
-							<t t-set="i" t-value="1" />
-							<tr t-foreach="docs.increment_id" t-as='o'>
-								<td align="center">
-									<span t-esc="i" />
-								</td>
-								<!-- <td> <span t-esc="o.years"/> </td> -->
-								<td>
-									<span t-esc="o.increment_effective_date" />
-								</td>
-								<td>
-									<span t-esc="o.increment_amount" />
-								</td>
-								<t t-set="i" t-value="i+1" />
-							</tr>
-						</tbody>
-					</table>
+                        <tbody>
+                            <!-- =================For loop start=========================  -->
+                            <t t-set="i" t-value="1"/>
+                            <tr t-foreach="docs.increment_id" t-as='o'>
+                                <td align="center">
+                                    <span t-esc="i"/>
+                                </td>
+                                <td>
+                                    <span t-esc="o.years"/>
+                                </td>
+                                <td>
+                                    <span t-esc="o.increment_effective_date"/>
+                                </td>
+                                <td>
+                                    <span t-esc="o.increment_amount"/>
+                                </td>
+                                <t t-set="i" t-value="i+1"/>
+                            </tr>
+                        </tbody>
+                    </table>
 
-					<style>
-						table {
-						border-collapse: collapse;
-						}
+                    <style>
+                        table {
+                        border-collapse: collapse;
+                        }
 
-						table, td, th {
-						border: 1px
-						solid black;
-						}
-						th {
-						background-color: #e9e9e9;
-						}
-					</style>
+                        table, td, th {
+                        border: 1px solid black;
+                        }
+                        th {
+                        background-color: #e9e9e9;
+                        }
+                    </style>
 
-				</div>
-			</t>
-		</t>
-	</template>
+                </div>
+            </t>
+        </t>
+    </template>
 
 
 </odoo>
