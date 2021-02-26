@@ -922,8 +922,7 @@ class AttendanceDevice(models.Model):
                         continue
 
                 user_id = AttendanceUser.with_context(active_test=False).search([
-                    ('user_id', '=', attendance.user_id),
-                    ('device_id', '=', r.id)], limit=1)
+                    ('user_id', '=', attendance.user_id)], limit=1)
                 if user_id:
                     utc_timestamp = r.convert_time_to_utc(attendance.timestamp, r.tz)
                     str_utc_timestamp = fields.Datetime.to_string(utc_timestamp)
@@ -945,10 +944,9 @@ class AttendanceDevice(models.Model):
                             DeviceUserAttendance.create(vals)
                         except Exception as e:
                             error_msg += str(e) + "<br />"
-                            error_msg += _("Error create DeviceUserAttendance record: device_id %s; user_id %s; timestamp %s; attendance_state_id %s.<br />") % (
+                            error_msg += _("Error create DeviceUserAttendance record: device_id %s; user_id %s; attendance_state_id %s.<br />") % (
                                 r.id,
                                 user_id.id,
-                                format_datetime(r.env, attendance.timestamp, r.tz),
                                 attendance_states[attendance.punch]
                                 )
                             _logger.error(error_msg)
