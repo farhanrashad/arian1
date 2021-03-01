@@ -1,4 +1,4 @@
-8from odoo import models, fields, api, _
+from odoo import models, fields, api, _
 from datetime import date, datetime, timedelta
 from odoo import exceptions
 from dateutil.relativedelta import relativedelta
@@ -79,18 +79,23 @@ class UserAttendance(models.Model):
                 
                 attendance_list = attendance_test.search([('employee_id','=',employee.id),('timestamp','>=',date_start),('timestamp','<=',date_end),('is_attedance_created','=',False)], order="timestamp asc",)
                 if attendance_list:
-                    for attendance in attendance_list:
-                        existing_attendance = self.env['hr.attendance'].search([('employee_id','=',attendance.employee_id.id),('check_in','<=', attendance.timestamp), ('check_out','=', False)])
+                    for attendace in attendance_list:
+                        existing_attendance = self.env['hr.attendance'].search([('employee_id','=',attendace.employee_id.id),('check_in','<=', attendace.timestamp), ('check_out','=', False)])
                         if existing_attendance:
                             existing_attendance.update({
-                              'check_out': attendance.timestamp,
-                            })    
+                              'check_out': attendace.timestamp,
+                            })
+                            attendace.update({
+                                'is_attedance_created' : True
+                            })
+                            
                         if not existing_attendance:
                             vals = {
-                                'employee_id': attendance.employee_id.id,
-                                'check_in': attendance.timestamp,
+                                'employee_id': attendace.employee_id.id,
+                                'check_in': attendace.timestamp,
                                 }
                             hr_attendance = self.env['hr.attendance'].create(vals)
-                            attendance.update({
-                                'is_attedance_created':  True
+                            attendace.update({
+                                'is_attedance_created' : True
                             })
+                         
