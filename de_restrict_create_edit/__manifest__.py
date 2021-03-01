@@ -15,7 +15,7 @@
 
         'security/ir.model.access.csv',
         'security/security.xml',
-        'views/stock_picking_view.xml',
+        'views/restrict_create_edit.xml',
 
     ],
 
