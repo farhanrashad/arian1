@@ -6,9 +6,7 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
-
             <xpath expr="//notebook/page[@name = 'order_lines']/group[@name = 'note_group']" position="after">
-
                 <field name="product_tmpl_ids">
                     <tree>
                         <field name="parent_product"/>
@@ -16,9 +14,7 @@
                         <field name="total_amount"/>
                     </tree>
                 </field>
-
             </xpath>
-
         </field>
     </record>
     
