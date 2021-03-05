@@ -12,8 +12,10 @@
 
     "depends": ["stock"],
 
-    "data": ["views/res_config_view.xml",
-             "views/product_no_negative_view.xml"],
+    "data": [
+        "security/security.xml",
+        "views/res_config_view.xml",
+        "views/product_no_negative_view.xml"],
 
     "installable": True,
 }
