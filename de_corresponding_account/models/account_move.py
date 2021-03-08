@@ -10,7 +10,8 @@ class AccountMoveLine (models.Model):
     
     corresponding_account = fields.Many2one('account.account', string='Corresponding Account', compute='compute_corresponding_account')
     total = fields.Float(string='Total', compute='compute_debit_credit')
-     
+    
+    @api.depends('move_id','account_id')  
     def compute_corresponding_account(self):
         for rec in self:
             ids = []
