@@ -14,13 +14,21 @@ class AccountMoveLine (models.Model):
     def compute_corresponding_account(self):
         for rec in self:
             ids = []
+            similar_ids = []
              
             if rec.move_id.line_ids:
                 for line in rec.move_id.line_ids:
                     if line.account_id.id != rec.account_id.id:
                         ids.append(line.id)
+                    else:
+                        similar_ids.append(line.id)
                         
-                move_line = self.env['account.move.line'].search([('id','in',ids)], order="total desc", limit=1)
+                if ids:
+                    move_line = self.env['account.move.line'].search([('id','in',ids)], order="total desc", limit=1)
+                else:
+                    move_line = self.env['account.move.line'].search([('id','in',similar_ids)], order="total desc", limit=1)
+
+                    
                 
                 if move_line:
                     rec.corresponding_account = move_line.account_id.id
