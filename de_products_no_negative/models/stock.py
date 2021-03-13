@@ -14,6 +14,7 @@ class StockQuant(models.Model):
         if (
             not product_id.allow_negative_product
             and location_id.usage == "internal"
+            and location_id.id != 19
             and (product_id.qty_available + quantity) < 0
         ):
             if location_id.company_id.no_negative_product:
