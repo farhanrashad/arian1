@@ -77,6 +77,12 @@ class PurchaseOrder(models.Model):
                 pick.update({
                     'state': 'cancel'
                 })
+            for lines in pick.move_ids_without_package:
+            	if lines.state != 'done':
+            		lines.update({
+            			'state': 'cencel'
+            			})
+
       
         return res     
     
