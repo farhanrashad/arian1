@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_de_limit_receiving_delivery_de_limit_receiving_delivery,de_limit_receiving_delivery.de_limit_receiving_delivery,model_de_limit_receiving_delivery_de_limit_receiving_delivery,base.group_user,1,1,1,1
