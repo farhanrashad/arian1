@@ -57,7 +57,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                                        'component_qty': component_level2.product_qty * article_qty,
                                          }
                                     bom_product.append(bom_vals)   
-                                    component_bom_level3 = self.env['mrp.bom'].search([('product_id','=',component_level2.product_id.id),('type','=','normal')])        
+                                    component_bom_level3 = self.env['mrp.bom'].search([('product_id','=',component_level2.product_id.id)])        
 
                                     for component_level3 in component_bom_level3.bom_line_ids:
                                         if component_level3.product_id.categ_id.id != 81:
@@ -69,7 +69,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                                                  }
                                             bom_product.append(bom_vals) 
 
-                                            component_bom_level4 = self.env['mrp.bom'].search([('product_id','=',component_level3.product_id.id),('type','=','normal')])     
+                                            component_bom_level4 = self.env['mrp.bom'].search([('product_id','=',component_level3.product_id.id)])     
 
                                             for component_level4 in component_bom_level4.bom_line_ids:
                                                 if component_level4.product_id.categ_id.id != 81:
@@ -81,7 +81,7 @@ class ExtraIssuanceReport(models.AbstractModel):
                                                          }
                                                     bom_product.append(bom_vals)   
 
-                                                    component_bom_level5 = self.env['mrp.bom'].search([('product_id','=',component_level4.product_id.id),('type','=','normal')])  
+                                                    component_bom_level5 = self.env['mrp.bom'].search([('product_id','=',component_level4.product_id.id)])  
 
                                                     for component_level5 in component_bom_level5.bom_line_ids:
                                                         if component_level5.product_id.categ_id.id != 81:
