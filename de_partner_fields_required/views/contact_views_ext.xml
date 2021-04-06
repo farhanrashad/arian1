@@ -11,6 +11,10 @@
                 <br/>
                 <field name="region"/>
             </xpath>
+            <xpath expr="//field[@name = 'vat']" position="after">
+                <br/>
+                <field name="deduction_policy"/>
+            </xpath>
         </field>
     </record>
 
