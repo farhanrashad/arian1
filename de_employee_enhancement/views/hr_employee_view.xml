@@ -79,7 +79,7 @@
                 <field name="salary"/>
             </xpath>
 
-            <xpath expr="//notebook//page[2]//field[@name='address_home_id']" position="after">
+            <xpath expr="//notebook//page[3]//field[@name='address_home_id']" position="after">
                 <field name="perm_address"/>
             </xpath>
 

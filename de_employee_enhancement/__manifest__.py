@@ -2,7 +2,7 @@
 # Part of BrowseInfo. See LICENSE file for full copyright and licensing details.
 
 {
-    "name": "Employee Enhancement",
+    "name": "Employee Enhancement Field",
     "category": 'Education',
     "summary": 'Employee Form and Contract Enhancement',
     "description": """
