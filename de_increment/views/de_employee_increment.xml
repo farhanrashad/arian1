@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <record id="hr_contract_view_form_inherit" model="ir.ui.view">
+        <field name="name">hr.contract.view.form.inherit</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[2]" position="after">
+                <page name="increment" string="Increment">
+                    <field name="increment_id">
+                        <tree editable="bottom">
+                            <field name="years" string="Years" invisible="1"/>
+                            <field name="increment_effective_date" string="Effective Date" required="1"/>
+                            <field name="increment_amount" string="Amount" />
+                            <field name="is_increment_applied" string="Increment Applied"/>
+                            <field name="contract_id" invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
