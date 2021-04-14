@@ -10,6 +10,7 @@ class HrEmployeeInh(models.Model):
     _inherit = 'hr.employee'
     
     relation_with = fields.Char('S/O-W/O-D/O')
+    address = fields.Char('Address')
     is_disable = fields.Boolean('Disable?')
     age = fields.Char('Age', compute='onchange_birthday')
     religion = fields.Selection([('Islam','Islam'), ('Christian','Christian'), ('Hindu','Hindu')], 
