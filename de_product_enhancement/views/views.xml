@@ -167,15 +167,5 @@
 				</xpath>
 			</field>
 	   </record>
-	   <record id="view_res_partner_form_deduction" model="ir.ui.view">
-        <field name="name">res.partner.form.deduction</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='category_id']" position="after">
-                <field name="policy"/>
-            </xpath>
-        </field>
-    </record>
   </data>
 </odoo>

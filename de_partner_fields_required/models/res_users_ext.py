@@ -10,7 +10,7 @@ class UsersExt(models.Model):
         ('foriegn','Foriegn')
     ], default='local', string="Region" ,required=True)
     
-    # deduction = fields.Char(string='Deduction Policy')
+    deduction = fields.Char(string='Deduction Policy')
 
     mobile = fields.Char(required=True)
     category_id = fields.Many2many(required=True)
