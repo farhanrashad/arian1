@@ -157,4 +157,11 @@ class ProductTemplate(models.Model):
         elif self.allow_location == False:        
             if self.property_stock_production.id == 22:
                 self.property_stock_production = 15    
-       
+    
+
+
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+
+    deduction_policy = fields.Char(string="Deduction Policy")
+
