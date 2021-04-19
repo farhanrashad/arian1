@@ -8,7 +8,7 @@
     'description': """
 This module is about to add 2 new fields and making 3 more fields mendatory.
 """,
-    'depends': ['base', 'mail'],
+    'depends': ['base'],
     'data': [
         'views/contact_views_ext.xml',
     ],
