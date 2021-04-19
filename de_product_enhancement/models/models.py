@@ -163,5 +163,5 @@ class ProductTemplate(models.Model):
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    deduction_policy = fields.Char(string="Deduction Policy")
+    policy = fields.Char(string="Deduction Policy")
 
