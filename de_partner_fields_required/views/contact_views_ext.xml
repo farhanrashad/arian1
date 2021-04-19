@@ -11,9 +11,9 @@
                 <br/>
                 <field name="region"/>
             </xpath>
-            <xpath expr="//field[@name='vat']" position="after">
+<!--             <xpath expr="//field[@name='vat']" position="after">
                 <field name="deduction"/>
-            </xpath>
+            </xpath> -->
         </field>
     </record>
 
