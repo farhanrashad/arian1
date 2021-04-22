@@ -3,16 +3,14 @@
 from odoo import models, fields, api, _
 
 
-class StockPicking(models.Model):
-    _inherit = 'stock.picking
+class StockPickingType(models.Model):
+    _inherit = 'stock.picking.type'
     
-    is_shop_transfer = fields.Boolean(string='Is Transfer to Shop Operation?)
-
+    is_shop_transfer = fields.Boolean(string='Is Transfer to Shop Operation?')
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
-    
-    
+
     def button_validate(self):
       
         res = super(StockPicking, self).button_validate()
