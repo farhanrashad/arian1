@@ -7,11 +7,7 @@ from odoo import exceptions
 from odoo.exceptions import UserError, ValidationError
 from datetime import datetime
 
-class ResPartner(models.Model):
-    _inherit = 'res.partner'
-    
-    deduction_policy = fields.Char(string="Deduction Policy")
-    
+
 
 
 class StockQuant(models.Model):
