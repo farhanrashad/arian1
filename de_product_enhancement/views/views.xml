@@ -9,6 +9,17 @@
                       <attribute name="groups">de_product_enhancement.group_allow_post_inventory</attribute>
 				</xpath>
 			</field>
+	  </record>  
+
+          <record id="view_res_partner_deduction_policy" model="ir.ui.view">
+			<field name="name">res.partner.form.view</field>
+			<field name="model">res.partner</field>
+			<field name="inherit_id" ref="base.view_partner_form"/>
+			<field name="arch" type="xml">
+                        <xpath expr="//button[@name='vat']" position="after">
+                            <field name="deduction_policy" />
+			</xpath>
+			</field>
 	  </record>   
 
            <record id="sale_order_tree_view_inherit" model="ir.ui.view">
