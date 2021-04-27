@@ -73,6 +73,7 @@ class StockPicking(models.Model):
 
     sale_ref = fields.Char(string='Ref Sale')
     mo_product_id = fields.Many2one('product.product', string="Product")
+    rel_po = fields.Char(string='Relative PO')
 
   #  @api.model
   #  def create(self, vals):

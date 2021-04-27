@@ -56,6 +56,7 @@
 				<xpath expr="//field[@name='origin']" position="after">
 					<field name="sale_ref" invisible="1"/>
                                         <field name="mo_product_id"/>
+                                        <field name="rel_po"/>
 
 				</xpath>      
             </field>
