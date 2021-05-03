@@ -89,6 +89,23 @@ class PurchaseOrder(models.Model):
                 'product_qty': line.qty_received
             })
       
+        return res
+
+
+    def button_cancel(self):
+        res = super(PurchaseOrder, self).button_cancel()
+        picking = self.env['stock.picking'].search([('origin','=',self.name)])
+        for pick in picking:
+            if pick.state != 'done':
+                pick.update({
+                    'state': 'cancel'
+                })
+            for lines in pick.move_ids_without_package:
+            	if lines.state != 'done':
+            		lines.update({
+            			'state': 'cancel'
+            			})
+      
         return res     
     
     receipt_date = fields.Date(string='Receipt Date')
