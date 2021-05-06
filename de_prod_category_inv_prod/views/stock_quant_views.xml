@@ -41,11 +41,13 @@
         <field name="model">stock.quant</field>
         <field name="inherit_id" ref="stock.quant_search_view"/>
         <field name="arch" type="xml">
-
                 <field name="product_id" position="after">
                     <separator/>
-                   <field name="categ_id" string="Product Category" filter_domain="[('categ_id','=', categ_id)]"/>
+                   <field name="categ_id" string="Product Category"/>
                 </field>
+            <xpath expr="//search/group" position="inside">
+               <filter string="Product Category" name="categ_id" domain="[]" context="{'group_by':'categ_id'}"/>
+            </xpath>
             
         </field>
     </record>     
