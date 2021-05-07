@@ -1,0 +1,64 @@
+<odoo>
+  <data>
+    <record id="stock_quant_tree_editable_inherit" model="ir.ui.view">
+        <field name="name">stock.quant.tree.editable.inherit</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="categ_id"/>
+            </xpath>
+        </field>
+    </record>
+      
+    <record id="stock_quant_tree_inherit" model="ir.ui.view">
+        <field name="name">stock.quant.tree.inherit</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="categ_id"/>
+            </xpath>
+        </field>
+    </record>
+      
+    <record id="stock_quant_form_inherit" model="ir.ui.view">
+        <field name="name">stock.quant.form.inherit</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="categ_id"/>
+            </xpath>
+        </field>
+    </record>   
+      
+      <record id="stock_quant_search_inherit" model="ir.ui.view">
+        <field name="name">stock.quant.search.inherit</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.quant_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="categ_id"/>
+            </xpath>
+<!--                 <xpath expr="//search/group" position="inside">
+                   <filter string="Product Category" name="categ_id_filter" domain="[]" context="{'group_by':'categ_id'}"/>
+                </xpath>           -->
+        </field>
+    </record>     
+    <record id="stock_quant_search_group_inherit" model="ir.ui.view">
+        <field name="name">stock.quant.search.inherit</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.quant_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='productgroup']" position="after">
+                <filter string="Product Category" name="categ_id_filter" context="{'group_by':'categ_id'}"/>
+            </xpath>
+        </field>
+    </record> 
+      
+  </data>
+</odoo>
