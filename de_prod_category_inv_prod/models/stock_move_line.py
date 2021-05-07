@@ -5,7 +5,7 @@ class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
     _description = ''
     
-    contact = fields.Many2one('res.partner', compute='_compute_contact')
+    contact = fields.Many2one('res.partner', compute='_compute_contact', store=True)
     
     
     def _compute_contact(self):
