@@ -22,8 +22,30 @@ class PurchaseOrder(models.Model):
     
     def send_approval_button(self):
         self.write({
-            'state':'to approve'
+            'state': 'to approve'
         })
+
+    def send_first_approval_button(self):
+        self.write({
+            'state': 'send first approval'
+        })
+
+    def button_first_approved(self):
+        self.write({
+            'state': 'first approve'
+        })
+
+    state = fields.Selection([
+        ('draft', 'RFQ'),
+        ('sent', 'RFQ Sent'),
+        ('to approve', 'Second Approve'),
+        ('send first approval', 'Send For First Approval'),
+        ('first approve', 'First Approve'),
+        ('purchase', 'Purchase Order'),
+        ('done', 'Locked'),
+        ('cancel', 'Cancelled')
+    ], string='Status', readonly=True, index=True, copy=False, default='draft', tracking=True)
+
 
 
 class PaymentState(models.Model):
@@ -36,30 +58,70 @@ class PaymentState(models.Model):
 class account_payment(models.Model):
     _inherit = 'account.move'
     
-    state = fields.Selection([('draft', 'Draft'),
-                              ('waiting', 'Waiting For Approval'),
-                              ('approved', 'Approved'),
-                              ('posted', 'Posted'),
-                              ('cancel','Cancelled') ],
-                             readonly=True, default='draft', copy=False, string="Status", track_visibility='onchange')
+    state = fields.Selection([
+        ('draft', 'RFQ'),
+        ('sent', 'RFQ Sent'),
+        ('to approve', 'Second Approve'),
+        ('send first approval', 'Send For First Approval'),
+        ('first approve', 'First Approve'),
+        ('purchase', 'Purchase Order'),
+        ('done', 'Locked'),
+        ('cancel', 'Cancelled')
+    ], string='Status', readonly=True, index=True, copy=False, default='draft', tracking=True)
+    
+    def send_first_approval_button(self):
+        self.write({
+            'state': 'send first approval'
+        })
+        
+    def button_first_approved(self):
+        self.write({
+            'state': 'first approve'
+        })
+        
+    def button_draft(self):
+        self.write({
+            'state': 'draft'
+        })
 
-    def send_approval(self):
-        self.write({'state': 'waiting'})
-        self.message_post(body=_('Dear %s, bill is sent for approval.') % (self.env.user.name,),
-                          partner_ids=[self.env.user.partner_id.id])
-    def action_reset_draft(self):
-        self.write({'state': 'draft'})
-        self.message_post(body=_('Dear %s, bill is Rejected from Approval.') % (self.env.user.name,),
-                          partner_ids=[self.env.user.partner_id.id])
+        
+    def send_approval_button(self):
+        self.write({
+            'state': 'to approve'
+        })
+        
+    def button_second_approved(self):
+        self.write({
+            'state': 'purchase'
+        })
+        
+    def button_cancel(self):
+        self.write({
+            'state': 'cancel'
+        })
+        
+    def button_done(self):
+        self.write({
+            'state': 'done'
+        })
 
-    def approve_bill(self):
-        self.write({'state': 'approved'})
-        self.message_post(body=_('Dear %s, bill has approved.') % (self.env.user.name,),
-                          partner_ids=[self.env.user.partner_id.id])
+#     def send_approval(self):
+#         self.write({'state': 'waiting'})
+#         self.message_post(body=_('Dear %s, bill is sent for approval.') % (self.env.user.name,),
+#                           partner_ids=[self.env.user.partner_id.id])
+#     def action_reset_draft(self):
+#         self.write({'state': 'draft'})
+#         self.message_post(body=_('Dear %s, bill is Rejected from Approval.') % (self.env.user.name,),
+#                           partner_ids=[self.env.user.partner_id.id])
 
-    def action_post(self):
-        self.message_post(body=_('Dear %s, bill has posted') % (self.env.user.name,),
-                              partner_ids=[self.env.user.partner_id.id])
-        res = super(account_payment, self).action_post()
+#     def approve_bill(self):
+#         self.write({'state': 'approved'})
+#         self.message_post(body=_('Dear %s, bill has approved.') % (self.env.user.name,),
+#                           partner_ids=[self.env.user.partner_id.id])
+
+#     def action_post(self):
+#         self.message_post(body=_('Dear %s, bill has posted') % (self.env.user.name,),
+#                               partner_ids=[self.env.user.partner_id.id])
+#         res = super(account_payment, self).action_post()
       
-        return res
+#         return res

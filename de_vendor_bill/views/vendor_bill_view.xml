@@ -7,16 +7,21 @@
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//header/button[@name='action_rfq_send']" position="after">
-                    <button name="send_approval_button" type="object" states="draft" string="Send For Approval" class="oe_highlight" id="bid_confirm"/>
-                  
+                    <button name="send_first_approval_button" type="object" states="draft" string="Send For Approval" class="oe_highlight" id="bid_1st_confirm" />
+                    <button name="send_approval_button" type="object" states="first approve" string="1st Approval" class="oe_highlight" id="bid_confirm" groups="de_vendor_bill.group_show_purchase_second_approve_button" />
 
                 </xpath> 
-                <xpath expr="//header//button[@name='button_confirm']" position="attributes">
+                <xpath expr="//button[@name='button_approve']" position="before">
+                      <button name="button_first_approved" type="object" states="send first approval" string="1st Approved Order" class="oe_highlight" />
+                </xpath>
+
+                <xpath expr="//button[@id='draft_confirm']" position="attributes">
                      <attribute name="invisible">1</attribute>
-                </xpath>    
+                </xpath>
                 
                 <xpath expr="//header/button[@name='button_approve']" position="attributes">
-                     <attribute name="groups">de_vendor_bill.group_show_purchase_approve_button</attribute>
+                     <attribute name="groups">de_vendor_bill.group_show_purchase_second_approve_button</attribute>
+                     <attribute name="string">Confirm Order</attribute>
                 </xpath>  
                 
              </field>
@@ -30,37 +35,43 @@
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
 
-                <xpath expr="//header" position="inside">
-                    <button name="send_approval" class="oe_highlight"  string="Send For Approval" type="object" attrs="{'invisible': ['|','|',('state', '!=', 'draft'), ('type', '!=', 'in_invoice'),('invoice_origin','!=', False)]}"/>
-                    <button name="approve_bill" class="oe_highlight" states="waiting" groups="de_vendor_bill.group_waiting_for_approval" string="Approve" type="object"
-                    />
-                    <button name="action_reset_draft" type="object" states="waiting" string="Not Approved" class="oe_highlight" id="bid_confirm" groups="de_vendor_bill.group_show_purchase_approve_button"/>
-                    
+                <xpath expr="//button[@name='button_cancel']" position="before">
+                    <button name="send_first_approval_button" type="object" states="draft" string="Send For Approval" class="oe_highlight" id="bid_1st_confirm" />
                 </xpath>
-                <xpath expr="//header/button[@name='action_post']" position="replace">
-                           
-                                                <button name="action_post" string="Post" class="oe_highlight" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|','|',('state', '!=', 'draft'),('type', 'not in', ['in_invoice','out_invoice']),('invoice_origin','=', False)]}"/>
-                     
+                
+                <xpath expr="//button[@name='send_first_approval_button']" position="after">
+                      <button name="send_approval_button" type="object" states="first approve" string="1st Approval" class="oe_highlight" id="bid_confirm" groups="de_vendor_bill.group_show_second_bill_approve_button"/>
+                </xpath>
+                
+                <xpath expr="//button[@name='send_first_approval_button']" position="after">
+                      <button name="button_first_approved" type="object" states="send first approval" string="1st Approved Order" class="oe_highlight"  />
 
-                </xpath>   
-                <xpath expr="//header/button[@name='action_post']" position="after">
-                <button name="action_post" string="Post" class="oe_highlight" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|','|',('state', '!=', 'draft'),('type', 'not in', ['out_invoice','entry','out_refund','in_refund','out_receipt','in_receipt'])]}"/>
                 </xpath>
                 
-                <xpath expr="//header/button[@name='action_post']" position="after">
-                    <button name="action_post" class="oe_highlight" states="approved" string="Post" type="object"
-                     />
+                <xpath expr="//button[@name='button_first_approved']" position="after">
+                      <button name="button_second_approved" type="object" states="to approve" string="Confirm Bill" class="oe_highlight" />
+                    
+                      <button name="button_cancel" string="Cancel" type="object" states="to approve" class="oe_highlight" />
+
                 </xpath>
                 
-                 <xpath expr="//header/button[@name='button_draft']" position="attributes">
-                     <attribute name="groups">de_vendor_bill.group_show_reset_to_draft_button</attribute>
-                </xpath>
-                
-                <xpath expr="//button[@name='%(account.action_view_account_move_reversal)d']" position="attributes">
-                    <attribute name='groups'>de_vendor_bill.group_can_reverse_journal_entry_button</attribute>
+                <xpath expr="//button[@name='button_second_approved']" position="after">
+                    <button name="button_cancel" string="Cancel" type="object" states="purchase" class="oe_highlight" />
                 </xpath>
                 
                 
+                
+                
+                
+                <xpath expr="//button[1]" position="attributes">
+                     <attribute name="attrs">{'invisible': ['|', '|', ('state', '!=', 'new'), ('auto_post', '=', True), ('move_type', '!=', 'entry')]}</attribute>
+                </xpath>
+                
+                <xpath expr="//button[2]" position="attributes">
+                     <attribute name="attrs">{'invisible': ['|', '|', ('state', '!=', 'new'), ('auto_post', '=', True), ('move_type', '!=', 'entry')]}</attribute>
+                </xpath>
+
+
             </field>
         </record>
 
