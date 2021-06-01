@@ -40,14 +40,14 @@
                     attrs="{'invisible': ['|','|',('state', '!=', 'draft'), ('type', '!=', 'in_invoice'),('invoice_origin','=', False)]}"/>
                    
                     <button name="first_approve_bill" class="oe_highlight" 
-                    attrs="{'invisible': ['|','|',('state', '!=', 'waiting first approval'), ('type', '!=', 'in_invoice'),('invoice_origin','=', False)]}"
+                    attrs="{'invisible': ['|','|',('state', '!=', 'waiting'), ('type', '!=', 'in_invoice'),('invoice_origin','=', False)]}"
                     groups="de_vendor_bill.group_allow_first_approved_bill" string="1st Approve" type="object" />
                     
                     <button name="second_approve_bill" class="oe_highlight"  string="2nd Approve" type="object" 
                     groups="de_vendor_bill.group_allow_second_approved_bill" 
                     attrs="{'invisible': ['|','|',('state', '!=', 'waiting second approval'), ('type', '!=', 'in_invoice'),('invoice_origin','=', False)]}"/>
                     
-                    <button name="action_reset_draft" type="object" states="waiting first approval,waiting second approval" string="Not Approved" class="oe_highlight" id="bid_confirm" groups="de_vendor_bill.group_reset_to_draft_button"/>
+                    <button name="action_reset_draft" type="object" states="waiting,waiting second approval" string="Not Approved" class="oe_highlight" id="bid_confirm" groups="de_vendor_bill.group_reset_to_draft_button"/>
                     
                 </xpath>
                 

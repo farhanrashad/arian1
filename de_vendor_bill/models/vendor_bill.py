@@ -96,7 +96,7 @@ class account_payment(models.Model):
     _inherit = 'account.move'
     
     state = fields.Selection([('draft', 'Draft'),
-                              ('waiting first approval', 'Waiting First Approval'),
+                              ('waiting', 'Waiting First Approval'),
                               ('waiting second approval', 'Waiting Second Approval'),
                               ('approved', 'Approved'),
                               ('posted', 'Posted'),
@@ -106,7 +106,7 @@ class account_payment(models.Model):
     
     
     def send_first_approval(self):
-        self.write({'state': 'waiting first approval'})
+        self.write({'state': 'waiting'})
         self.message_post(body=_('Dear %s, bill is sent for approval.') % (self.env.user.name,),
                           partner_ids=[self.env.user.partner_id.id])
         
@@ -122,9 +122,6 @@ class account_payment(models.Model):
 
 
     def second_approve_bill(self):
-        self.write({'state': 'waiting second approval'})
-        self.message_post(body=_('Dear %s, bill has approved.') % (self.env.user.name,),
-                          partner_ids=[self.env.user.partner_id.id])
         self.action_post()
         
         
