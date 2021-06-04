@@ -78,6 +78,10 @@
                 	<attribute name="attrs">{'invisible': [('is_hide','=', True)]}</attribute>
                 </xpath>
                 
+                <xpath expr="//header/button[@name='action_post']" position="after">
+               		<button name="action_post_custom" string="Post" class="oe_highlight" id="custom_post" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|','|',('type', '!=', 'in_invoice'),('state', '!=', 'approved'),('is_hide','=', False)]}"/>
+                </xpath>
+                
                 
 
                 
@@ -91,7 +95,7 @@
                 
                 <xpath expr="//field[@name='company_id']" position="after">
                     <field name="invoice_origin" />
-                    <field name="is_hide" invisible="True" />
+                    <field name="is_hide" invisible="False" />
                 </xpath>
                 
                 <xpath expr="//field[@name='invoice_origin']" position="attributes">

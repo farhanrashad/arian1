@@ -84,6 +84,9 @@ class PurchaseOrder(models.Model):
     ], string='Status', readonly=True, index=True, copy=False, default='draft', tracking=True)
     
 
+
+
+
 class PaymentState(models.Model):
     _name = 'account.vendor_bill_state'
     _description = 'Vendor Bill State'
@@ -117,17 +120,24 @@ class account_payment(models.Model):
 
     def first_approve_bill(self):
         self.write({'state': 'waiting second approval'})
-        self.message_post(body=_('Dear %s, bill has approved.') % (self.env.user.name,),
+        self.message_post(body=_('Dear %s, bill has first approved.') % (self.env.user.name,),
                           partner_ids=[self.env.user.partner_id.id])
 
 
     def second_approve_bill(self):
-        self.action_post()
+        self.write({'state': 'approved'})
+        self.message_post(body=_('Dear %s, bill has second approved.') % (self.env.user.name,),
+                          partner_ids=[self.env.user.partner_id.id])
+#         self.is_hide = False
+#         self.action_post()
         
+    def action_post_custom(self):
+        self.action_post()
         
     def action_post(self):
         self.message_post(body=_('Dear %s, bill has posted') % (self.env.user.name,),
                               partner_ids=[self.env.user.partner_id.id])
+        self.is_hide = True
         res = super(account_payment, self).action_post()
       
         return res
