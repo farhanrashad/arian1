@@ -13,10 +13,11 @@
                           <field name="product_line_ids" widget="many2many_tags" invisible="1"/>
                       </group>
                       <group>
-                        
+                          <field name="is_quantity" />
                       </group>
                         
                     </group>
+                    
                     <notebook>
 							<page string="Articles" attrs="{'invisible': [('is_order', '=', False)]}">
 								<field name="articles_lines" >
