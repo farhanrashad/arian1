@@ -14,13 +14,22 @@ class ExtraIssuance(models.TransientModel):
     _description = "Extra Issuance wizard"
     
     @api.onchange('sale_id')
-    def _onchange_invoice_date(self):
+    def _onchange_sale_id(self):
+        data_line = []
         data = []
         if self.sale_id:
             for line in self.sale_id.order_line:
                 if line.display_type != 'line_section':
                     data.append(line.product_id.id)
+                    data_line.append((0,0, {
+                        'article_id': self.id,
+                        'product_id': line.product_id.id,
+                        'product_quantity': line.product_uom_qty,
+                        'quantity': 0.0,
+                    } ))
             self.product_line_ids = data
+            self.articles_lines = data_line
+
         if self.sale_id:
             self.is_order= True
         else:
@@ -29,10 +38,10 @@ class ExtraIssuance(models.TransientModel):
 
     product_line_ids = fields.Many2many('product.product', string="Product",)
     is_order = fields.Boolean(string="Is Order")
+    is_quantity = fields.Boolean(string="Product Qunatity")
     sale_id = fields.Many2one('sale.order',string='Sale Order', help='select start date')
     articles_lines = fields.One2many('extra.issuance.wizard.line', 'article_id')
     articles_lines2 = fields.One2many('extra.issuance.wizard.line2', 'article_id')
-    
 
     def check_report(self):
         data = {}
