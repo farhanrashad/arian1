@@ -108,6 +108,14 @@ class account_payment(models.Model):
     is_hide = fields.Boolean(default=False)
     
     
+    @api.onchange('purchase_vendor_bill_id')
+    def onchange_auto_complete(self):
+        print('onchangeeee')
+        if self.invoice_origin:
+            self.is_hide = False
+            print('self.is_hide---',self.is_hide)
+    
+    
     def send_first_approval(self):
         self.write({'state': 'waiting'})
         self.message_post(body=_('Dear %s, bill is sent for approval.') % (self.env.user.name,),
