@@ -75,7 +75,7 @@
                 </xpath>
                 
                 <xpath expr="//header/button[@name='action_post']" position="attributes">
-                	<attribute name="attrs">{'invisible': ['|',('state','!=', 'second waiting approval'),('type','=', 'in_invoice')]}</attribute>
+                	<attribute name="attrs">{'invisible': [('is_hide','=', True)]}</attribute>
                 </xpath>
                 
                 <xpath expr="//header/button[@name='action_post']" position="after">
