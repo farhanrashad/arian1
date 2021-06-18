@@ -10,31 +10,17 @@
                   <field name="code">action = records.action_attendace_validated() </field>
                  </record>
                 
-
-
-		<record id="view_attendance_data_pivot" model="ir.ui.view">
-			<field name="name">Attendance Data Pivot</field>
-			<field name="model">user.attendance</field>
-			<field name="arch" type="xml">
-				<pivot string="Attendance Data">
-					<field name="timestamp" type="col" />
-					<field name="user_id" type="row" />
-				</pivot>
-			</field>
-		</record>
-        
-        		<record id="view_attendance_data_form" model="ir.ui.view">
+		<record id="view_attendance_data_form" model="ir.ui.view">
 			<field name="name">Attendance Data Form</field>
 			<field name="model">user.attendance</field>
 			<field name="arch" type="xml">
-				<form string="Attendance Data"  create="false"
-					edit="false">
+				<form string="Attendance Data">
 					<sheet>
 						<group>
 							<group>
 								<field name="user_id" />
 								<field name="timestamp" />
-                                <field name="is_attedance_created" invisible="0"/>
+								<field name="is_attedance_created" />
 								<field name="status" groups="base.group_no_one" />
 								<field name="attendance_state_id" />
 								<field name="valid" />
@@ -46,6 +32,17 @@
 						</group>
 					</sheet>
 				</form>
+			</field>
+		</record>
+
+		<record id="view_attendance_data_pivot" model="ir.ui.view">
+			<field name="name">Attendance Data Pivot</field>
+			<field name="model">user.attendance</field>
+			<field name="arch" type="xml">
+				<pivot string="Attendance Data">
+					<field name="timestamp" type="col" />
+					<field name="user_id" type="row" />
+				</pivot>
 			</field>
 		</record>
 
@@ -99,7 +96,7 @@
 		<record model="ir.actions.act_window" id="action_user_attendance_data">
 			<field name="name">Attendance Data</field>
 			<field name="res_model">user.attendance</field>
-			<field name="view_mode">tree,form,pivot</field>
+			<field name="view_mode">tree,pivot</field>
 			<field name="context">{'search_default_valid':1, 'group_by':[]}
 			</field>
 		</record>
