@@ -43,6 +43,10 @@ class HrEmployeeInh(models.Model):
             if rec.contract_id and rec.contract_id.state == 'open':
                 rec.salary = rec.contract_id.wage
                 rec.contract_start_date = rec.contract_id.date_start
+                
+            elif rec.contract_id:
+                rec.salary = rec.contract_id.wage
+                rec.contract_start_date = rec.contract_id.date_start
 
             else:
                 rec.salary = '-'
