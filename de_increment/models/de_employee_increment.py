@@ -33,6 +33,7 @@ class EmployeeIncrement(models.Model):
     increment_effective_date = fields.Date(string='Increment Effective Date', required=True)
     contract_id = fields.Many2one('hr.contract')
     is_increment_applied = fields.Boolean(default=False, readonly=True)
+    description = fields.Char(string="Description")
     
     
     def unlink(self):

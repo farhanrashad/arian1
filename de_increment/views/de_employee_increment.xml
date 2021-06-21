@@ -15,7 +15,9 @@
                             <field name="increment_effective_date" string="Effective Date" required="1"/>
                             <field name="increment_amount" string="Amount" />
                             <field name="is_increment_applied" string="Increment Applied"/>
+                            <field name="description"/>
                             <field name="contract_id" invisible="1"/>
+                            
                         </tree>
                     </field>
                 </page>
