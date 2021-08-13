@@ -15,6 +15,8 @@ from ..pyzk.zk.exception import ZKErrorResponse, ZKNetworkError, ZKConnectionUna
 _logger = logging.getLogger(__name__)
 
 
+
+
 class AttendanceDevice(models.Model):
     _name = 'attendance.device'
     _description = 'Attendance Device'
@@ -210,8 +212,10 @@ class AttendanceDevice(models.Model):
 
         if not cached_key in self.zk_cache.keys() or self.env.context.get('no_zk_cache', False):
             self.zk_cache[cached_key] = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
-
-        self.zk = self.zk_cache[cached_key]
+        machine_ip = self.ip
+        port = self.port
+        self.zk = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+        # self.zk = self.zk_cache[cached_key]
 
     @api.model
     def _tz_get(self):
@@ -327,8 +331,12 @@ class AttendanceDevice(models.Model):
 
         error_msg = False
         try:
+            machine_ip = self.ip
+            port = self.port
+            zkconnect = ZK(machine_ip, port=port, timeout=10, password=0, force_udp=False, ommit_ping=False)
             self._set_zk()
-            return self.zk.connect()
+            attendance_connection = zkconnect.connect()
+            return attendance_connection
         except ZKNetworkError as e:
             error_msg = _("Could not reach the device %s (ping %s)") % (self.display_name, self.ip)
         except ZKConnectionUnauthorized as e:
@@ -347,10 +355,18 @@ class AttendanceDevice(models.Model):
 
     def disconnect(self):
         try:
-            return self.zk.disconnect()
+            machine_ip = self.ip
+            port = self.port
+            force_udp = self.protocol == 'udp'
+            password = self.password or 0
+            zkd = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+            conn = ' '
+            conn = zkd.connect()
+            disconnect = conn.disconnect()
+            return disconnect
         except Exception as e:
             _logger.error(e)
-            raise ValidationError(_("Could not get the device %s disconnected. Here is the debugging information:\n%s")
+            raise ValidationError(_("Could not get Disconnected the device %s disconnected. Here is the debugging information:\n%s")
                                   % (self.display_name, e))
 
     def disableDevice(self):
@@ -358,10 +374,15 @@ class AttendanceDevice(models.Model):
         disable (lock) device, ensure no activity when process run
         """
         try:
-            return self.zk.disable_device()
+            machine_ip = self.ip
+            port = self.port
+            force_udp = self.protocol == 'udp'
+            password = self.password or 0
+            zk = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+            return zk.disable_device()
         except Exception as e:
             _logger.error(e)
-            raise ValidationError(_("Could not get the device %s disabled. Here is the debugging information:\n%s")
+            raise ValidationError(_("Could disable not get the device %s disabled. Here is the debugging information:\n%s")
                                   % (self.display_name, e))
 
     def action_restart(self):
@@ -372,21 +393,34 @@ class AttendanceDevice(models.Model):
         """
         re-enable the connected device
         """
-        try:
-            return self.zk.enable_device()
+        try:   
+            force_udp = self.protocol == 'udp'
+            password = self.password or 0
+            zke = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+            conn = ' '
+            conn = zke.connect()
+            enabledevice = conn.enable_device()
+            return enabledevice
         except Exception as e:
             _logger.error(e)
-            raise ValidationError(_('Could not get the device %s enabled. Here is the debugging information:\n%s')
+            raise ValidationError(_('Could not get Enable Device the device %s enabled. Here is the debugging information:\n%s')
                                   % (self.display_name, e))
 
     def getFirmwareVersion(self):
         '''
         return the firmware version
         '''
+        machine_ip = self.ip
+        port = self.port
+        force_udp = self.protocol == 'udp'
+        password = self.password or 0
+        zkfirm = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+        conn = ''
         try:
-            self.connect()
-            self.enableDevice()
-            return self.zk.get_firmware_version()
+            conn = zkfirm.connect()
+            firmversion = conn.get_firmware_version()
+            return firmversion
+
         except Exception as e:
             _logger.error(e)
             raise ValidationError(_("Could not get the firmware version of the device %s. Here is the debugging information:\n%s")
@@ -398,10 +432,16 @@ class AttendanceDevice(models.Model):
         '''
         return the serial number
         '''
+        machine_ip = self.ip
+        port = self.port
+        force_udp = self.protocol == 'udp'
+        password = self.password or 0
+        zkdevicename = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+        conn = ''
         try:
-            self.connect()
-            self.enableDevice()
-            return self.zk.get_serialnumber()
+            conn = zkdevicename.connect()
+            serialnumber = conn.get_serialnumber()
+            return serialnumber
         except Exception as e:
             _logger.error(e)
             raise ValidationError(_("Could not get the serial number of the device %s. Here is the debugging information:\n%s")
@@ -413,10 +453,16 @@ class AttendanceDevice(models.Model):
         '''
         return the serial number
         '''
+        machine_ip = self.ip
+        port = self.port
+        force_udp = self.protocol == 'udp'
+        password = self.password or 0
+        zkdevicename = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+        conn = ''
         try:
-            self.connect()
-            self.enableDevice()
-            return self.zk.get_oem_vendor()
+            conn = zkdevicename.connect()
+            oemvendor = conn.get_oem_vendor()
+            return oemvendor
         except Exception as e:
             _logger.error(e)
             raise ValidationError(_('Could not get the OEM Vendor of the device %s. Here is the debugging information:\n%s')
@@ -428,10 +474,18 @@ class AttendanceDevice(models.Model):
         '''
         return the Fingerprint Algorithm
         '''
+        machine_ip = self.ip
+        port = self.port
+
+        force_udp = self.protocol == 'udp'
+        password = self.password or 0
+        zkdevicename = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+        conn = ''
         try:
-            self.connect()
-            self.enableDevice()
-            return self.zk.get_fp_version()
+            conn = zkdevicename.connect()
+            algorithm = conn.get_fp_version()
+            return algorithm
+
         except Exception as e:
             _logger.error(e)
             raise ValidationError(_('Could not get the Fingerprint Algorithm of the device %s. Here is the debugging information:\n%s')
@@ -443,10 +497,15 @@ class AttendanceDevice(models.Model):
         '''
         return the serial number
         '''
+
         try:
-            self.connect()
-            self.enableDevice()
-            return self.zk.get_platform()
+            machine_ip = self.ip
+            port = self.port
+            zkdevicename = ZK(machine_ip, port=port, timeout=10, password=0, force_udp=False, ommit_ping=False)
+            conn = ''
+            conn = zkdevicename.connect()
+            platform = conn.get_platform()
+            return platform
         except Exception as e:
             _logger.error(e)
             raise ValidationError(_('Could not get the Platform of the device %s. Here is the debugging information:\n%s')
@@ -459,9 +518,13 @@ class AttendanceDevice(models.Model):
         return the serial number
         '''
         try:
-            self.connect()
-            self.enableDevice()
-            return self.zk.get_device_name()
+            machine_ip = self.ip
+            port = self.port
+            zkdevicename = ZK(machine_ip, port=port, timeout=10, password=0, force_udp=False, ommit_ping=False)
+            conn = ''
+            conn = zkdevicename.connect()
+            devicename = conn.get_device_name()
+            return devicename
         except Exception as e:
             _logger.error(e)
             raise ValidationError(_('Could not get the Name of the device %s. Here is the debugging information:\n%s')
@@ -474,9 +537,13 @@ class AttendanceDevice(models.Model):
         return the serial number
         '''
         try:
-            self.connect()
-            self.enableDevice()
-            return self.zk.get_workcode()
+            machine_ip = self.ip
+            port = self.port
+            zktworkcode = ZK(machine_ip, port=port, timeout=10, password=0, force_udp=False, ommit_ping=False)
+            conn = ''
+            conn = zktworkcode.connect()
+            workcode = conn.get_workcode()
+            return workcode
         except Exception as e:
             _logger.error(e)
             raise ValidationError(_('Could not get the Work Code of the device %s. Here is the debugging information:\n%s')
@@ -499,10 +566,16 @@ class AttendanceDevice(models.Model):
 
     def setUser(self, uid=None, name='', privilege=0, password='', group_id='', user_id='', card=0):
         try:
-            self.connect()
-            self.enableDevice()
-            self.disableDevice()
-            return self.zk.set_user(uid, name, privilege, password, group_id, user_id, card)
+            machine_ip = self.ip
+            port = self.port
+            force_udp = self.protocol == 'udp'
+            password = self.password or 0
+            zkts = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+            conn = ''
+            conn = zkts.connect()
+            users = conn.set_user(uid, name, privilege, password, group_id, user_id, card)
+            return users
+
         except Exception as e:
             _logger.info(e)
             raise ValidationError(_('Could not set user into the device %s. Here is the user information:\n'
@@ -556,11 +629,16 @@ class AttendanceDevice(models.Model):
         '''
         return a Python List of device users in User(uid, name, privilege, password, group_id, user_id)
         '''
+        machine_ip = self.ip
+        port = self.port
+        force_udp = self.protocol == 'udp'
+        password = self.password or 0
+        zkts = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+        conn = ''
         try:
-            self.connect()
-            self.enableDevice()
-            self.disableDevice()
-            return self.zk.get_users()
+            conn = zkts.connect()
+            user = conn.get_users()
+            return user
         except Exception as e:
             _logger.error(str(e))
             raise ValidationError(_('Could not get users from the device %s\n'
@@ -611,10 +689,15 @@ class AttendanceDevice(models.Model):
         return a Python List of fingers template in Finger(uid, fid, valid, template)
         '''
         try:
-            self.connect()
-            self.enableDevice()
-            self.disableDevice()
-            return self.zk.get_templates()
+            machine_ip = self.ip
+            port = self.port
+            force_udp = self.protocol == 'udp'
+            password = self.password or 0
+            zkta = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+            conns = ''
+            conns = zkta.connect()
+            fingertemplates = conns.get_templates()
+            return fingertemplates
         except Exception as e:
             _logger.error(str(e))
             raise ValidationError(_('Could not get finger templates from the device %s\n'
@@ -631,11 +714,18 @@ class AttendanceDevice(models.Model):
         '''
         return max uid of users on attendance device
         '''
+
         try:
-            self.connect()
-            self.enableDevice()
-            self.disableDevice()
-            return self.zk.get_next_uid()
+            machine_ip = self.ip
+            port = self.port
+            force_udp = self.protocol == 'udp'
+            password = self.password or 0
+            zktuid = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+            conn = ''
+            conn = zktuid.connect()
+            uid = conn.get_next_uid()
+            return uid
+
         except Exception as e:
             _logger.error(str(e))
             raise ValidationError(_('Could not get max uid from the device %s\n'
@@ -673,11 +763,17 @@ class AttendanceDevice(models.Model):
 
     def getAttendance(self):
         post_err_msg = False
+
         try:
-            self.connect()
-            self.enableDevice()
-            self.disableDevice()
-            return self.zk.get_attendance()
+            machine_ip = self.ip
+            port = self.port
+            force_udp = self.protocol == 'udp'
+            password = self.password or 0
+            zktatt = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+            conn = ''
+            conn = zktatt.connect()
+            attendances = conn.get_attendance()
+            return attendances
 
         except Exception as e:
             _logger.error(str(e))
@@ -713,8 +809,14 @@ class AttendanceDevice(models.Model):
         DeviceUser = self.env['attendance.device.user']
         for r in self:
             error_msg = ""
-            # device_users = User(uid, name, privilege, password, group_id, user_id)
-            device_users = r.getUser()
+            machine_ip = r.ip
+            port = r.port
+            force_udp = self.protocol == 'udp'
+            password = self.password or 0
+            zk = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+            conn = ''
+            conn = zk.connect()
+            device_users = conn.get_users()
 
             uids = []
             for device_user in device_users:
@@ -785,7 +887,14 @@ class AttendanceDevice(models.Model):
         DeviceUser = self.env['attendance.device.user']
         for r in self:
             # device_users = User(uid, name, privilege, password, group_id, user_id)
-            device_users = r.getUser()
+            machine_ip = r.ip
+            port = r.port
+            force_udp = self.protocol == 'udp'
+            password = self.password or 0
+            zk = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+            conn = ''
+            conn = zk.connect()
+            device_users = conn.get_users()
 
             user_ids = []
             for device_user in device_users:
@@ -922,7 +1031,8 @@ class AttendanceDevice(models.Model):
                         continue
 
                 user_id = AttendanceUser.with_context(active_test=False).search([
-                    ('user_id', '=', attendance.user_id)], limit=1)
+                    ('user_id', '=', attendance.user_id),
+                    ('device_id', '=', r.id)], limit=1)
                 if user_id:
                     utc_timestamp = r.convert_time_to_utc(attendance.timestamp, r.tz)
                     str_utc_timestamp = fields.Datetime.to_string(utc_timestamp)
@@ -944,9 +1054,10 @@ class AttendanceDevice(models.Model):
                             DeviceUserAttendance.create(vals)
                         except Exception as e:
                             error_msg += str(e) + "<br />"
-                            error_msg += _("Error create DeviceUserAttendance record: device_id %s; user_id %s; attendance_state_id %s.<br />") % (
+                            error_msg += _("Error create DeviceUserAttendance record: device_id %s; user_id %s; timestamp %s; attendance_state_id %s.<br />") % (
                                 r.id,
                                 user_id.id,
+                                format_datetime(r.env, attendance.timestamp, r.tz),
                                 attendance_states[attendance.punch]
                                 )
                             _logger.error(error_msg)
@@ -1071,7 +1182,31 @@ class AttendanceDevice(models.Model):
             if error_msg and r.debug_message:
                 r.message_post(body=error_msg)
 
+
+
+
+
+
     def action_check_connection(self):
+        for r in self:
+            machine_ip = r.ip
+            port = r.port
+            force_udp = self.protocol == 'udp'
+            password = self.password or 0
+            zkc = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
+            connc = ''
+            try:
+                connc = zkc.connect()
+                users = connc.get_users()
+            except Exception as e:
+                raise UserError('The connection has not been achieved')
+            finally:
+                if connc:
+                    connc.disconnect()
+                    raise UserError(_('successful connection:  "%s".') %
+                                    (users))
+
+    def action_check_connections(self):
         self.ensure_one()
         if self.connect():
             self.disconnect()
@@ -1079,18 +1214,24 @@ class AttendanceDevice(models.Model):
 
     def action_device_information(self):
         dbname = self._cr.dbname
+        cr = registry(dbname).cursor()
         for r in self:
             try:
+                machine_ip = r.ip
+                port = r.port
+                force_udp = self.protocol == 'udp'
+                password = self.password or 0
+                zk = ZK(self.ip, self.port, self.timeout, password=password, force_udp=force_udp, ommit_ping=self.omit_ping)
                 cr = registry(dbname).cursor()
                 r = r.with_env(r.env(cr=cr))
-                r.connect()
-                r.firmware_version = r.zk.get_firmware_version()
-                r.serialnumber = r.zk.get_serialnumber()
-                r.platform = r.zk.get_platform()
-                r.oem_vendor = r.zk.get_oem_vendor()
-                r.fingerprint_algorithm = r.zk.get_fp_version()
-                r.device_name = r.zk.get_device_name()
-                r.work_code = r.zk.get_workcode()
+                conn = zk.connect()
+                r.firmware_version = conn.get_firmware_version()
+                r.serialnumber = conn.get_serialnumber()
+                r.platform = conn.get_platform()
+                r.oem_vendor = conn.get_oem_vendor()
+                r.fingerprint_algorithm = conn.get_fp_version()
+                r.device_name = conn.get_device_name()
+                r.work_code = conn.get_workcode()
             except Exception as e:
                 _logger.error(e)
             finally:
