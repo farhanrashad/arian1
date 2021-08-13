@@ -1,0 +1,25 @@
+<odoo>
+  <data>
+  
+    <menuitem
+        id="hr_attendance_report_menu"
+        name="Attendance Report"
+        parent="hr_attendance.menu_hr_attendance_manage_attendances"
+        sequence="4"
+        action="open_hr_attendance_report_wizard_action"
+    />
+
+    <record id="hr_attendance_tree_view_attendance_date" model="ir.ui.view">
+        <field name="name">hr.attendance.tree.view.attendance.date</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='check_in']" position="before">
+                <field name="attendance_date"  invisible="0"/>
+            </xpath>
+
+
+        </field>
+    </record>
+  </data>
+</odoo>
