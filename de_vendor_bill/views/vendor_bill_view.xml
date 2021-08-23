@@ -95,7 +95,7 @@
                 
                 <xpath expr="//field[@name='company_id']" position="after">
                     <field name="invoice_origin" />
-                    <field name="is_hide"/>
+                    <field name="is_hide" attrs="{'invisible': [('type', '=', 'in_invoice')]}"/>
                 </xpath>
                 
                 <xpath expr="//field[@name='invoice_origin']" position="attributes">
