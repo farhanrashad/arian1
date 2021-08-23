@@ -13,17 +13,19 @@ class SaleOrderExt(models.Model):
 
 
     def cal_total_quantity (self):
-        quantity=0
-        delivered=0
-        invoiced=0
+        
         for record in self:
+            quantity=0
+            delivered=0
+            invoiced=0
+            
             for rec in record.order_line:
                 quantity=quantity+rec.product_uom_qty
                 delivered=delivered+rec.qty_delivered
                 invoiced=invoiced+rec.qty_invoiced
-        self.total_quantity=quantity
-        self.total_delivered_quantity=delivered
-        self.total_invoiced_quantity=invoiced
-        # self.total_delivered_quantity = 55
+                
+            record.total_quantity=quantity
+            record.total_delivered_quantity=delivered
+            record.total_invoiced_quantity=invoiced
 
 

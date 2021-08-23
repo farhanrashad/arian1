@@ -19,5 +19,30 @@
 
         </field>
     </record>
+    
+    <record id="view_sale_order_tree_ex" model="ir.ui.view">
+        <field name="name">sale.order.tree</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name = 'amount_total']" position="before">
+                <field name="total_quantity"/>
+            </xpath>
 
+        </field>
+    </record>
+    
+    
+    
+	<record id="view_sale_order_tree_actual_ex" model="ir.ui.view">
+        <field name="name">sale.order.tree</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name = 'amount_total']" position="before">
+                <field name="total_quantity"/>
+            </xpath>
+
+        </field>
+    </record>
 </odoo>
