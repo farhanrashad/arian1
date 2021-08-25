@@ -5,31 +5,39 @@ from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError, ValidationError
 from datetime import datetime
 
+
 class UserAttendance(models.Model):
     _name = 'user.attendance'
     _description = 'User Attendance'
     _order = 'timestamp DESC, user_id, status, attendance_state_id, device_id'
 
-    device_id = fields.Many2one('attendance.device', string='Attendance Device', required=True, ondelete='restrict', index=True)
-    user_id = fields.Many2one('attendance.device.user', string='Device User', required=True, ondelete='cascade', index=True)
+    device_id = fields.Many2one('attendance.device', string='Attendance Device', required=True, ondelete='restrict',
+                                index=True)
+    user_id = fields.Many2one('attendance.device.user', string='Device User', required=True, ondelete='cascade',
+                              index=True)
     timestamp = fields.Datetime(string='Timestamp', required=True, index=True)
     status = fields.Integer(string='Device Attendance State', required=True,
                             help='The state which is the unique number stored in the device to'
-                            ' indicate type of attendance (e.g. 0: Checkin, 1: Checkout, etc)')
+                                 ' indicate type of attendance (e.g. 0: Checkin, 1: Checkout, etc)')
     attendance_state_id = fields.Many2one('attendance.state', string='Odoo Attendance State',
                                           help='This technical field is to map the attendance'
-                                          ' status stored in the device and the attendance status in Odoo', required=True, index=True)
-    activity_id = fields.Many2one('attendance.activity', related='attendance_state_id.activity_id', store=True, index=True)
+                                               ' status stored in the device and the attendance status in Odoo',
+                                          required=True, index=True)
+    activity_id = fields.Many2one('attendance.activity', related='attendance_state_id.activity_id', store=True,
+                                  index=True)
     hr_attendance_id = fields.Many2one('hr.attendance', string='HR Attendance', ondelete='set null',
-                                       help='The technical field to link Device Attendance Data with Odoo\' Attendance Data', index=True)
+                                       help='The technical field to link Device Attendance Data with Odoo\' Attendance Data',
+                                       index=True)
 
     type = fields.Selection([('checkin', 'Check-in'),
-                            ('checkout', 'Check-out')], string='Activity Type', related='attendance_state_id.type', store=True)
-    employee_id = fields.Many2one('hr.employee', string='Employee', related='user_id.employee_id', store=True, index=True)
+                             ('checkout', 'Check-out')], string='Activity Type', related='attendance_state_id.type',
+                            store=True)
+    employee_id = fields.Many2one('hr.employee', string='Employee', related='user_id.employee_id', store=True,
+                                  index=True)
     valid = fields.Boolean(string='Valid Attendance', index=True, readonly=True, default=False,
                            help="This field is to indicate if this attendance record is valid for HR Attendance Synchronization."
-                           " E.g. The Attendances with Check out prior to Check in or the Attendances for users without employee"
-                           " mapped will not be valid.")
+                                " E.g. The Attendances with Check out prior to Check in or the Attendances for users without employee"
+                                " mapped will not be valid.")
     is_attedance_created = fields.Boolean(string="Is Attendance")
 
     _sql_constraints = [
@@ -42,7 +50,8 @@ class UserAttendance(models.Model):
     def constrains_status_attendance_state_id(self):
         for r in self:
             if r.status != r.attendance_state_id.code:
-                raise(_('Attendance Status conflict! The status number from device must match the attendance status defined in Odoo.'))
+                raise (_(
+                    'Attendance Status conflict! The status number from device must match the attendance status defined in Odoo.'))
 
     def is_valid(self):
         self.ensure_one()
@@ -67,43 +76,58 @@ class UserAttendance(models.Model):
         return attendances
 
     def action_attendace_validated(self):
-        month_datetime = fields.date.today()
-        for month_date in range(32):
-            datetime =  month_datetime - timedelta(month_date)
-            date_start = datetime + relativedelta(hours =+ 1)
-            date_end = datetime + relativedelta(hours =+ 23)
+        month_datetime = fields.date.today() - timedelta(100)
+        for month_date in range(100):
+            datetime = month_datetime + timedelta(month_date)
+            date_start = datetime + relativedelta(hours=+ 1)
+            date_end = datetime + relativedelta(hours=+ 23)
             total_employee = self.env['hr.employee'].search([])
             for employee in total_employee:
                 attendance_test = self.env['user.attendance']
-                count = attendance_test.search_count([('employee_id','=',employee.id)])
-                
-                attendance_list = attendance_test.search([('employee_id','=',employee.id),('timestamp','>=',date_start),('timestamp','<=',date_end),('is_attedance_created','=',False)], order="timestamp asc",)
+                count = attendance_test.search_count([('employee_id', '=', employee.id)])
+                attendance_list = attendance_test.search(
+                    [('employee_id', '=', employee.id), ('timestamp', '>=', date_start), ('timestamp', '<=', date_end),
+                     ('is_attedance_created', '=', False)], order="timestamp asc")
                 if attendance_list:
                     for attendace in attendance_list:
-                        existing_attendance = self.env['hr.attendance'].search([('employee_id','=',attendace.employee_id.id),('check_in','<=', attendace.timestamp), ('check_out','=', False)])
+                        existing_attendance = self.env['hr.attendance'].search(
+                            [('employee_id', '=', attendace.employee_id.id), ('check_in', '<=', attendace.timestamp),
+                             ('attendance_date', '=', datetime), ('check_out', '=', False)], order="check_in desc",
+                            limit=1)
                         if existing_attendance:
-                            existing_attendance.update({
-                              'check_out': attendace.timestamp,
-                            })
-                            attendace.update({
-                                'is_attedance_created' : True
-                            })
-                            
+                            delta_in_yesterday = attendace.timestamp - existing_attendance.check_in
+                            deltain = delta_in_yesterday.total_seconds()
+                            if deltain <= 50400:
+                                existing_attendance.update({
+                                    'check_out': attendace.timestamp,
+                                })
+                                attendace.update({
+                                    'is_attedance_created': True
+                                })
+                            else:
+                                vals = {
+                                    'employee_id': attendace.employee_id.id,
+                                    'check_in': attendace.timestamp,
+                                }
+                                hr_attendance = self.env['hr.attendance'].create(vals)
+                                attendace.update({
+                                    'is_attedance_created': True
+                                })
                         if not existing_attendance:
                             vals = {
                                 'employee_id': attendace.employee_id.id,
                                 'check_in': attendace.timestamp,
-                                }
+                            }
                             hr_attendance = self.env['hr.attendance'].create(vals)
                             attendace.update({
-                                'is_attedance_created' : True
+                                'is_attedance_created': True
                             })
-                        
-        
-                    
-                    
 
 
 
 
-  
+
+
+
+
+
