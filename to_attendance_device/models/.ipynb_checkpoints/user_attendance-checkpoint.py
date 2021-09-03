@@ -76,8 +76,8 @@ class UserAttendance(models.Model):
         return attendances
 
     def action_attendace_validated(self):
-        month_datetime = fields.date.today() - timedelta(100)
-        for month_date in range(100):
+        month_datetime = fields.date.today() - timedelta(5)
+        for month_date in range(5):
             datetime = month_datetime + timedelta(month_date)
             date_start = datetime + relativedelta(hours=+ 1)
             date_end = datetime + relativedelta(hours=+ 23)
