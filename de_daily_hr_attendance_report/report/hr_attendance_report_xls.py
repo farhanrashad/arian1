@@ -166,20 +166,20 @@ class HrAttendanceXlsx(models.AbstractModel):
         
         row = 6
         col = 0
-        sheet.merge_range('A1:H2', 'Daily Attendance Report', format1)
-        sheet.merge_range('A3:H3', 'Date: ' + on_date, format5)
+        sheet.merge_range('A1:G2', 'Daily Attendance Report', format1)
+        sheet.merge_range('A3:G3', 'Date: ' + on_date, format5)
         #         sheet.merge_range('A3:G3',  'As on:', format5)
         #         sheet.merge_range('A4:A6', 'S.No.', format2)
         #         sheet.merge_range('B4:B6', 'POS Shop', format2)
         sheet.merge_range('A4:A6', 'Employee', format2)
         sheet.merge_range('B4:B6', 'Employee Code', format2)
         sheet.merge_range('C4:C6', 'Identification No', format2)
-        sheet.merge_range('D4:D6', 'Department', format2)
-        sheet.merge_range('E4:E6', 'Date', format2)
-        sheet.merge_range('F4:F6', 'Check In', format2)
-        sheet.merge_range('G4:G6', 'Check Out', format2)
+#         sheet.merge_range('D4:D6', 'Department', format2)
+        sheet.merge_range('D4:D6', 'Date', format2)
+        sheet.merge_range('E4:E6', 'Check In', format2)
+        sheet.merge_range('F4:F6', 'Check Out', format2)
 #         sheet.merge_range('G4:G6', 'Shift', format2)
-        sheet.merge_range('H4:H6', 'Work Hours', format2)
+        sheet.merge_range('G4:G6', 'Work Hours', format2)
 
 #         final_data = []
 #         pd = []
