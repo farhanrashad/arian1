@@ -1,0 +1,27 @@
+<!-- <?xml version="1.0" encoding="UTF-8" ?> -->
+<odoo>
+    <data>
+        <report
+            id="hr_attendance_report_xlsx"
+            model="hr.attendance"
+            string="Daily Attendance Report"
+            report_type="xlsx"
+            name="de_daily_hr_attendance_report.hr_attendance_report_xlsx"
+            file="de_daily_hr_attendance_report.hr_attendance_report_xlsx"
+            attachment_use="True"
+            menu="False"
+        />
+        
+        <record model="ir.ui.view" id="inherit_hr_attendance_view_form">
+		    <field name="name">inherit.hr.attendance.view.tree</field>
+		    <field name="model">hr.attendance</field>
+		    <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/> 
+		    <field name="arch" type="xml">
+		    	<field name="employee_id" position="after">
+		            <field name="barcode"/>
+                    <field name="departments_id"/>
+		        </field>
+		   </field>
+		</record>
+    </data>
+</odoo>
