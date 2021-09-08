@@ -16,81 +16,88 @@ class HrAttendanceXlsx(models.AbstractModel):
 
     def _get_hr_attendance_data(self, data):
         hr_attendance_list = []
-        employees = self.env['hr.employee'].search([], order='department_id asc')
-        for employee in employees:
+        departments = self.env['hr.department'].search([])
+        for department in departments:
+            department_list = []
+            employees = self.env['hr.employee'].search([('department_id','=', department.id)], order='department_id asc')
+            for employee in employees:
 
-            hr_attendance = self.env['hr.attendance'].search([('attendance_date', '=', data['on_date']), ('employee_id','=', employee.id)])
+                hr_attendance = self.env['hr.attendance'].search([('attendance_date', '=', data['on_date']), ('employee_id','=', employee.id)])
 
-            count = 0
-            for count_line in hr_attendance:
-                count += 1
-            # shift_schedule = self.env['hr.shift.schedule'].search([('employee_id.name','=', hr_attendance.employee_id.name)])
-            count_att = 0
-            check_in = False
-            check_out = False
-            employee_name = ' '
-            employee_code = ' '
-            emp_identification_no = ' '
-            department = ' '
-            attendance_date = ' '
-            check_in = ' '
-            check_out = ' '
-            shift_name = ' '
-            worked_hours = 0
-            for line in hr_attendance:
-                employee_name = line.employee_id.name
-                employee_code = line.employee_id.barcode
-                emp_identification_no = line.employee_id.identification_id
-                department = line.departments_id.name
-                attendance_date = str(line.attendance_date)
-                # check_in = (str(line.check_in))
-                # check_out = (str(line.check_out))
-#                 shift_name = line.employee_id.shift_id.name
-                worked_hours += round(line.worked_hours, 2)
+                count = 0
+                for count_line in hr_attendance:
+                    count += 1
+                # shift_schedule = self.env['hr.shift.schedule'].search([('employee_id.name','=', hr_attendance.employee_id.name)])
+                count_att = 0
+                check_in = False
+                check_out = False
+                employee_name = ' '
+                employee_code = ' '
+                emp_identification_no = ' '
+                department = ' '
+                attendance_date = ' '
+                check_in = ' '
+                check_out = ' '
+                shift_name = ' '
+                worked_hours = 0
+                for line in hr_attendance:
+                    employee_name = line.employee_id.name
+                    employee_code = line.employee_id.sequence_no
+                    emp_identification_no = line.employee_id.identification_id
+                    department = line.departments_id.name
+                    attendance_date = str(line.attendance_date)
+                    # check_in = (str(line.check_in))
+                    # check_out = (str(line.check_out))
+    #                 shift_name = line.employee_id.shift_id.name
+                    worked_hours += round(line.worked_hours, 2)
 
-                count_att += 1
-                if count_att == 1:
-                    check_in = line.check_in.strftime('%H:%M:%S %p')
-#                     check_in = datetime.datetime.strptime(check_in_time, '%H:%M:%S').strftime('%H:%M:%S')
-#                     datetime.datetime.strptime(", "%b %d %Y %H:%M:%S")
-#                     check_in = (str(line.check_in)).strftime("%H:%M:%S")
-                if count_att == count:
-                    if line.check_out:
-                        check_out = line.check_out.strftime('%H:%M:%S %p')
-                    else:
-                        False
-#                     check_out = (str(line.check_out))
-#                     check_out = check_out_time.strftime('%H:%M:%S')
-                # check_in = datetime.datetime.strptime(check_in_time, '%m-%d-%Y %H:%M:%S').strftime('%m-%d-%Y %H:%M:%S')
-                # check_out = (str(line.check_out))
-                # check_out = check_in = datetime.datetime.strptime(check_out_time, '%m-%d-%Y %H:%M:%S').strftime('%m-%d-%Y %H:%M:%S')
-                # if line.employee_id.identification_id:
-                #    emp_identification_no = line.employee_id.identification_id
-                # else:
-                #     emp_identification_no = "-"
-                # if line.employee_id.department_id.name:
-                #    department_name = line.employee_id.department_id.name
-                # else:
-                #     department_name = "-"
-    #             stock_cost = line.quantity_done * line.product_id.standard_price
-    #             current_date = fields.datetime.now()
-    #             delta = fields.datetime.now() - line.date
-    #             picking = self.env['stock.picking'].search([('name', '=', line.reference)], limit=1)
-            if employee_name != ' ':
-                hr_attendance_list.append({
-                    #                 'ref':   line.reference,
-                    'employee_name': employee_name,
-                    'employee_code': employee_code,
-                    'emp_identification_no': emp_identification_no,
-                    'department': department,
-                    'attendance_date': attendance_date,
-                    'check_in': check_in,
-                    'check_out': check_out,
-#                     'shift_name': shift_name,
-                    'worked_hours': worked_hours,
-        #                 'stock_value': stock_cost,
-        #                 'no_of_days': delta.days,
-                })
+                    count_att += 1
+                    if count_att == 1:
+                        check_in = line.check_in.strftime('%H:%M:%S %p')
+    #                     check_in = datetime.datetime.strptime(check_in_time, '%H:%M:%S').strftime('%H:%M:%S')
+    #                     datetime.datetime.strptime(", "%b %d %Y %H:%M:%S")
+    #                     check_in = (str(line.check_in)).strftime("%H:%M:%S")
+                    if count_att == count:
+                        if line.check_out:
+                            check_out = line.check_out.strftime('%H:%M:%S %p')
+                        else:
+                            False
+    #                     check_out = (str(line.check_out))
+    #                     check_out = check_out_time.strftime('%H:%M:%S')
+                    # check_in = datetime.datetime.strptime(check_in_time, '%m-%d-%Y %H:%M:%S').strftime('%m-%d-%Y %H:%M:%S')
+                    # check_out = (str(line.check_out))
+                    # check_out = check_in = datetime.datetime.strptime(check_out_time, '%m-%d-%Y %H:%M:%S').strftime('%m-%d-%Y %H:%M:%S')
+                    # if line.employee_id.identification_id:
+                    #    emp_identification_no = line.employee_id.identification_id
+                    # else:
+                    #     emp_identification_no = "-"
+                    # if line.employee_id.department_id.name:
+                    #    department_name = line.employee_id.department_id.name
+                    # else:
+                    #     department_name = "-"
+        #             stock_cost = line.quantity_done * line.product_id.standard_price
+        #             current_date = fields.datetime.now()
+        #             delta = fields.datetime.now() - line.date
+        #             picking = self.env['stock.picking'].search([('name', '=', line.reference)], limit=1)
+                if employee_name != ' ':
+#                     department_list.append({
+#                         'department': department,
+#                     })
+                    department_list.append({
+                        #                 'ref':   line.reference,
+                        'employee_name': employee_name,
+                        'employee_code': employee_code,
+                        'emp_identification_no': emp_identification_no,
+                        'department': department,
+                        'attendance_date': attendance_date,
+                        'check_in': check_in,
+                        'check_out': check_out,
+    #                     'shift_name': shift_name,
+                        'worked_hours': worked_hours,
+            #                 'stock_value': stock_cost,
+            #                 'no_of_days': delta.days,
+                    })
+            hr_attendance_list.append(department_list)            
         return hr_attendance_list
 
     # #         data = []
@@ -115,6 +122,7 @@ class HrAttendanceXlsx(models.AbstractModel):
     #         return data
     def generate_xlsx_report(self, workbook, data, products):
         on_date = data.get('on_date')
+        
         data_list = self._get_hr_attendance_data(data)
 
         #         for rec in move_list:
@@ -153,11 +161,13 @@ class HrAttendanceXlsx(models.AbstractModel):
             sheet.set_column(col, 1, 8)
             sheet.write(row, col, header, format2)
             col += 1
-
+        
+        emp_department = []
+        
         row = 6
         col = 0
         sheet.merge_range('A1:H2', 'Daily Attendance Report', format1)
-        sheet.merge_range('A3:H3', 'As on: ' + on_date, format5)
+        sheet.merge_range('A3:H3', 'Date: ' + on_date, format5)
         #         sheet.merge_range('A3:G3',  'As on:', format5)
         #         sheet.merge_range('A4:A6', 'S.No.', format2)
         #         sheet.merge_range('B4:B6', 'POS Shop', format2)
